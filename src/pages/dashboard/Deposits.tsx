@@ -106,7 +106,25 @@ export default function Deposits() {
           <CardTitle className="text-section-dark-foreground text-lg">New Deposit</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Input
+          {(() => {
+            const totalDep = deposits?.filter(d => d.status === "approved").reduce((s, d) => s + Number(d.amount), 0) ?? 0;
+            const totalWd = withdrawals?.filter(w => w.status === "approved").reduce((s, w) => s + Number(w.amount), 0) ?? 0;
+            const pendingWd = withdrawals?.filter(w => w.status === "pending").reduce((s, w) => s + Number(w.amount), 0) ?? 0;
+            const totalBonuses = transactions?.filter(t => t.type === "bonus").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
+            const totalROI = transactions?.filter(t => t.type === "roi").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
+            const totalPR = transactions?.filter(t => t.type === "principal_return").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
+            const totalInv = transactions?.filter(t => t.type === "investment").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
+            const balance = totalDep + totalBonuses + totalROI + totalPR - totalWd - totalInv - pendingWd;
+            const newBalance = balance + (Number(amount) || 0);
+            return (
+              <p className="text-sm text-muted-foreground">
+                Current balance: <span className="font-semibold text-section-dark-foreground">${balance.toLocaleString()}</span>
+                {Number(amount) > 0 && (
+                  <> · After deposit: <span className="font-semibold text-primary">${newBalance.toLocaleString()}</span></>
+                )}
+              </p>
+            );
+          })()}
             type="number"
             placeholder="Amount (USD)"
             value={amount}
