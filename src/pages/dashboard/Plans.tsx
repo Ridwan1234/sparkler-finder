@@ -181,6 +181,9 @@ export default function Plans() {
               <CardContent className="text-center space-y-3">
                 <p className="text-3xl font-bold text-gold">{Number(plan.roi_percentage)}% ROI</p>
                 <p className="text-sm text-muted-foreground">{plan.duration_days} days</p>
+                <p className="text-xs text-muted-foreground">
+                  Payouts: {(plan as any).roi_frequency_days === 7 ? "Weekly" : (plan as any).roi_frequency_days === 1 || !(plan as any).roi_frequency_days ? "Daily" : `Every ${(plan as any).roi_frequency_days} days`}
+                </p>
                 <p className="text-sm text-muted-foreground">
                   ${Number(plan.min_amount).toLocaleString()} – ${Number(plan.max_amount).toLocaleString()}
                 </p>
