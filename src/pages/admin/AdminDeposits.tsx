@@ -70,7 +70,9 @@ export default function AdminDeposits() {
               {deposits?.map((d: any) => (
                 <TableRow key={d.id} className="border-border/10">
                   <TableCell className="text-section-dark-foreground">
-                    {format(new Date(d.created_at), "MMM d, yyyy")}
+                    {d.created_at && !isNaN(new Date(d.created_at).getTime())
+                      ? format(new Date(d.created_at), "MMM d, yyyy")
+                      : "—"}
                   </TableCell>
                   <TableCell className="text-section-dark-foreground">
                     {d.user_name}
