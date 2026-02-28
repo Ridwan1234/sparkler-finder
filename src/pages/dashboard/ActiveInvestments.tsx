@@ -109,13 +109,16 @@ export default function ActiveInvestments() {
               const totalROI = plan
                 ? Number((inv.amount * plan.roi_percentage / 100).toFixed(2))
                 : 0;
-              const dailyROI = plan
-                ? Number((inv.amount * plan.roi_percentage / 100 / plan.duration_days).toFixed(2))
+              const freqDays = (plan as any)?.roi_frequency_days ?? 1;
+              const totalPeriods = plan ? Math.floor(plan.duration_days / freqDays) : 1;
+              const periodROI = plan
+                ? Number((inv.amount * plan.roi_percentage / 100 / totalPeriods).toFixed(2))
                 : 0;
               const daysElapsed = validDates
                 ? Math.min(Math.floor(elapsed / (24 * 60 * 60 * 1000)), plan?.duration_days ?? 0)
                 : 0;
-              const earnedSoFar = Number((dailyROI * daysElapsed).toFixed(2));
+              const periodsElapsed = Math.min(Math.floor(daysElapsed / freqDays), totalPeriods);
+              const earnedSoFar = Number((periodROI * periodsElapsed).toFixed(2));
 
               return (
                 <Card key={inv.id} className="bg-card/5 border-primary/20 border-2">
@@ -138,10 +141,10 @@ export default function ActiveInvestments() {
                         </p>
                       </div>
                       <div>
-                        <p className="text-muted-foreground">Daily ROI</p>
+                        <p className="text-muted-foreground">ROI per {freqDays === 1 ? "day" : `${freqDays}d`}</p>
                         <p className="font-semibold text-gold flex items-center gap-1">
                           <TrendingUp className="h-3.5 w-3.5" />
-                          ${dailyROI.toLocaleString()}/day
+                          ${periodROI.toLocaleString()}
                         </p>
                       </div>
                       <div>
