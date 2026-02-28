@@ -44,6 +44,24 @@ export default function Deposits() {
     enabled: !!user,
   });
 
+  const { data: withdrawals } = useQuery({
+    queryKey: ["withdrawals-balance", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from("withdrawals").select("amount, status").eq("user_id", user!.id);
+      return data ?? [];
+    },
+    enabled: !!user,
+  });
+
+  const { data: transactions } = useQuery({
+    queryKey: ["transactions", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from("transactions").select("amount, type").eq("user_id", user!.id);
+      return data ?? [];
+    },
+    enabled: !!user,
+  });
+
   const selectedWallet = platformWallets?.find((w) => w.id === selectedWalletId);
 
   const create = useMutation({
