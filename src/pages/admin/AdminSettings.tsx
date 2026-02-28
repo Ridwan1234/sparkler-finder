@@ -147,6 +147,48 @@ export default function AdminSettings() {
     onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
   });
 
+  // Fetch wallet addresses
+  const { data: wallets } = useQuery({
+    queryKey: ["wallet_addresses"],
+    queryFn: async () => {
+      const { data } = await supabase.from("wallet_addresses").select("*").order("created_at", { ascending: true });
+      return data ?? [];
+    },
+  });
+
+  // Save wallet
+  const saveWallet = useMutation({
+    mutationFn: async (w: typeof editingWallet) => {
+      const payload = { label: w.label, address: w.address, network: w.network, is_active: w.is_active };
+      if (w.id) {
+        const { error } = await supabase.from("wallet_addresses").update(payload).eq("id", w.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("wallet_addresses").insert(payload);
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["wallet_addresses"] });
+      setWalletDialogOpen(false);
+      toast({ title: "Wallet saved" });
+    },
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+  });
+
+  // Delete wallet
+  const deleteWallet = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("wallet_addresses").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["wallet_addresses"] });
+      toast({ title: "Wallet deleted" });
+    },
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+  });
+
   const openCreate = () => {
     setEditingPlan({ ...emptyPlan });
     setFeatureInput("");
