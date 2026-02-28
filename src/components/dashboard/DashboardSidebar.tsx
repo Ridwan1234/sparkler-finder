@@ -7,7 +7,9 @@ import {
   User,
   Users,
   LogOut,
+  Shield,
 } from "lucide-react";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
