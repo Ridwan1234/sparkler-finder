@@ -7,7 +7,9 @@ import {
   User,
   Users,
   LogOut,
+  Shield,
 } from "lucide-react";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -43,6 +45,7 @@ export function DashboardSidebar() {
   const collapsed = state === "collapsed";
   const location = useLocation();
   const { signOut, user } = useAuth();
+  const { data: isAdmin } = useIsAdmin();
 
   const isActive = (path: string) =>
     path === "/dashboard"
@@ -101,11 +104,24 @@ export function DashboardSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border p-3">
+      <SidebarFooter className="border-t border-sidebar-border p-3 space-y-2">
         {!collapsed && (
-          <p className="text-xs text-muted-foreground truncate mb-2">
+          <p className="text-xs text-muted-foreground truncate mb-1">
             {user?.email}
           </p>
+        )}
+        {isAdmin && (
+          <Button
+            variant="ghost"
+            size={collapsed ? "icon" : "sm"}
+            asChild
+            className="w-full text-gold hover:text-gold hover:bg-gold/10"
+          >
+            <a href="/admin">
+              <Shield className="h-4 w-4" />
+              {!collapsed && <span className="ml-2">Admin Panel</span>}
+            </a>
+          </Button>
         )}
         <Button
           variant="ghost"
