@@ -138,22 +138,22 @@ export default function ActiveInvestments() {
                         </p>
                       </div>
                       <div>
-                        <p className="text-muted-foreground">Expected ROI</p>
+                        <p className="text-muted-foreground">Daily ROI</p>
                         <p className="font-semibold text-gold flex items-center gap-1">
                           <TrendingUp className="h-3.5 w-3.5" />
-                          ${expectedROI.toLocaleString()}
+                          ${dailyROI.toLocaleString()}/day
                         </p>
                       </div>
                       <div>
-                        <p className="text-muted-foreground">ROI Rate</p>
-                        <p className="font-semibold text-section-dark-foreground">
-                          {plan?.roi_percentage ?? 0}%
+                        <p className="text-muted-foreground">Earned So Far</p>
+                        <p className="font-semibold text-primary">
+                          ${earnedSoFar.toLocaleString()} / ${totalROI.toLocaleString()}
                         </p>
                       </div>
                       <div>
                         <p className="text-muted-foreground">Duration</p>
                         <p className="font-semibold text-section-dark-foreground">
-                          {plan?.duration_days ?? 0} days
+                          Day {daysElapsed} / {plan?.duration_days ?? 0}
                         </p>
                       </div>
                     </div>
