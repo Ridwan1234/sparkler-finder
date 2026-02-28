@@ -1,6 +1,7 @@
 import {
   LayoutDashboard,
   TrendingUp,
+  Wallet,
   ArrowDownToLine,
   ArrowUpFromLine,
   History,
@@ -30,6 +31,7 @@ import { Button } from "@/components/ui/button";
 const mainItems = [
   { title: "Overview", url: "/dashboard", icon: LayoutDashboard },
   { title: "Investment Plans", url: "/dashboard/plans", icon: TrendingUp },
+  { title: "My Investments", url: "/dashboard/investments", icon: Wallet },
   { title: "Deposits", url: "/dashboard/deposits", icon: ArrowDownToLine },
   { title: "Withdrawals", url: "/dashboard/withdrawals", icon: ArrowUpFromLine },
   { title: "Transactions", url: "/dashboard/transactions", icon: History },
