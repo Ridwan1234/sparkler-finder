@@ -9,12 +9,27 @@ import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { Copy, Check, Wallet } from "lucide-react";
 
 export default function Deposits() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [amount, setAmount] = useState("");
-  const [wallet, setWallet] = useState("");
+  const [selectedWalletId, setSelectedWalletId] = useState("");
+  const [copied, setCopied] = useState<string | null>(null);
+
+  // Fetch platform wallet addresses
+  const { data: platformWallets } = useQuery({
+    queryKey: ["wallet_addresses"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("wallet_addresses")
+        .select("*")
+        .eq("is_active", true)
+        .order("created_at", { ascending: true });
+      return data ?? [];
+    },
+  });
 
   const { data: deposits } = useQuery({
     queryKey: ["deposits", user?.id],
@@ -29,14 +44,16 @@ export default function Deposits() {
     enabled: !!user,
   });
 
+  const selectedWallet = platformWallets?.find((w) => w.id === selectedWalletId);
+
   const create = useMutation({
     mutationFn: async () => {
       if (!amount || Number(amount) <= 0) throw new Error("Enter a valid amount");
-      if (!wallet.trim()) throw new Error("Enter wallet address");
+      if (!selectedWallet) throw new Error("Select a wallet to deposit to");
       const { error } = await supabase.from("deposits").insert({
         user_id: user!.id,
         amount: Number(amount),
-        wallet_address: wallet.trim(),
+        wallet_address: selectedWallet.address,
       });
       if (error) throw error;
     },
@@ -44,10 +61,17 @@ export default function Deposits() {
       toast.success("Deposit request submitted!");
       queryClient.invalidateQueries({ queryKey: ["deposits"] });
       setAmount("");
-      setWallet("");
+      setSelectedWalletId("");
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
+  const copyAddress = (address: string) => {
+    navigator.clipboard.writeText(address);
+    setCopied(address);
+    toast.success("Address copied!");
+    setTimeout(() => setCopied(null), 2000);
+  };
 
   const statusColor: Record<string, string> = {
     pending: "bg-gold/20 text-gold border-gold/30",
@@ -63,7 +87,7 @@ export default function Deposits() {
         <CardHeader>
           <CardTitle className="text-section-dark-foreground text-lg">New Deposit</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-4">
           <Input
             type="number"
             placeholder="Amount (USD)"
@@ -71,13 +95,49 @@ export default function Deposits() {
             onChange={(e) => setAmount(e.target.value)}
             className="bg-background/10 border-border/20 text-section-dark-foreground"
           />
-          <Input
-            placeholder="Crypto wallet address"
-            value={wallet}
-            onChange={(e) => setWallet(e.target.value)}
-            className="bg-background/10 border-border/20 text-section-dark-foreground"
-          />
-          <Button onClick={() => create.mutate()} disabled={create.isPending}>
+
+          {/* Wallet Selection */}
+          {platformWallets && platformWallets.length > 0 ? (
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">Select a wallet to deposit to:</p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {platformWallets.map((w) => (
+                  <button
+                    key={w.id}
+                    type="button"
+                    onClick={() => setSelectedWalletId(w.id)}
+                    className={`text-left rounded-lg border p-3 transition-all ${
+                      selectedWalletId === w.id
+                        ? "border-primary bg-primary/10"
+                        : "border-border/20 bg-background/5 hover:border-border/40"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="flex items-center gap-1.5 text-sm font-medium text-section-dark-foreground">
+                        <Wallet className="h-3.5 w-3.5 text-primary" />
+                        {w.label}
+                      </span>
+                      <Badge variant="outline" className="text-[10px]">{w.network}</Badge>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <p className="text-xs font-mono text-muted-foreground truncate flex-1">{w.address}</p>
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); copyAddress(w.address); }}
+                        className="text-muted-foreground hover:text-primary transition-colors shrink-0"
+                      >
+                        {copied === w.address ? <Check className="h-3.5 w-3.5 text-primary" /> : <Copy className="h-3.5 w-3.5" />}
+                      </button>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">No deposit wallets configured. Please contact support.</p>
+          )}
+
+          <Button onClick={() => create.mutate()} disabled={create.isPending || !selectedWalletId}>
             Submit Deposit
           </Button>
         </CardContent>
