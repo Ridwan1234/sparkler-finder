@@ -50,7 +50,9 @@ export default function Transactions() {
               {transactions?.map((t) => (
                 <TableRow key={t.id} className="border-border/10">
                   <TableCell className="text-section-dark-foreground">
-                    {format(new Date(t.created_at), "MMM d, yyyy")}
+                    {t.created_at && !isNaN(new Date(t.created_at).getTime())
+                      ? format(new Date(t.created_at), "MMM d, yyyy")
+                      : "—"}
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline" className={typeColor[t.type] ?? ""}>
