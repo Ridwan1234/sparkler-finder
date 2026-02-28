@@ -94,6 +94,7 @@ export default function Overview() {
   const priceChangePercent = chartData.length >= 2 ? ((priceChange / chartData[0].price) * 100).toFixed(2) : "0";
 
 
+  const stats = [
     { label: "Available Balance", value: `$${balance.toLocaleString()}`, icon: DollarSign, color: "text-primary", bg: "bg-primary/10" },
     { label: "Active Investments", value: `$${activeInvestments.toLocaleString()}`, icon: TrendingUp, color: "text-gold", bg: "bg-gold/10" },
     { label: "Total ROI Earned", value: `$${totalROI.toLocaleString()}`, icon: TrendingUp, color: "text-primary", bg: "bg-primary/10" },
