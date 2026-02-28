@@ -71,7 +71,29 @@ export default function Overview() {
     enabled: !!user,
   });
 
-  const stats = [
+  // Generate simulated crypto price data
+  const chartData = useMemo(() => {
+    const days = chartPeriod === "7d" ? 7 : chartPeriod === "30d" ? 30 : 90;
+    const basePrices: Record<string, { base: number; vol: number }> = {
+      BTC: { base: 67400, vol: 2200 },
+      ETH: { base: 3520, vol: 180 },
+      BNB: { base: 605, vol: 25 },
+    };
+    const { base, vol } = basePrices[chartCoin];
+    return Array.from({ length: days }, (_, i) => {
+      const seed = chartCoin.charCodeAt(0) + days;
+      const noise = Math.sin(seed + i * 0.7) * vol + Math.cos(seed * 0.3 + i * 1.1) * vol * 0.5;
+      return {
+        date: format(subDays(new Date(), days - 1 - i), "MMM d"),
+        price: Math.round(base + noise),
+      };
+    });
+  }, [chartCoin, chartPeriod]);
+
+  const priceChange = chartData.length >= 2 ? chartData[chartData.length - 1].price - chartData[0].price : 0;
+  const priceChangePercent = chartData.length >= 2 ? ((priceChange / chartData[0].price) * 100).toFixed(2) : "0";
+
+
     { label: "Available Balance", value: `$${balance.toLocaleString()}`, icon: DollarSign, color: "text-primary", bg: "bg-primary/10" },
     { label: "Active Investments", value: `$${activeInvestments.toLocaleString()}`, icon: TrendingUp, color: "text-gold", bg: "bg-gold/10" },
     { label: "Total ROI Earned", value: `$${totalROI.toLocaleString()}`, icon: TrendingUp, color: "text-primary", bg: "bg-primary/10" },
