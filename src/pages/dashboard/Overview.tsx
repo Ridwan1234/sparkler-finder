@@ -59,7 +59,8 @@ export default function Overview() {
   const totalWithdrawals = withdrawals?.filter(w => w.status === "approved").reduce((s, w) => s + Number(w.amount), 0) ?? 0;
   const activeInvestments = investments?.filter(i => i.status === "active").reduce((s, i) => s + Number(i.amount), 0) ?? 0;
   const totalBonuses = transactions?.filter(t => t.type === "bonus").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
-  const balance = totalDeposits + totalBonuses - totalWithdrawals;
+  const totalInvested = transactions?.filter(t => t.type === "investment").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
+  const balance = totalDeposits + totalBonuses - totalWithdrawals - totalInvested;
 
   const stats = [
     { label: "Balance", value: `$${balance.toLocaleString()}`, icon: DollarSign, color: "text-primary" },
