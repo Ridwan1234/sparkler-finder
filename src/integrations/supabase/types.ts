@@ -45,7 +45,9 @@ export type Database = {
         Row: {
           created_at: string
           duration_days: number
+          features: string[]
           id: string
+          is_popular: boolean
           max_amount: number
           min_amount: number
           name: string
@@ -54,7 +56,9 @@ export type Database = {
         Insert: {
           created_at?: string
           duration_days: number
+          features?: string[]
           id?: string
+          is_popular?: boolean
           max_amount: number
           min_amount: number
           name: string
@@ -63,7 +67,9 @@ export type Database = {
         Update: {
           created_at?: string
           duration_days?: number
+          features?: string[]
           id?: string
+          is_popular?: boolean
           max_amount?: number
           min_amount?: number
           name?: string
@@ -145,6 +151,27 @@ export type Database = {
           referred_by?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          id: string
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          id?: string
+          key: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          id?: string
+          key?: string
+          updated_at?: string
+          value?: string
         }
         Relationships: []
       }
