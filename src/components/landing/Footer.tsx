@@ -3,6 +3,7 @@ import { Mail, MapPin, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+
 const Footer = () => {
   return (
     <footer id="contact" className="section-dark border-t border-section-dark-foreground/10">
@@ -25,11 +26,12 @@ const Footer = () => {
           <div>
             <h4 className="font-display font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm text-section-dark-foreground/50">
-              <li><a href="#home" className="hover:text-primary transition-colors">Home</a></li>
-              <li><a href="#about" className="hover:text-primary transition-colors">About Us</a></li>
-              <li><a href="#services" className="hover:text-primary transition-colors">Services</a></li>
-              <li><a href="#plans" className="hover:text-primary transition-colors">Investment Plans</a></li>
-              <li><a href="#faq" className="hover:text-primary transition-colors">FAQs</a></li>
+              <li><Link to="/" className="hover:text-primary transition-colors">Home</Link></li>
+              <li><Link to="/about" className="hover:text-primary transition-colors">About Us</Link></li>
+              <li><Link to="/services" className="hover:text-primary transition-colors">Services</Link></li>
+              <li><Link to="/plans" className="hover:text-primary transition-colors">Investment Plans</Link></li>
+              <li><Link to="/faq" className="hover:text-primary transition-colors">FAQs</Link></li>
+              <li><Link to="/contact" className="hover:text-primary transition-colors">Contact Us</Link></li>
             </ul>
           </div>
 

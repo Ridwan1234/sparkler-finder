@@ -26,6 +26,11 @@ import AdminWithdrawals from "./pages/admin/AdminWithdrawals";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminSettings from "./pages/admin/AdminSettings";
 import NotFound from "./pages/NotFound";
+import AboutPage from "./pages/About";
+import ServicesPage from "./pages/Services";
+import PlansPage from "./pages/PlansPage";
+import FAQPage from "./pages/FAQ";
+import ContactPage from "./pages/Contact";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +43,11 @@ const App = () => (
         <AuthProvider>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/services" element={<ServicesPage />} />
+            <Route path="/plans" element={<PlansPage />} />
+            <Route path="/faq" element={<FAQPage />} />
+            <Route path="/contact" element={<ContactPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />

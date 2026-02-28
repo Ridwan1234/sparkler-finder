@@ -4,12 +4,12 @@ import { Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const navLinks = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Services", href: "#services" },
-  { label: "Plans", href: "#plans" },
-  { label: "FAQs", href: "#faq" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Plans", href: "/plans" },
+  { label: "FAQs", href: "/faq" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const Header = () => {
@@ -27,13 +27,13 @@ const Header = () => {
 
         <nav className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.label}
-              href={link.href}
+              to={link.href}
               className="text-sm text-section-dark-foreground/70 hover:text-primary transition-colors"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
@@ -61,14 +61,14 @@ const Header = () => {
       {mobileOpen && (
         <div className="md:hidden bg-section-dark border-t border-border/10 p-4 space-y-3">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.label}
-              href={link.href}
+              to={link.href}
               className="block py-2 text-section-dark-foreground/70 hover:text-primary"
               onClick={() => setMobileOpen(false)}
             >
               {link.label}
-            </a>
+            </Link>
           ))}
           <div className="flex gap-3 pt-3">
             <Link to="/login" className="flex-1">
