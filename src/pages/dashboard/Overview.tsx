@@ -43,10 +43,23 @@ export default function Overview() {
     enabled: !!user,
   });
 
+  const { data: transactions } = useQuery({
+    queryKey: ["transactions", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("transactions")
+        .select("amount, type")
+        .eq("user_id", user!.id);
+      return data ?? [];
+    },
+    enabled: !!user,
+  });
+
   const totalDeposits = deposits?.filter(d => d.status === "approved").reduce((s, d) => s + Number(d.amount), 0) ?? 0;
   const totalWithdrawals = withdrawals?.filter(w => w.status === "approved").reduce((s, w) => s + Number(w.amount), 0) ?? 0;
   const activeInvestments = investments?.filter(i => i.status === "active").reduce((s, i) => s + Number(i.amount), 0) ?? 0;
-  const balance = totalDeposits - totalWithdrawals;
+  const totalBonuses = transactions?.filter(t => t.type === "bonus").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
+  const balance = totalDeposits + totalBonuses - totalWithdrawals;
 
   const stats = [
     { label: "Balance", value: `$${balance.toLocaleString()}`, icon: DollarSign, color: "text-primary" },
