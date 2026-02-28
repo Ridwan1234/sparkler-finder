@@ -19,6 +19,7 @@ import Withdrawals from "./pages/dashboard/Withdrawals";
 import Transactions from "./pages/dashboard/Transactions";
 import Profile from "./pages/dashboard/Profile";
 import Referrals from "./pages/dashboard/Referrals";
+import ActiveInvestments from "./pages/dashboard/ActiveInvestments";
 import AdminLayout from "./components/admin/AdminLayout";
 import AdminOverview from "./pages/admin/AdminOverview";
 import AdminDeposits from "./pages/admin/AdminDeposits";
@@ -55,6 +56,7 @@ const App = () => (
             <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
               <Route index element={<Overview />} />
               <Route path="plans" element={<Plans />} />
+              <Route path="investments" element={<ActiveInvestments />} />
               <Route path="deposits" element={<Deposits />} />
               <Route path="withdrawals" element={<Withdrawals />} />
               <Route path="transactions" element={<Transactions />} />

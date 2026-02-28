@@ -1,0 +1,197 @@
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useQuery } from "@tanstack/react-query";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Timer, TrendingUp, DollarSign } from "lucide-react";
+import { useState, useEffect } from "react";
+
+function useCountdown() {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  return now;
+}
+
+function formatTimeLeft(ms: number) {
+  if (ms <= 0) return "Completed";
+  const totalSec = Math.floor(ms / 1000);
+  const d = Math.floor(totalSec / 86400);
+  const h = Math.floor((totalSec % 86400) / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
+  if (d > 0) return `${d}d ${h}h ${m}m`;
+  if (h > 0) return `${h}h ${m}m ${s}s`;
+  return `${m}m ${s}s`;
+}
+
+export default function ActiveInvestments() {
+  const { user } = useAuth();
+  const now = useCountdown();
+
+  const { data: investments, isLoading } = useQuery({
+    queryKey: ["active_investments", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("investments")
+        .select("*, investment_plans(*)")
+        .eq("user_id", user!.id)
+        .order("created_at", { ascending: false });
+      return data ?? [];
+    },
+    enabled: !!user,
+  });
+
+  const active = investments?.filter((i) => i.status === "active") ?? [];
+  const completed = investments?.filter((i) => i.status === "completed") ?? [];
+
+  if (isLoading) return <div className="text-section-dark-foreground">Loading investments...</div>;
+
+  return (
+    <div>
+      <h1 className="font-display text-2xl font-bold text-section-dark-foreground mb-6">
+        My Investments
+      </h1>
+
+      {active.length === 0 && completed.length === 0 && (
+        <Card className="bg-card/5 border-border/10">
+          <CardContent className="py-12 text-center text-muted-foreground">
+            No investments yet. Visit the Plans page to start investing.
+          </CardContent>
+        </Card>
+      )}
+
+      {active.length > 0 && (
+        <>
+          <h2 className="text-lg font-semibold text-section-dark-foreground mb-4 flex items-center gap-2">
+            <Timer className="h-5 w-5 text-primary" /> Active ({active.length})
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-8">
+            {active.map((inv) => {
+              const plan = inv.investment_plans;
+              const startMs = new Date(inv.started_at).getTime();
+              const endMs = new Date(inv.expires_at).getTime();
+              const validDates = !isNaN(startMs) && !isNaN(endMs);
+              const totalDuration = validDates ? endMs - startMs : 1;
+              const elapsed = validDates ? now - startMs : 0;
+              const remaining = validDates ? Math.max(0, endMs - now) : 0;
+              const progress = validDates
+                ? Math.min(100, Math.max(0, (elapsed / totalDuration) * 100))
+                : 0;
+              const expectedROI = plan
+                ? Number((inv.amount * plan.roi_percentage / 100).toFixed(2))
+                : 0;
+
+              return (
+                <Card key={inv.id} className="bg-card/5 border-primary/20 border-2">
+                  <CardContent className="pt-6 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="font-display font-bold text-section-dark-foreground">
+                        {plan?.name ?? "Unknown Plan"}
+                      </span>
+                      <Badge className="bg-primary/20 text-primary border-primary/30" variant="outline">
+                        Active
+                      </Badge>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      <div>
+                        <p className="text-muted-foreground">Invested</p>
+                        <p className="font-semibold text-section-dark-foreground flex items-center gap-1">
+                          <DollarSign className="h-3.5 w-3.5" />
+                          {Number(inv.amount).toLocaleString()}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Expected ROI</p>
+                        <p className="font-semibold text-gold flex items-center gap-1">
+                          <TrendingUp className="h-3.5 w-3.5" />
+                          ${expectedROI.toLocaleString()}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">ROI Rate</p>
+                        <p className="font-semibold text-section-dark-foreground">
+                          {plan?.roi_percentage ?? 0}%
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Duration</p>
+                        <p className="font-semibold text-section-dark-foreground">
+                          {plan?.duration_days ?? 0} days
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-xs text-muted-foreground">
+                        <span>Progress</span>
+                        <span>{progress.toFixed(0)}%</span>
+                      </div>
+                      <Progress value={progress} className="h-2" />
+                    </div>
+
+                    <div className="bg-primary/5 border border-primary/10 rounded-lg px-3 py-2 text-center">
+                      <p className="text-xs text-muted-foreground mb-0.5">Time Remaining</p>
+                      <p className="text-lg font-bold text-primary font-mono">
+                        {formatTimeLeft(remaining)}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </>
+      )}
+
+      {completed.length > 0 && (
+        <>
+          <h2 className="text-lg font-semibold text-section-dark-foreground mb-4 flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 text-gold" /> Completed ({completed.length})
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {completed.map((inv) => {
+              const plan = inv.investment_plans;
+              const earnedROI = plan
+                ? Number((inv.amount * plan.roi_percentage / 100).toFixed(2))
+                : 0;
+
+              return (
+                <Card key={inv.id} className="bg-card/5 border-border/10">
+                  <CardContent className="pt-6 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="font-display font-bold text-section-dark-foreground">
+                        {plan?.name ?? "Unknown Plan"}
+                      </span>
+                      <Badge className="bg-gold/20 text-gold border-gold/30" variant="outline">
+                        Completed
+                      </Badge>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      <div>
+                        <p className="text-muted-foreground">Invested</p>
+                        <p className="font-semibold text-section-dark-foreground">
+                          ${Number(inv.amount).toLocaleString()}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">ROI Earned</p>
+                        <p className="font-semibold text-gold">
+                          +${earnedROI.toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
