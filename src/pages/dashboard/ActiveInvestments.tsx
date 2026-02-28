@@ -106,9 +106,16 @@ export default function ActiveInvestments() {
               const progress = validDates
                 ? Math.min(100, Math.max(0, (elapsed / totalDuration) * 100))
                 : 0;
-              const expectedROI = plan
+              const totalROI = plan
                 ? Number((inv.amount * plan.roi_percentage / 100).toFixed(2))
                 : 0;
+              const dailyROI = plan
+                ? Number((inv.amount * plan.roi_percentage / 100 / plan.duration_days).toFixed(2))
+                : 0;
+              const daysElapsed = validDates
+                ? Math.min(Math.floor(elapsed / (24 * 60 * 60 * 1000)), plan?.duration_days ?? 0)
+                : 0;
+              const earnedSoFar = Number((dailyROI * daysElapsed).toFixed(2));
 
               return (
                 <Card key={inv.id} className="bg-card/5 border-primary/20 border-2">
