@@ -56,6 +56,9 @@ export default function AdminSettings() {
   const [featureInput, setFeatureInput] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<Plan | null>(null);
+  const [walletDialogOpen, setWalletDialogOpen] = useState(false);
+  const [editingWallet, setEditingWallet] = useState<{ id?: string; label: string; address: string; network: string; is_active: boolean }>({ label: "", address: "", network: "BTC", is_active: true });
+  const [deleteWalletConfirm, setDeleteWalletConfirm] = useState<{ id: string; label: string } | null>(null);
 
   // Fetch site settings
   const { data: settings } = useQuery({
