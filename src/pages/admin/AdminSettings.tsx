@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
-import { Pencil, Plus, Save, Trash2, X } from "lucide-react";
+import { Pencil, Plus, Save, Trash2, X, AlertTriangle } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -16,6 +16,16 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 type Plan = {
   id: string;
@@ -45,6 +55,7 @@ export default function AdminSettings() {
   const [editingPlan, setEditingPlan] = useState<PlanForm | null>(null);
   const [featureInput, setFeatureInput] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState<Plan | null>(null);
 
   // Fetch site settings
   const { data: settings } = useQuery({
@@ -225,7 +236,7 @@ export default function AdminSettings() {
                     <Button
                       variant="destructive"
                       size="sm"
-                      onClick={() => deletePlan.mutate(plan.id)}
+                      onClick={() => setDeleteConfirm(plan)}
                       disabled={deletePlan.isPending}
                     >
                       <Trash2 className="h-3 w-3 mr-1" /> Delete
@@ -238,65 +249,122 @@ export default function AdminSettings() {
         )}
       </div>
 
+      {/* Delete Confirmation */}
+      <AlertDialog open={!!deleteConfirm} onOpenChange={(open) => !open && setDeleteConfirm(null)}>
+        <AlertDialogContent className="bg-card border-border/20">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-section-dark-foreground">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              Delete Plan
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete <strong>{deleteConfirm?.name}</strong>? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => {
+                if (deleteConfirm) {
+                  deletePlan.mutate(deleteConfirm.id);
+                  setDeleteConfirm(null);
+                }
+              }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {/* Plan Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="bg-card border-border/20 text-section-dark-foreground max-h-[90vh] overflow-y-auto">
+        <DialogContent className="bg-card border-border/20 text-section-dark-foreground max-h-[90vh] overflow-y-auto sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>{editingPlan?.id ? "Edit Plan" : "New Plan"}</DialogTitle>
+            <DialogTitle className="text-lg">{editingPlan?.id ? "Edit Plan" : "New Plan"}</DialogTitle>
           </DialogHeader>
           {editingPlan && (
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label>Name</Label>
-                <Input value={editingPlan.name} onChange={(e) => setEditingPlan({ ...editingPlan, name: e.target.value })} />
+            <div className="space-y-5">
+              {/* Plan Name */}
+              <div className="space-y-1.5">
+                <Label className="text-sm font-medium text-muted-foreground">Plan Name</Label>
+                <Input
+                  value={editingPlan.name}
+                  onChange={(e) => setEditingPlan({ ...editingPlan, name: e.target.value })}
+                  placeholder="e.g. Premium Plan"
+                  className="bg-background/5 border-border/20"
+                />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Min Amount</Label>
-                  <Input type="number" value={editingPlan.min_amount} onChange={(e) => setEditingPlan({ ...editingPlan, min_amount: +e.target.value })} />
-                </div>
-                <div className="space-y-2">
-                  <Label>Max Amount</Label>
-                  <Input type="number" value={editingPlan.max_amount} onChange={(e) => setEditingPlan({ ...editingPlan, max_amount: +e.target.value })} />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>ROI %</Label>
-                  <Input type="number" value={editingPlan.roi_percentage} onChange={(e) => setEditingPlan({ ...editingPlan, roi_percentage: +e.target.value })} />
-                </div>
-                <div className="space-y-2">
-                  <Label>Duration (days)</Label>
-                  <Input type="number" value={editingPlan.duration_days} onChange={(e) => setEditingPlan({ ...editingPlan, duration_days: +e.target.value })} />
+
+              {/* Amount Range */}
+              <div>
+                <Label className="text-sm font-medium text-muted-foreground mb-2 block">Investment Range ($)</Label>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <span className="text-xs text-muted-foreground/70">Minimum</span>
+                    <Input type="number" value={editingPlan.min_amount} onChange={(e) => setEditingPlan({ ...editingPlan, min_amount: +e.target.value })} className="bg-background/5 border-border/20" />
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-xs text-muted-foreground/70">Maximum</span>
+                    <Input type="number" value={editingPlan.max_amount} onChange={(e) => setEditingPlan({ ...editingPlan, max_amount: +e.target.value })} className="bg-background/5 border-border/20" />
+                  </div>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+
+              {/* Returns */}
+              <div>
+                <Label className="text-sm font-medium text-muted-foreground mb-2 block">Returns</Label>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <span className="text-xs text-muted-foreground/70">ROI Percentage</span>
+                    <Input type="number" value={editingPlan.roi_percentage} onChange={(e) => setEditingPlan({ ...editingPlan, roi_percentage: +e.target.value })} className="bg-background/5 border-border/20" />
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-xs text-muted-foreground/70">Duration (days)</span>
+                    <Input type="number" value={editingPlan.duration_days} onChange={(e) => setEditingPlan({ ...editingPlan, duration_days: +e.target.value })} className="bg-background/5 border-border/20" />
+                  </div>
+                </div>
+              </div>
+
+              <Separator className="border-border/10" />
+
+              {/* Popular Toggle */}
+              <div className="flex items-center justify-between rounded-lg border border-border/10 p-3">
+                <div>
+                  <Label className="text-sm font-medium">Mark as Popular</Label>
+                  <p className="text-xs text-muted-foreground">Highlights this plan for users</p>
+                </div>
                 <Switch checked={editingPlan.is_popular} onCheckedChange={(v) => setEditingPlan({ ...editingPlan, is_popular: v })} />
-                <Label>Mark as Popular</Label>
               </div>
+
+              {/* Features */}
               <div className="space-y-2">
-                <Label>Features</Label>
+                <Label className="text-sm font-medium text-muted-foreground">Features</Label>
                 <div className="flex gap-2">
                   <Input
                     value={featureInput}
                     onChange={(e) => setFeatureInput(e.target.value)}
-                    placeholder="Add a feature"
+                    placeholder="Type a feature and press Enter"
                     onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addFeature())}
+                    className="bg-background/5 border-border/20"
                   />
-                  <Button type="button" size="sm" onClick={addFeature}>Add</Button>
+                  <Button type="button" size="sm" variant="secondary" onClick={addFeature}>Add</Button>
                 </div>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {editingPlan.features.map((f, i) => (
-                    <span key={i} className="bg-muted text-muted-foreground text-xs px-2 py-1 rounded-full flex items-center gap-1">
-                      {f}
-                      <X className="h-3 w-3 cursor-pointer" onClick={() => removeFeature(i)} />
-                    </span>
-                  ))}
-                </div>
+                {editingPlan.features.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {editingPlan.features.map((f, i) => (
+                      <span key={i} className="bg-muted text-muted-foreground text-xs px-2.5 py-1 rounded-full flex items-center gap-1.5">
+                        {f}
+                        <X className="h-3 w-3 cursor-pointer hover:text-destructive transition-colors" onClick={() => removeFeature(i)} />
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}
-          <DialogFooter>
+          <DialogFooter className="gap-2 sm:gap-0">
             <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
             <Button onClick={() => editingPlan && savePlan.mutate(editingPlan)} disabled={savePlan.isPending}>
               {savePlan.isPending ? "Saving..." : "Save Plan"}
