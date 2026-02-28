@@ -55,6 +55,7 @@ export default function AdminSettings() {
   const [editingPlan, setEditingPlan] = useState<PlanForm | null>(null);
   const [featureInput, setFeatureInput] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState<Plan | null>(null);
 
   // Fetch site settings
   const { data: settings } = useQuery({
