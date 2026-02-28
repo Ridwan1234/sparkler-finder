@@ -44,6 +44,24 @@ export default function Deposits() {
     enabled: !!user,
   });
 
+  const { data: withdrawals } = useQuery({
+    queryKey: ["withdrawals-balance", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from("withdrawals").select("amount, status").eq("user_id", user!.id);
+      return data ?? [];
+    },
+    enabled: !!user,
+  });
+
+  const { data: transactions } = useQuery({
+    queryKey: ["transactions", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from("transactions").select("amount, type").eq("user_id", user!.id);
+      return data ?? [];
+    },
+    enabled: !!user,
+  });
+
   const selectedWallet = platformWallets?.find((w) => w.id === selectedWalletId);
 
   const create = useMutation({
@@ -88,6 +106,25 @@ export default function Deposits() {
           <CardTitle className="text-section-dark-foreground text-lg">New Deposit</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          {(() => {
+            const totalDep = deposits?.filter(d => d.status === "approved").reduce((s, d) => s + Number(d.amount), 0) ?? 0;
+            const totalWd = withdrawals?.filter(w => w.status === "approved").reduce((s, w) => s + Number(w.amount), 0) ?? 0;
+            const pendingWd = withdrawals?.filter(w => w.status === "pending").reduce((s, w) => s + Number(w.amount), 0) ?? 0;
+            const totalBonuses = transactions?.filter(t => t.type === "bonus").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
+            const totalROI = transactions?.filter(t => t.type === "roi").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
+            const totalPR = transactions?.filter(t => t.type === "principal_return").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
+            const totalInv = transactions?.filter(t => t.type === "investment").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
+            const balance = totalDep + totalBonuses + totalROI + totalPR - totalWd - totalInv - pendingWd;
+            const newBalance = balance + (Number(amount) || 0);
+            return (
+              <p className="text-sm text-muted-foreground">
+                Current balance: <span className="font-semibold text-section-dark-foreground">${balance.toLocaleString()}</span>
+                {Number(amount) > 0 && (
+                  <> · After deposit: <span className="font-semibold text-primary">${newBalance.toLocaleString()}</span></>
+                )}
+              </p>
+            );
+          })()}
           <Input
             type="number"
             placeholder="Amount (USD)"
