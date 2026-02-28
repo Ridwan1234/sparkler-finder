@@ -45,6 +45,7 @@ export function DashboardSidebar() {
   const collapsed = state === "collapsed";
   const location = useLocation();
   const { signOut, user } = useAuth();
+  const { data: isAdmin } = useIsAdmin();
 
   const isActive = (path: string) =>
     path === "/dashboard"
