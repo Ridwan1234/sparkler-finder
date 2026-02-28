@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useBalance } from "@/hooks/useBalance";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +19,8 @@ export default function Deposits() {
   const [selectedWalletId, setSelectedWalletId] = useState("");
   const [copied, setCopied] = useState<string | null>(null);
 
-  // Fetch platform wallet addresses
+  const { balance } = useBalance(user?.id);
+
   const { data: platformWallets } = useQuery({
     queryKey: ["wallet_addresses"],
     queryFn: async () => {
@@ -32,31 +34,13 @@ export default function Deposits() {
   });
 
   const { data: deposits } = useQuery({
-    queryKey: ["deposits", user?.id],
+    queryKey: ["user_deposits_list", user?.id],
     queryFn: async () => {
       const { data } = await supabase
         .from("deposits")
         .select("*")
         .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
-      return data ?? [];
-    },
-    enabled: !!user,
-  });
-
-  const { data: withdrawals } = useQuery({
-    queryKey: ["withdrawals-balance", user?.id],
-    queryFn: async () => {
-      const { data } = await supabase.from("withdrawals").select("amount, status").eq("user_id", user!.id);
-      return data ?? [];
-    },
-    enabled: !!user,
-  });
-
-  const { data: transactions } = useQuery({
-    queryKey: ["transactions", user?.id],
-    queryFn: async () => {
-      const { data } = await supabase.from("transactions").select("amount, type").eq("user_id", user!.id);
       return data ?? [];
     },
     enabled: !!user,
@@ -78,6 +62,7 @@ export default function Deposits() {
     onSuccess: () => {
       toast.success("Deposit request submitted!");
       queryClient.invalidateQueries({ queryKey: ["deposits"] });
+      queryClient.invalidateQueries({ queryKey: ["user_deposits_list"] });
       setAmount("");
       setSelectedWalletId("");
     },
@@ -97,6 +82,8 @@ export default function Deposits() {
     rejected: "bg-destructive/20 text-destructive border-destructive/30",
   };
 
+  const newBalance = balance + (Number(amount) || 0);
+
   return (
     <div className="space-y-6">
       <h1 className="font-display text-2xl font-bold text-section-dark-foreground">Deposits</h1>
@@ -106,25 +93,12 @@ export default function Deposits() {
           <CardTitle className="text-section-dark-foreground text-lg">New Deposit</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {(() => {
-            const totalDep = deposits?.filter(d => d.status === "approved").reduce((s, d) => s + Number(d.amount), 0) ?? 0;
-            const totalWd = withdrawals?.filter(w => w.status === "approved").reduce((s, w) => s + Number(w.amount), 0) ?? 0;
-            const pendingWd = withdrawals?.filter(w => w.status === "pending").reduce((s, w) => s + Number(w.amount), 0) ?? 0;
-            const totalBonuses = transactions?.filter(t => t.type === "bonus").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
-            const totalROI = transactions?.filter(t => t.type === "roi").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
-            const totalPR = transactions?.filter(t => t.type === "principal_return").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
-            const totalInv = transactions?.filter(t => t.type === "investment").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
-            const balance = totalDep + totalBonuses + totalROI + totalPR - totalWd - totalInv - pendingWd;
-            const newBalance = balance + (Number(amount) || 0);
-            return (
-              <p className="text-sm text-muted-foreground">
-                Current balance: <span className="font-semibold text-section-dark-foreground">${balance.toLocaleString()}</span>
-                {Number(amount) > 0 && (
-                  <> · After deposit: <span className="font-semibold text-primary">${newBalance.toLocaleString()}</span></>
-                )}
-              </p>
-            );
-          })()}
+          <p className="text-sm text-muted-foreground">
+            Current balance: <span className="font-semibold text-section-dark-foreground">${balance.toLocaleString()}</span>
+            {Number(amount) > 0 && (
+              <> · After deposit: <span className="font-semibold text-primary">${newBalance.toLocaleString()}</span></>
+            )}
+          </p>
           <Input
             type="number"
             placeholder="Amount (USD)"
@@ -133,7 +107,6 @@ export default function Deposits() {
             className="bg-background/10 border-border/20 text-section-dark-foreground"
           />
 
-          {/* Wallet Selection */}
           {platformWallets && platformWallets.length > 0 ? (
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">Select a wallet to deposit to:</p>

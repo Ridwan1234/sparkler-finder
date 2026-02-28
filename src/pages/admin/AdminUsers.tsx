@@ -4,9 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
-import { Users, ChevronDown, ChevronUp, DollarSign, TrendingUp, ArrowDownToLine, ArrowUpFromLine } from "lucide-react";
+import { Users, ChevronDown, ChevronUp, DollarSign, TrendingUp } from "lucide-react";
 
 interface UserProfile {
   user_id: string;
@@ -39,27 +38,37 @@ export default function AdminUsers() {
 
       const userIds = profiles.map((p) => p.user_id);
 
-      const [{ data: deposits }, { data: withdrawals }, { data: investments }] = await Promise.all([
+      const [{ data: deposits }, { data: withdrawals }, { data: investments }, { data: transactions }] = await Promise.all([
         supabase.from("deposits").select("user_id, amount, status").in("user_id", userIds),
         supabase.from("withdrawals").select("user_id, amount, status").in("user_id", userIds),
         supabase.from("investments").select("user_id, amount, status").in("user_id", userIds),
+        supabase.from("transactions").select("user_id, amount, type").in("user_id", userIds),
       ]);
 
       return profiles.map((profile): UserDetail => {
         const userDeposits = (deposits ?? []).filter((d) => d.user_id === profile.user_id && d.status === "approved");
         const userWithdrawals = (withdrawals ?? []).filter((w) => w.user_id === profile.user_id && w.status === "approved");
+        const userPendingWd = (withdrawals ?? []).filter((w) => w.user_id === profile.user_id && w.status === "pending");
         const userInvestments = (investments ?? []).filter((i) => i.user_id === profile.user_id);
         const activeInvestments = userInvestments.filter((i) => i.status === "active");
+        const userTx = (transactions ?? []).filter((t) => t.user_id === profile.user_id);
 
         const totalDeposits = userDeposits.reduce((s, d) => s + Number(d.amount), 0);
         const totalWithdrawals = userWithdrawals.reduce((s, w) => s + Number(w.amount), 0);
+        const pendingWithdrawals = userPendingWd.reduce((s, w) => s + Number(w.amount), 0);
+        const totalBonuses = userTx.filter(t => t.type === "bonus").reduce((s, t) => s + Number(t.amount), 0);
+        const totalROI = userTx.filter(t => t.type === "roi").reduce((s, t) => s + Number(t.amount), 0);
+        const totalPR = userTx.filter(t => t.type === "principal_return").reduce((s, t) => s + Number(t.amount), 0);
+        const totalInvested = userTx.filter(t => t.type === "investment").reduce((s, t) => s + Number(t.amount), 0);
+
+        const balance = totalDeposits + totalBonuses + totalROI + totalPR - totalWithdrawals - totalInvested - pendingWithdrawals;
 
         return {
           profile,
           deposits: { total: totalDeposits, count: userDeposits.length },
           withdrawals: { total: totalWithdrawals, count: userWithdrawals.length },
           investments: { active: activeInvestments.length, totalAmount: activeInvestments.reduce((s, i) => s + Number(i.amount), 0) },
-          balance: totalDeposits - totalWithdrawals,
+          balance,
         };
       });
     },

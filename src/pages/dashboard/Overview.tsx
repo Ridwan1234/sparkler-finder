@@ -1,68 +1,11 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
-import { useQuery } from "@tanstack/react-query";
+import { useBalance } from "@/hooks/useBalance";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DollarSign, TrendingUp, ArrowDownToLine, ArrowUpFromLine } from "lucide-react";
 
 export default function Overview() {
   const { user } = useAuth();
-
-  const { data: deposits } = useQuery({
-    queryKey: ["deposits", user?.id],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("deposits")
-        .select("amount, status")
-        .eq("user_id", user!.id);
-      return data ?? [];
-    },
-    enabled: !!user,
-  });
-
-  const { data: withdrawals } = useQuery({
-    queryKey: ["withdrawals", user?.id],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("withdrawals")
-        .select("amount, status")
-        .eq("user_id", user!.id);
-      return data ?? [];
-    },
-    enabled: !!user,
-  });
-
-  const { data: investments } = useQuery({
-    queryKey: ["investments", user?.id],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("investments")
-        .select("amount, status")
-        .eq("user_id", user!.id);
-      return data ?? [];
-    },
-    enabled: !!user,
-  });
-
-  const { data: transactions } = useQuery({
-    queryKey: ["transactions", user?.id],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("transactions")
-        .select("amount, type")
-        .eq("user_id", user!.id);
-      return data ?? [];
-    },
-    enabled: !!user,
-  });
-
-  const totalDeposits = deposits?.filter(d => d.status === "approved").reduce((s, d) => s + Number(d.amount), 0) ?? 0;
-  const totalWithdrawals = withdrawals?.filter(w => w.status === "approved").reduce((s, w) => s + Number(w.amount), 0) ?? 0;
-  const activeInvestments = investments?.filter(i => i.status === "active").reduce((s, i) => s + Number(i.amount), 0) ?? 0;
-  const totalBonuses = transactions?.filter(t => t.type === "bonus").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
-  const totalInvested = transactions?.filter(t => t.type === "investment").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
-const totalROI = transactions?.filter(t => t.type === "roi").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
-  const totalPrincipalReturns = transactions?.filter(t => t.type === "principal_return").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
-  const balance = totalDeposits + totalBonuses + totalROI + totalPrincipalReturns - totalWithdrawals - totalInvested;
+  const { balance, activeInvestments, totalROI, totalDeposits, totalWithdrawals } = useBalance(user?.id);
 
   const stats = [
     { label: "Balance", value: `$${balance.toLocaleString()}`, icon: DollarSign, color: "text-primary" },
