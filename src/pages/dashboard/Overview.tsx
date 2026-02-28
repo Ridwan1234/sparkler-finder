@@ -19,6 +19,8 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianG
 export default function Overview() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [chartPeriod, setChartPeriod] = useState<"7d" | "30d" | "90d">("30d");
+  const [chartCoin, setChartCoin] = useState<"BTC" | "ETH" | "BNB">("BTC");
   const {
     balance, activeInvestments, totalROI, totalDeposits,
     totalWithdrawals, totalBonuses, pendingWithdrawals, totalPrincipalReturns
