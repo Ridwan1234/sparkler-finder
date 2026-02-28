@@ -14,11 +14,18 @@ export default function AdminWithdrawals() {
   const { data: withdrawals } = useQuery({
     queryKey: ["admin_withdrawals"],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data: wds } = await supabase
         .from("withdrawals")
-        .select("*, profiles!inner(full_name, user_id)")
+        .select("*")
         .order("created_at", { ascending: false });
-      return data ?? [];
+      if (!wds?.length) return [];
+      const userIds = [...new Set(wds.map(w => w.user_id))];
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name")
+        .in("user_id", userIds);
+      const profileMap = Object.fromEntries((profiles ?? []).map(p => [p.user_id, p.full_name]));
+      return wds.map(w => ({ ...w, user_name: profileMap[w.user_id] || "Unknown" }));
     },
   });
 
@@ -66,7 +73,7 @@ export default function AdminWithdrawals() {
                     {format(new Date(w.created_at), "MMM d, yyyy")}
                   </TableCell>
                   <TableCell className="text-section-dark-foreground">
-                    {w.profiles?.full_name || "Unknown"}
+                    {w.user_name}
                   </TableCell>
                   <TableCell className="text-section-dark-foreground font-medium">
                     ${Number(w.amount).toLocaleString()}

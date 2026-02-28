@@ -14,11 +14,18 @@ export default function AdminDeposits() {
   const { data: deposits, isLoading } = useQuery({
     queryKey: ["admin_deposits"],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data: deps } = await supabase
         .from("deposits")
-        .select("*, profiles!inner(full_name, user_id)")
+        .select("*")
         .order("created_at", { ascending: false });
-      return data ?? [];
+      if (!deps?.length) return [];
+      const userIds = [...new Set(deps.map(d => d.user_id))];
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name")
+        .in("user_id", userIds);
+      const profileMap = Object.fromEntries((profiles ?? []).map(p => [p.user_id, p.full_name]));
+      return deps.map(d => ({ ...d, user_name: profileMap[d.user_id] || "Unknown" }));
     },
   });
 
@@ -66,7 +73,7 @@ export default function AdminDeposits() {
                     {format(new Date(d.created_at), "MMM d, yyyy")}
                   </TableCell>
                   <TableCell className="text-section-dark-foreground">
-                    {d.profiles?.full_name || "Unknown"}
+                    {d.user_name}
                   </TableCell>
                   <TableCell className="text-section-dark-foreground font-medium">
                     ${Number(d.amount).toLocaleString()}
