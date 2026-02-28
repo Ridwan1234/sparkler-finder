@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
-import { Pencil, Plus, Save, Trash2, X, AlertTriangle } from "lucide-react";
+import { Pencil, Plus, Save, Trash2, X, AlertTriangle, Wallet, Copy } from "lucide-react";
 import {
   Dialog,
   DialogContent,
