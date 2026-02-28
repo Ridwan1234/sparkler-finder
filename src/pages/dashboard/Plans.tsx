@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useBalance } from "@/hooks/useBalance";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +15,8 @@ export default function Plans() {
   const queryClient = useQueryClient();
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [amount, setAmount] = useState("");
+
+  const { balance } = useBalance(user?.id);
 
   const { data: plans, isLoading } = useQuery({
     queryKey: ["investment_plans"],
@@ -51,51 +54,6 @@ export default function Plans() {
     enabled: !!user,
   });
 
-  // Fetch balance components
-  const { data: deposits } = useQuery({
-    queryKey: ["deposits", user?.id],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("deposits")
-        .select("amount, status")
-        .eq("user_id", user!.id);
-      return data ?? [];
-    },
-    enabled: !!user,
-  });
-
-  const { data: withdrawals } = useQuery({
-    queryKey: ["withdrawals", user?.id],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("withdrawals")
-        .select("amount, status")
-        .eq("user_id", user!.id);
-      return data ?? [];
-    },
-    enabled: !!user,
-  });
-
-  const { data: transactions } = useQuery({
-    queryKey: ["transactions", user?.id],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("transactions")
-        .select("amount, type")
-        .eq("user_id", user!.id);
-      return data ?? [];
-    },
-    enabled: !!user,
-  });
-
-  const totalDeposits = deposits?.filter(d => d.status === "approved").reduce((s, d) => s + Number(d.amount), 0) ?? 0;
-  const totalWithdrawals = withdrawals?.filter(w => w.status === "approved").reduce((s, w) => s + Number(w.amount), 0) ?? 0;
-  const totalBonuses = transactions?.filter(t => t.type === "bonus").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
-  const totalInvested = transactions?.filter(t => t.type === "investment").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
-  const totalROI = transactions?.filter(t => t.type === "roi").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
-  const totalPrincipalReturns = transactions?.filter(t => t.type === "principal_return").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
-  const balance = totalDeposits + totalBonuses + totalROI + totalPrincipalReturns - totalWithdrawals - totalInvested;
-
   const bonusPercent = bonusSetting ? Number(bonusSetting) : null;
   const showBonus = bonusPercent && !hasDeposits;
 
@@ -119,7 +77,6 @@ export default function Plans() {
       });
       if (error) throw error;
 
-      // Deduct from balance
       const { error: txError } = await supabase.from("transactions").insert({
         user_id: user!.id,
         amount,

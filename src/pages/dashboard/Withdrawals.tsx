@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useBalance } from "@/hooks/useBalance";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +17,8 @@ export default function Withdrawals() {
   const [amount, setAmount] = useState("");
   const [wallet, setWallet] = useState("");
 
+  const { balance } = useBalance(user?.id);
+
   const { data: withdrawals } = useQuery({
     queryKey: ["withdrawals", user?.id],
     queryFn: async () => {
@@ -24,33 +27,6 @@ export default function Withdrawals() {
         .select("*")
         .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
-      return data ?? [];
-    },
-    enabled: !!user,
-  });
-
-  const { data: deposits } = useQuery({
-    queryKey: ["deposits", user?.id],
-    queryFn: async () => {
-      const { data } = await supabase.from("deposits").select("amount, status").eq("user_id", user!.id);
-      return data ?? [];
-    },
-    enabled: !!user,
-  });
-
-  const { data: allWithdrawals } = useQuery({
-    queryKey: ["withdrawals-balance", user?.id],
-    queryFn: async () => {
-      const { data } = await supabase.from("withdrawals").select("amount, status").eq("user_id", user!.id);
-      return data ?? [];
-    },
-    enabled: !!user,
-  });
-
-  const { data: transactions } = useQuery({
-    queryKey: ["transactions", user?.id],
-    queryFn: async () => {
-      const { data } = await supabase.from("transactions").select("amount, type").eq("user_id", user!.id);
       return data ?? [];
     },
     enabled: !!user,
@@ -73,15 +49,6 @@ export default function Withdrawals() {
     },
   });
 
-  const totalDeposits = deposits?.filter(d => d.status === "approved").reduce((s, d) => s + Number(d.amount), 0) ?? 0;
-  const totalWithdrawals = allWithdrawals?.filter(w => w.status === "approved").reduce((s, w) => s + Number(w.amount), 0) ?? 0;
-  const totalBonuses = transactions?.filter(t => t.type === "bonus").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
-  const totalROI = transactions?.filter(t => t.type === "roi").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
-  const totalPrincipalReturns = transactions?.filter(t => t.type === "principal_return").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
-  const totalInvested = transactions?.filter(t => t.type === "investment").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
-  const pendingWithdrawals = allWithdrawals?.filter(w => w.status === "pending").reduce((s, w) => s + Number(w.amount), 0) ?? 0;
-  const balance = totalDeposits + totalBonuses + totalROI + totalPrincipalReturns - totalWithdrawals - totalInvested - pendingWithdrawals;
-
   const hasInvestment = (investments?.length ?? 0) > 0;
   const minWithdrawal = plans?.length ? Math.min(...plans.map(p => Number(p.min_amount))) : 0;
 
@@ -103,7 +70,6 @@ export default function Withdrawals() {
     onSuccess: () => {
       toast.success("Withdrawal request submitted!");
       queryClient.invalidateQueries({ queryKey: ["withdrawals"] });
-      queryClient.invalidateQueries({ queryKey: ["withdrawals-balance"] });
       setAmount("");
       setWallet("");
     },
