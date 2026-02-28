@@ -70,7 +70,9 @@ export default function AdminWithdrawals() {
               {withdrawals?.map((w: any) => (
                 <TableRow key={w.id} className="border-border/10">
                   <TableCell className="text-section-dark-foreground">
-                    {format(new Date(w.created_at), "MMM d, yyyy")}
+                    {w.created_at && !isNaN(new Date(w.created_at).getTime())
+                      ? format(new Date(w.created_at), "MMM d, yyyy")
+                      : "—"}
                   </TableCell>
                   <TableCell className="text-section-dark-foreground">
                     {w.user_name}
