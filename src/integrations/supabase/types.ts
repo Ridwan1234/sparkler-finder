@@ -51,6 +51,7 @@ export type Database = {
           max_amount: number
           min_amount: number
           name: string
+          roi_frequency_days: number
           roi_percentage: number
         }
         Insert: {
@@ -62,6 +63,7 @@ export type Database = {
           max_amount: number
           min_amount: number
           name: string
+          roi_frequency_days?: number
           roi_percentage: number
         }
         Update: {
@@ -73,6 +75,7 @@ export type Database = {
           max_amount?: number
           min_amount?: number
           name?: string
+          roi_frequency_days?: number
           roi_percentage?: number
         }
         Relationships: []

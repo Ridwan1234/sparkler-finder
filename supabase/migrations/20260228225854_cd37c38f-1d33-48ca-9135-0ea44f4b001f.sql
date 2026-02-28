@@ -1,0 +1,1 @@
+ALTER TABLE public.investment_plans ADD COLUMN roi_frequency_days integer NOT NULL DEFAULT 1;
