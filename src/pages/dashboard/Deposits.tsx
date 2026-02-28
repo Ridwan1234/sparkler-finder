@@ -125,6 +125,7 @@ export default function Deposits() {
               </p>
             );
           })()}
+          <Input
             type="number"
             placeholder="Amount (USD)"
             value={amount}
