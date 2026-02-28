@@ -236,12 +236,11 @@ export default function AdminSettings() {
                     <Button
                       variant="destructive"
                       size="sm"
-                      onClick={() => deletePlan.mutate(plan.id)}
+                      onClick={() => setDeleteConfirm(plan)}
                       disabled={deletePlan.isPending}
                     >
                       <Trash2 className="h-3 w-3 mr-1" /> Delete
                     </Button>
-                  </div>
                 </CardContent>
               </Card>
             ))}
