@@ -96,7 +96,7 @@ const PlansSection = () => {
                     <span className="text-4xl font-display font-bold text-primary">
                       {Number(plan.roi_percentage)}%
                     </span>
-                    <span className="text-section-dark-foreground/50 text-sm">/ Weekly</span>
+                    <span className="text-section-dark-foreground/50 text-sm">/ {plan.roi_frequency_days === 7 ? "Week" : plan.roi_frequency_days === 1 || !plan.roi_frequency_days ? "Day" : `${plan.roi_frequency_days} Days`}</span>
                   </div>
                   <div className="space-y-2 text-sm text-section-dark-foreground/60 mb-6">
                     <p>Min: <span className="text-section-dark-foreground font-medium">${Number(plan.min_amount).toLocaleString()}</span></p>
