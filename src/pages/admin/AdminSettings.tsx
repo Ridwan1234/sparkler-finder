@@ -35,6 +35,7 @@ type Plan = {
   max_amount: number;
   roi_percentage: number;
   duration_days: number;
+  roi_frequency_days: number;
   features: string[];
   is_popular: boolean;
 };
@@ -47,6 +48,7 @@ const emptyPlan: PlanForm = {
   max_amount: 0,
   roi_percentage: 0,
   duration_days: 0,
+  roi_frequency_days: 1,
   features: [],
   is_popular: false,
 };
@@ -113,6 +115,7 @@ export default function AdminSettings() {
         max_amount: plan.max_amount,
         roi_percentage: plan.roi_percentage,
         duration_days: plan.duration_days,
+        roi_frequency_days: plan.roi_frequency_days,
         features: plan.features,
         is_popular: plan.is_popular,
       };
@@ -307,7 +310,7 @@ export default function AdminSettings() {
                   <CardTitle className="text-section-dark-foreground">{plan.name}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm text-muted-foreground">
-                  <p>ROI: {plan.roi_percentage}% &middot; {plan.duration_days} days</p>
+                  <p>ROI: {plan.roi_percentage}% &middot; {plan.duration_days} days &middot; Every {plan.roi_frequency_days}d</p>
                   <p>${plan.min_amount.toLocaleString()} – ${plan.max_amount.toLocaleString()}</p>
                   <ul className="list-disc list-inside text-xs">
                     {plan.features.map((f, i) => <li key={i}>{f}</li>)}
@@ -408,6 +411,13 @@ export default function AdminSettings() {
                     <Input type="number" value={editingPlan.duration_days} onChange={(e) => setEditingPlan({ ...editingPlan, duration_days: +e.target.value })} className="bg-background/5 border-border/20" />
                   </div>
                 </div>
+              </div>
+
+              {/* ROI Frequency */}
+              <div className="space-y-1">
+                <Label className="text-sm font-medium text-muted-foreground">ROI Payout Frequency (days)</Label>
+                <Input type="number" min={1} value={editingPlan.roi_frequency_days} onChange={(e) => setEditingPlan({ ...editingPlan, roi_frequency_days: Math.max(1, +e.target.value) })} className="bg-background/5 border-border/20 max-w-xs" />
+                <p className="text-xs text-muted-foreground/70">1 = daily, 7 = weekly, etc.</p>
               </div>
 
               <Separator className="border-border/10" />

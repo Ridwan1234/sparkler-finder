@@ -29,16 +29,17 @@ Deno.serve(async (_req) => {
 
     const startedAt = new Date(inv.started_at);
     const expiresAt = new Date(inv.expires_at);
+    const frequencyDays = plan.roi_frequency_days ?? 1;
 
-    // Calculate daily ROI: total ROI spread over duration_days
-    const dailyROI = Number((inv.amount * plan.roi_percentage / 100 / plan.duration_days).toFixed(2));
+    // Total number of payout periods in the plan
+    const totalPeriods = Math.floor(plan.duration_days / frequencyDays);
+    // ROI per payout period
+    const periodROI = Number((inv.amount * plan.roi_percentage / 100 / totalPeriods).toFixed(2));
 
-    // How many days have elapsed since investment started (capped at duration)
+    // How many periods have elapsed since investment started (capped)
     const msElapsed = now.getTime() - startedAt.getTime();
-    const daysElapsed = Math.min(
-      Math.floor(msElapsed / (24 * 60 * 60 * 1000)),
-      plan.duration_days
-    );
+    const daysElapsed = Math.floor(msElapsed / (24 * 60 * 60 * 1000));
+    const periodsElapsed = Math.min(Math.floor(daysElapsed / frequencyDays), totalPeriods);
 
     // Count how many ROI transactions already exist for this investment
     const { count: existingPayouts } = await supabase
@@ -47,18 +48,19 @@ Deno.serve(async (_req) => {
       .eq("reference_id", inv.id)
       .eq("type", "roi");
 
-    const paidDays = existingPayouts ?? 0;
-    const owedDays = daysElapsed - paidDays;
+    const paidPeriods = existingPayouts ?? 0;
+    const owedPeriods = periodsElapsed - paidPeriods;
 
-    // Credit any missing daily ROI payouts
-    if (owedDays > 0) {
+    // Credit any missing ROI payouts
+    if (owedPeriods > 0) {
       const inserts = [];
-      for (let d = 0; d < owedDays; d++) {
+      for (let d = 0; d < owedPeriods; d++) {
+        const periodNum = paidPeriods + d + 1;
         inserts.push({
           user_id: inv.user_id,
-          amount: dailyROI,
+          amount: periodROI,
           type: "roi",
-          description: `Daily ROI from ${plan.name} plan (day ${paidDays + d + 1}/${plan.duration_days})`,
+          description: `ROI from ${plan.name} plan (period ${periodNum}/${totalPeriods})`,
           reference_id: inv.id,
         });
       }
@@ -68,11 +70,24 @@ Deno.serve(async (_req) => {
         console.error(`Failed to insert ROI for investment ${inv.id}:`, txError);
         continue;
       }
-      roiPaid += owedDays;
+      roiPaid += owedPeriods;
     }
 
-    // Mark as completed if expired
+    // Mark as completed and return principal if expired
     if (now >= expiresAt) {
+      // Return the invested principal back to the user's balance
+      const { error: principalError } = await supabase.from("transactions").insert({
+        user_id: inv.user_id,
+        amount: inv.amount,
+        type: "principal_return",
+        description: `Principal returned from ${plan.name} plan`,
+        reference_id: inv.id,
+      });
+
+      if (principalError) {
+        console.error(`Failed to return principal for investment ${inv.id}:`, principalError);
+      }
+
       const { error: updateError } = await supabase
         .from("investments")
         .update({ status: "completed" })
@@ -88,7 +103,7 @@ Deno.serve(async (_req) => {
 
   return new Response(
     JSON.stringify({
-      message: `Paid ${roiPaid} daily ROI(s), completed ${completed} investment(s)`,
+      message: `Paid ${roiPaid} ROI payout(s), completed ${completed} investment(s)`,
       roiPaid,
       completed,
     })
