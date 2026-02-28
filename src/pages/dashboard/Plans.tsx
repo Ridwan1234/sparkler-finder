@@ -92,7 +92,8 @@ export default function Plans() {
   const totalWithdrawals = withdrawals?.filter(w => w.status === "approved").reduce((s, w) => s + Number(w.amount), 0) ?? 0;
   const totalBonuses = transactions?.filter(t => t.type === "bonus").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
   const totalInvested = transactions?.filter(t => t.type === "investment").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
-  const balance = totalDeposits + totalBonuses - totalWithdrawals - totalInvested;
+  const totalROI = transactions?.filter(t => t.type === "roi").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
+  const balance = totalDeposits + totalBonuses + totalROI - totalWithdrawals - totalInvested;
 
   const bonusPercent = bonusSetting ? Number(bonusSetting) : null;
   const showBonus = bonusPercent && !hasDeposits;
