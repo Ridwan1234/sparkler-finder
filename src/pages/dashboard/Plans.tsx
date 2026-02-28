@@ -51,6 +51,49 @@ export default function Plans() {
     enabled: !!user,
   });
 
+  // Fetch balance components
+  const { data: deposits } = useQuery({
+    queryKey: ["deposits", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("deposits")
+        .select("amount, status")
+        .eq("user_id", user!.id);
+      return data ?? [];
+    },
+    enabled: !!user,
+  });
+
+  const { data: withdrawals } = useQuery({
+    queryKey: ["withdrawals", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("withdrawals")
+        .select("amount, status")
+        .eq("user_id", user!.id);
+      return data ?? [];
+    },
+    enabled: !!user,
+  });
+
+  const { data: transactions } = useQuery({
+    queryKey: ["transactions", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("transactions")
+        .select("amount, type")
+        .eq("user_id", user!.id);
+      return data ?? [];
+    },
+    enabled: !!user,
+  });
+
+  const totalDeposits = deposits?.filter(d => d.status === "approved").reduce((s, d) => s + Number(d.amount), 0) ?? 0;
+  const totalWithdrawals = withdrawals?.filter(w => w.status === "approved").reduce((s, w) => s + Number(w.amount), 0) ?? 0;
+  const totalBonuses = transactions?.filter(t => t.type === "bonus").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
+  const totalInvested = transactions?.filter(t => t.type === "investment").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
+  const balance = totalDeposits + totalBonuses - totalWithdrawals - totalInvested;
+
   const bonusPercent = bonusSetting ? Number(bonusSetting) : null;
   const showBonus = bonusPercent && !hasDeposits;
 
@@ -60,6 +103,8 @@ export default function Plans() {
       if (!plan) throw new Error("Plan not found");
       if (amount < Number(plan.min_amount) || amount > Number(plan.max_amount))
         throw new Error(`Amount must be between $${plan.min_amount} and $${plan.max_amount}`);
+      if (amount > balance)
+        throw new Error(`Insufficient balance. Your available balance is $${balance.toLocaleString()}`);
 
       const expiresAt = new Date();
       expiresAt.setDate(expiresAt.getDate() + plan.duration_days);
@@ -71,10 +116,20 @@ export default function Plans() {
         expires_at: expiresAt.toISOString(),
       });
       if (error) throw error;
+
+      // Deduct from balance
+      const { error: txError } = await supabase.from("transactions").insert({
+        user_id: user!.id,
+        amount,
+        type: "investment",
+        description: `Investment in ${plan.name} plan`,
+      });
+      if (txError) throw txError;
     },
     onSuccess: () => {
       toast.success("Investment created successfully!");
       queryClient.invalidateQueries({ queryKey: ["investments"] });
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
       setSelectedPlan(null);
       setAmount("");
     },
