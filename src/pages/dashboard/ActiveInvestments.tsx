@@ -32,6 +32,8 @@ function formatTimeLeft(ms: number) {
 export default function ActiveInvestments() {
   const { user } = useAuth();
   const now = useCountdown();
+  const queryClient = useQueryClient();
+  const prevCompletedIds = useRef<Set<string>>(new Set());
 
   const { data: investments, isLoading } = useQuery({
     queryKey: ["active_investments", user?.id],
@@ -44,10 +46,32 @@ export default function ActiveInvestments() {
       return data ?? [];
     },
     enabled: !!user,
+    refetchInterval: 30000, // poll every 30s to catch new completions
   });
 
   const active = investments?.filter((i) => i.status === "active") ?? [];
   const completed = investments?.filter((i) => i.status === "completed") ?? [];
+
+  // Notify when investments newly complete
+  useEffect(() => {
+    if (!completed.length) return;
+    const currentIds = new Set(completed.map((c) => c.id));
+    if (prevCompletedIds.current.size > 0) {
+      for (const inv of completed) {
+        if (!prevCompletedIds.current.has(inv.id)) {
+          const plan = inv.investment_plans;
+          const roi = plan ? Number((inv.amount * plan.roi_percentage / 100).toFixed(2)) : 0;
+          toast.success(`🎉 Investment completed!`, {
+            description: `Your ${plan?.name ?? ""} investment of $${Number(inv.amount).toLocaleString()} earned $${roi.toLocaleString()} ROI.`,
+            duration: 8000,
+          });
+          queryClient.invalidateQueries({ queryKey: ["transactions"] });
+          queryClient.invalidateQueries({ queryKey: ["deposits"] });
+        }
+      }
+    }
+    prevCompletedIds.current = currentIds;
+  }, [completed, queryClient]);
 
   if (isLoading) return <div className="text-section-dark-foreground">Loading investments...</div>;
 
