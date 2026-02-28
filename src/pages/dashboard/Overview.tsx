@@ -103,7 +103,7 @@ export default function Overview() {
       </div>
 
       {/* Stat Cards */}
-      <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {stats.map((s) => (
           <Card key={s.label} className="bg-card/5 border-border/10">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
