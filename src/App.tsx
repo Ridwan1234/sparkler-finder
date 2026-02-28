@@ -10,7 +10,14 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
-import Dashboard from "./pages/Dashboard";
+import DashboardLayout from "./components/dashboard/DashboardLayout";
+import Overview from "./pages/dashboard/Overview";
+import Plans from "./pages/dashboard/Plans";
+import Deposits from "./pages/dashboard/Deposits";
+import Withdrawals from "./pages/dashboard/Withdrawals";
+import Transactions from "./pages/dashboard/Transactions";
+import Profile from "./pages/dashboard/Profile";
+import Referrals from "./pages/dashboard/Referrals";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,7 +35,15 @@ const App = () => (
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
+              <Route index element={<Overview />} />
+              <Route path="plans" element={<Plans />} />
+              <Route path="deposits" element={<Deposits />} />
+              <Route path="withdrawals" element={<Withdrawals />} />
+              <Route path="transactions" element={<Transactions />} />
+              <Route path="profile" element={<Profile />} />
+              <Route path="referrals" element={<Referrals />} />
+            </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
