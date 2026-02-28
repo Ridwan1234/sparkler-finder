@@ -62,7 +62,7 @@ export default function Overview() {
   const totalInvested = transactions?.filter(t => t.type === "investment").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
 const totalROI = transactions?.filter(t => t.type === "roi").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
   const totalPrincipalReturns = transactions?.filter(t => t.type === "principal_return").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
-  const balance = totalDeposits + totalBonuses + totalROI - totalWithdrawals - totalInvested;
+  const balance = totalDeposits + totalBonuses + totalROI + totalPrincipalReturns - totalWithdrawals - totalInvested;
 
   const stats = [
     { label: "Balance", value: `$${balance.toLocaleString()}`, icon: DollarSign, color: "text-primary" },
