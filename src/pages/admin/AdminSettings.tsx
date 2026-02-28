@@ -245,7 +245,44 @@ export default function AdminSettings() {
 
       <Separator className="border-border/10" />
 
-      {/* Investment Plans */}
+      {/* Wallet Addresses */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="font-display text-xl font-bold text-section-dark-foreground">Deposit Wallet Addresses</h2>
+          <Button size="sm" onClick={() => { setEditingWallet({ label: "", address: "", network: "BTC", is_active: true }); setWalletDialogOpen(true); }}>
+            <Plus className="h-4 w-4 mr-1" /> Add Wallet
+          </Button>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {wallets?.map((w) => (
+            <Card key={w.id} className={`bg-card/5 border-border/10 relative ${!w.is_active ? 'opacity-50' : ''}`}>
+              <CardContent className="pt-4 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Wallet className="h-4 w-4 text-primary" />
+                    <span className="font-medium text-section-dark-foreground">{w.label}</span>
+                  </div>
+                  <Badge variant="outline" className="text-xs">{w.network}</Badge>
+                </div>
+                <p className="text-xs font-mono text-muted-foreground break-all">{w.address}</p>
+                {!w.is_active && <Badge variant="secondary" className="text-xs">Inactive</Badge>}
+                <div className="flex gap-2 pt-1">
+                  <Button variant="outline" size="sm" onClick={() => { setEditingWallet({ id: w.id, label: w.label, address: w.address, network: w.network, is_active: w.is_active }); setWalletDialogOpen(true); }}>
+                    <Pencil className="h-3 w-3 mr-1" /> Edit
+                  </Button>
+                  <Button variant="destructive" size="sm" onClick={() => setDeleteWalletConfirm({ id: w.id, label: w.label })}>
+                    <Trash2 className="h-3 w-3 mr-1" /> Delete
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+          {!wallets?.length && <p className="text-muted-foreground text-sm">No wallet addresses configured.</p>}
+        </div>
+      </div>
+
+      <Separator className="border-border/10" />
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="font-display text-xl font-bold text-section-dark-foreground">Investment Plans</h2>
