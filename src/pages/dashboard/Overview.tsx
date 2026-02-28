@@ -6,16 +6,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   DollarSign, TrendingUp, ArrowDownToLine, ArrowUpFromLine,
   Clock, ArrowRight, Gift, Wallet, Activity
 } from "lucide-react";
-import { format } from "date-fns";
+import { format, subDays } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import { useState, useMemo } from "react";
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
 export default function Overview() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [chartPeriod, setChartPeriod] = useState<"7d" | "30d" | "90d">("30d");
+  const [chartCoin, setChartCoin] = useState<"BTC" | "ETH" | "BNB">("BTC");
   const {
     balance, activeInvestments, totalROI, totalDeposits,
     totalWithdrawals, totalBonuses, pendingWithdrawals, totalPrincipalReturns
@@ -65,6 +70,29 @@ export default function Overview() {
     },
     enabled: !!user,
   });
+
+  // Generate simulated crypto price data
+  const chartData = useMemo(() => {
+    const days = chartPeriod === "7d" ? 7 : chartPeriod === "30d" ? 30 : 90;
+    const basePrices: Record<string, { base: number; vol: number }> = {
+      BTC: { base: 67400, vol: 2200 },
+      ETH: { base: 3520, vol: 180 },
+      BNB: { base: 605, vol: 25 },
+    };
+    const { base, vol } = basePrices[chartCoin];
+    return Array.from({ length: days }, (_, i) => {
+      const seed = chartCoin.charCodeAt(0) + days;
+      const noise = Math.sin(seed + i * 0.7) * vol + Math.cos(seed * 0.3 + i * 1.1) * vol * 0.5;
+      return {
+        date: format(subDays(new Date(), days - 1 - i), "MMM d"),
+        price: Math.round(base + noise),
+      };
+    });
+  }, [chartCoin, chartPeriod]);
+
+  const priceChange = chartData.length >= 2 ? chartData[chartData.length - 1].price - chartData[0].price : 0;
+  const priceChangePercent = chartData.length >= 2 ? ((priceChange / chartData[0].price) * 100).toFixed(2) : "0";
+
 
   const stats = [
     { label: "Available Balance", value: `$${balance.toLocaleString()}`, icon: DollarSign, color: "text-primary", bg: "bg-primary/10" },
@@ -136,6 +164,85 @@ export default function Overview() {
           )}
         </div>
       )}
+
+      {/* Crypto Price Chart */}
+      <Card className="bg-card/5 border-border/10">
+        <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2">
+          <div>
+            <CardTitle className="text-section-dark-foreground text-base flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-primary" /> Market Overview
+            </CardTitle>
+            <p className="text-xs text-muted-foreground mt-1">
+              {chartCoin}/USD
+              <span className={`ml-2 font-semibold ${priceChange >= 0 ? "text-primary" : "text-destructive"}`}>
+                {priceChange >= 0 ? "+" : ""}{priceChangePercent}%
+              </span>
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Tabs value={chartCoin} onValueChange={(v) => setChartCoin(v as "BTC" | "ETH" | "BNB")}>
+              <TabsList className="h-8 bg-background/10">
+                <TabsTrigger value="BTC" className="text-xs px-2.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">BTC</TabsTrigger>
+                <TabsTrigger value="ETH" className="text-xs px-2.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">ETH</TabsTrigger>
+                <TabsTrigger value="BNB" className="text-xs px-2.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">BNB</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            <Tabs value={chartPeriod} onValueChange={(v) => setChartPeriod(v as "7d" | "30d" | "90d")}>
+              <TabsList className="h-8 bg-background/10">
+                <TabsTrigger value="7d" className="text-xs px-2.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">7D</TabsTrigger>
+                <TabsTrigger value="30d" className="text-xs px-2.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">30D</TabsTrigger>
+                <TabsTrigger value="90d" className="text-xs px-2.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">90D</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData} margin={{ top: 5, right: 5, left: -10, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="hsl(152, 87%, 30%)" stopOpacity={0.3} />
+                    <stop offset="100%" stopColor="hsl(152, 87%, 30%)" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(155, 20%, 18%)" vertical={false} />
+                <XAxis
+                  dataKey="date"
+                  tick={{ fontSize: 11, fill: "hsl(150, 10%, 55%)" }}
+                  axisLine={false}
+                  tickLine={false}
+                  interval={chartPeriod === "7d" ? 0 : chartPeriod === "30d" ? 4 : 10}
+                />
+                <YAxis
+                  tick={{ fontSize: 11, fill: "hsl(150, 10%, 55%)" }}
+                  axisLine={false}
+                  tickLine={false}
+                  tickFormatter={(v) => `$${(v / 1000).toFixed(1)}k`}
+                  domain={["auto", "auto"]}
+                />
+                <Tooltip
+                  contentStyle={{
+                    background: "hsl(155, 25%, 9%)",
+                    border: "1px solid hsl(155, 20%, 18%)",
+                    borderRadius: "8px",
+                    fontSize: "12px",
+                    color: "hsl(150, 10%, 90%)",
+                  }}
+                  formatter={(value: number) => [`$${value.toLocaleString()}`, chartCoin]}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="price"
+                  stroke="hsl(152, 87%, 30%)"
+                  strokeWidth={2}
+                  fill="url(#priceGradient)"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Two-column: Active Investments + Recent Transactions */}
       <div className="grid gap-6 lg:grid-cols-2">
