@@ -3,6 +3,7 @@ import {
   ArrowDownToLine,
   ArrowUpFromLine,
   Users,
+  Settings,
   LogOut,
   ArrowLeft,
 } from "lucide-react";
@@ -28,6 +29,7 @@ const items = [
   { title: "Deposits", url: "/admin/deposits", icon: ArrowDownToLine },
   { title: "Withdrawals", url: "/admin/withdrawals", icon: ArrowUpFromLine },
   { title: "Users", url: "/admin/users", icon: Users },
+  { title: "Settings", url: "/admin/settings", icon: Settings },
 ];
 
 export function AdminSidebar() {
