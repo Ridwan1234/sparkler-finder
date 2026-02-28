@@ -66,6 +66,7 @@ export default function Overview() {
   const stats = [
     { label: "Balance", value: `$${balance.toLocaleString()}`, icon: DollarSign, color: "text-primary" },
     { label: "Active Investments", value: `$${activeInvestments.toLocaleString()}`, icon: TrendingUp, color: "text-gold" },
+    { label: "Total ROI Earned", value: `$${totalROI.toLocaleString()}`, icon: TrendingUp, color: "text-primary" },
     { label: "Total Deposits", value: `$${totalDeposits.toLocaleString()}`, icon: ArrowDownToLine, color: "text-primary" },
     { label: "Total Withdrawals", value: `$${totalWithdrawals.toLocaleString()}`, icon: ArrowUpFromLine, color: "text-destructive" },
   ];
