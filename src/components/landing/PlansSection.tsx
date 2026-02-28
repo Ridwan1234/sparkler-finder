@@ -102,6 +102,7 @@ const PlansSection = () => {
                     <p>Min: <span className="text-section-dark-foreground font-medium">${Number(plan.min_amount).toLocaleString()}</span></p>
                     <p>Max: <span className="text-section-dark-foreground font-medium">${Number(plan.max_amount).toLocaleString()}</span></p>
                     <p>Duration: <span className="text-section-dark-foreground font-medium">{plan.duration_days} Days</span></p>
+                    <p>Payouts: <span className="text-section-dark-foreground font-medium">{plan.roi_frequency_days === 7 ? "Weekly" : plan.roi_frequency_days === 1 || !plan.roi_frequency_days ? "Daily" : `Every ${plan.roi_frequency_days} days`}</span></p>
                   </div>
                   <ul className="space-y-2 mb-6">
                     {features.map((f) => (
