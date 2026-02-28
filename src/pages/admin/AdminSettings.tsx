@@ -455,6 +455,71 @@ export default function AdminSettings() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Wallet Dialog */}
+      <Dialog open={walletDialogOpen} onOpenChange={setWalletDialogOpen}>
+        <DialogContent className="bg-card border-border/20 text-section-dark-foreground sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{editingWallet.id ? "Edit Wallet" : "New Wallet Address"}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-1.5">
+              <Label className="text-sm font-medium text-muted-foreground">Label</Label>
+              <Input value={editingWallet.label} onChange={(e) => setEditingWallet({ ...editingWallet, label: e.target.value })} placeholder="e.g. Bitcoin Main" className="bg-background/5 border-border/20" />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-sm font-medium text-muted-foreground">Network</Label>
+              <Input value={editingWallet.network} onChange={(e) => setEditingWallet({ ...editingWallet, network: e.target.value })} placeholder="e.g. BTC, ETH, USDT-TRC20" className="bg-background/5 border-border/20" />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-sm font-medium text-muted-foreground">Wallet Address</Label>
+              <Input value={editingWallet.address} onChange={(e) => setEditingWallet({ ...editingWallet, address: e.target.value })} placeholder="Paste wallet address" className="bg-background/5 border-border/20 font-mono text-xs" />
+            </div>
+            <div className="flex items-center justify-between rounded-lg border border-border/10 p-3">
+              <div>
+                <Label className="text-sm font-medium">Active</Label>
+                <p className="text-xs text-muted-foreground">Only active wallets are shown to users</p>
+              </div>
+              <Switch checked={editingWallet.is_active} onCheckedChange={(v) => setEditingWallet({ ...editingWallet, is_active: v })} />
+            </div>
+          </div>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setWalletDialogOpen(false)}>Cancel</Button>
+            <Button onClick={() => saveWallet.mutate(editingWallet)} disabled={saveWallet.isPending}>
+              {saveWallet.isPending ? "Saving..." : "Save Wallet"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Wallet Confirmation */}
+      <AlertDialog open={!!deleteWalletConfirm} onOpenChange={(open) => !open && setDeleteWalletConfirm(null)}>
+        <AlertDialogContent className="bg-card border-border/20">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-section-dark-foreground">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              Delete Wallet
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete <strong>{deleteWalletConfirm?.label}</strong>? Users will no longer see this address.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => {
+                if (deleteWalletConfirm) {
+                  deleteWallet.mutate(deleteWalletConfirm.id);
+                  setDeleteWalletConfirm(null);
+                }
+              }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
