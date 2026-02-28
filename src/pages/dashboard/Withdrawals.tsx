@@ -29,13 +29,73 @@ export default function Withdrawals() {
     enabled: !!user,
   });
 
+  const { data: deposits } = useQuery({
+    queryKey: ["deposits", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from("deposits").select("amount, status").eq("user_id", user!.id);
+      return data ?? [];
+    },
+    enabled: !!user,
+  });
+
+  const { data: allWithdrawals } = useQuery({
+    queryKey: ["withdrawals-balance", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from("withdrawals").select("amount, status").eq("user_id", user!.id);
+      return data ?? [];
+    },
+    enabled: !!user,
+  });
+
+  const { data: transactions } = useQuery({
+    queryKey: ["transactions", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from("transactions").select("amount, type").eq("user_id", user!.id);
+      return data ?? [];
+    },
+    enabled: !!user,
+  });
+
+  const { data: investments } = useQuery({
+    queryKey: ["investments", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from("investments").select("id, status").eq("user_id", user!.id);
+      return data ?? [];
+    },
+    enabled: !!user,
+  });
+
+  const { data: plans } = useQuery({
+    queryKey: ["investment_plans"],
+    queryFn: async () => {
+      const { data } = await supabase.from("investment_plans").select("min_amount");
+      return data ?? [];
+    },
+  });
+
+  const totalDeposits = deposits?.filter(d => d.status === "approved").reduce((s, d) => s + Number(d.amount), 0) ?? 0;
+  const totalWithdrawals = allWithdrawals?.filter(w => w.status === "approved").reduce((s, w) => s + Number(w.amount), 0) ?? 0;
+  const totalBonuses = transactions?.filter(t => t.type === "bonus").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
+  const totalROI = transactions?.filter(t => t.type === "roi").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
+  const totalPrincipalReturns = transactions?.filter(t => t.type === "principal_return").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
+  const totalInvested = transactions?.filter(t => t.type === "investment").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
+  const pendingWithdrawals = allWithdrawals?.filter(w => w.status === "pending").reduce((s, w) => s + Number(w.amount), 0) ?? 0;
+  const balance = totalDeposits + totalBonuses + totalROI + totalPrincipalReturns - totalWithdrawals - totalInvested - pendingWithdrawals;
+
+  const hasInvestment = (investments?.length ?? 0) > 0;
+  const minWithdrawal = plans?.length ? Math.min(...plans.map(p => Number(p.min_amount))) : 0;
+
   const create = useMutation({
     mutationFn: async () => {
-      if (!amount || Number(amount) <= 0) throw new Error("Enter a valid amount");
+      const amt = Number(amount);
+      if (!amount || amt <= 0) throw new Error("Enter a valid amount");
       if (!wallet.trim()) throw new Error("Enter wallet address");
+      if (!hasInvestment) throw new Error("You must have at least one investment to withdraw");
+      if (minWithdrawal > 0 && amt < minWithdrawal) throw new Error(`Minimum withdrawal is $${minWithdrawal.toLocaleString()}`);
+      if (amt > balance) throw new Error(`Insufficient balance. Available: $${balance.toLocaleString()}`);
       const { error } = await supabase.from("withdrawals").insert({
         user_id: user!.id,
-        amount: Number(amount),
+        amount: amt,
         wallet_address: wallet.trim(),
       });
       if (error) throw error;
@@ -43,6 +103,7 @@ export default function Withdrawals() {
     onSuccess: () => {
       toast.success("Withdrawal request submitted!");
       queryClient.invalidateQueries({ queryKey: ["withdrawals"] });
+      queryClient.invalidateQueries({ queryKey: ["withdrawals-balance"] });
       setAmount("");
       setWallet("");
     },
@@ -64,20 +125,29 @@ export default function Withdrawals() {
           <CardTitle className="text-section-dark-foreground text-lg">New Withdrawal</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
+          <p className="text-sm text-muted-foreground">
+            Available balance: <span className="font-semibold text-section-dark-foreground">${balance.toLocaleString()}</span>
+            {minWithdrawal > 0 && <> · Min withdrawal: <span className="font-semibold">${minWithdrawal.toLocaleString()}</span></>}
+          </p>
+          {!hasInvestment && (
+            <p className="text-sm text-destructive">You need at least one investment before you can withdraw.</p>
+          )}
           <Input
             type="number"
             placeholder="Amount (USD)"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             className="bg-background/10 border-border/20 text-section-dark-foreground"
+            disabled={!hasInvestment}
           />
           <Input
             placeholder="Crypto wallet address"
             value={wallet}
             onChange={(e) => setWallet(e.target.value)}
             className="bg-background/10 border-border/20 text-section-dark-foreground"
+            disabled={!hasInvestment}
           />
-          <Button onClick={() => create.mutate()} disabled={create.isPending}>
+          <Button onClick={() => create.mutate()} disabled={create.isPending || !hasInvestment}>
             Submit Withdrawal
           </Button>
         </CardContent>
