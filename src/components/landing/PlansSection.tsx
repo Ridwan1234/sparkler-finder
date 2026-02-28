@@ -1,52 +1,37 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Check, Star } from "lucide-react";
+import { Check, Star, Gift } from "lucide-react";
 import { Link } from "react-router-dom";
-
-const plans = [
-  {
-    name: "Standard",
-    roi: "3.5%",
-    period: "Weekly",
-    min: "$100",
-    max: "$4,999",
-    duration: "30 Days",
-    features: ["Daily Compounding", "24/7 Support", "Instant Withdrawal"],
-    popular: false,
-  },
-  {
-    name: "Silver",
-    roi: "5%",
-    period: "Weekly",
-    min: "$5,000",
-    max: "$24,999",
-    duration: "45 Days",
-    features: ["Daily Compounding", "Priority Support", "Instant Withdrawal", "Referral Bonus"],
-    popular: false,
-  },
-  {
-    name: "Golden",
-    roi: "8%",
-    period: "Weekly",
-    min: "$25,000",
-    max: "$99,999",
-    duration: "60 Days",
-    features: ["Daily Compounding", "VIP Support", "Instant Withdrawal", "Referral Bonus", "Dedicated Manager"],
-    popular: true,
-  },
-  {
-    name: "Diamond",
-    roi: "12%",
-    period: "Weekly",
-    min: "$100,000",
-    max: "Unlimited",
-    duration: "90 Days",
-    features: ["Daily Compounding", "VIP Support", "Priority Withdrawal", "Referral Bonus", "Dedicated Manager", "Custom Strategy"],
-    popular: false,
-  },
-];
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const PlansSection = () => {
+  const { data: plans, isLoading } = useQuery({
+    queryKey: ["investment_plans"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("investment_plans")
+        .select("*")
+        .order("min_amount", { ascending: true });
+      return data ?? [];
+    },
+  });
+
+  const { data: bonusSetting } = useQuery({
+    queryKey: ["site_settings", "first_deposit_bonus_percent"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("site_settings")
+        .select("value")
+        .eq("key", "first_deposit_bonus_percent")
+        .maybeSingle();
+      return data?.value ?? null;
+    },
+  });
+
+  const bonusPercent = bonusSetting ? Number(bonusSetting) : null;
+
   return (
     <section id="plans" className="py-20 lg:py-28 section-dark">
       <div className="container">
@@ -63,56 +48,82 @@ const PlansSection = () => {
           <p className="text-section-dark-foreground/60 max-w-2xl mx-auto">
             Flexible plans designed to suit every investor, from beginners to high-net-worth individuals.
           </p>
+          {bonusPercent && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="mt-6 inline-flex items-center gap-2 bg-gold/10 border border-gold/30 text-gold px-5 py-2.5 rounded-full text-sm font-semibold"
+            >
+              <Gift size={16} />
+              {bonusPercent}% First Deposit Bonus for New Investors!
+            </motion.div>
+          )}
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {plans.map((plan, i) => (
-            <motion.div
-              key={plan.name}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className={`relative rounded-2xl p-6 border transition-all ${
-                plan.popular
-                  ? "bg-primary/10 border-primary/40 shadow-lg shadow-primary/10"
-                  : "bg-section-dark-foreground/5 border-section-dark-foreground/10 hover:border-primary/20"
-              }`}
-            >
-              {plan.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold text-accent-foreground text-xs font-bold px-4 py-1 rounded-full flex items-center gap-1">
-                  <Star size={12} /> POPULAR
-                </div>
-              )}
-              <h3 className="font-display font-bold text-xl mb-1">{plan.name}</h3>
-              <div className="flex items-baseline gap-1 mb-4">
-                <span className="text-4xl font-display font-bold text-primary">{plan.roi}</span>
-                <span className="text-section-dark-foreground/50 text-sm">/ {plan.period}</span>
-              </div>
-              <div className="space-y-2 text-sm text-section-dark-foreground/60 mb-6">
-                <p>Min: <span className="text-section-dark-foreground font-medium">{plan.min}</span></p>
-                <p>Max: <span className="text-section-dark-foreground font-medium">{plan.max}</span></p>
-                <p>Duration: <span className="text-section-dark-foreground font-medium">{plan.duration}</span></p>
-              </div>
-              <ul className="space-y-2 mb-6">
-                {plan.features.map((f) => (
-                  <li key={f} className="flex items-center gap-2 text-sm text-section-dark-foreground/70">
-                    <Check size={14} className="text-primary flex-shrink-0" /> {f}
-                  </li>
-                ))}
-              </ul>
-              <Link to="/signup">
-                <Button
-                  className={`w-full ${
-                    plan.popular ? "bg-primary hover:bg-primary/90" : "bg-section-dark-foreground/10 hover:bg-primary/20 text-section-dark-foreground"
+        {isLoading ? (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[...Array(4)].map((_, i) => (
+              <Skeleton key={i} className="h-80 rounded-2xl bg-section-dark-foreground/5" />
+            ))}
+          </div>
+        ) : (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {plans?.map((plan, i) => {
+              const features: string[] = (plan as any).features ?? [];
+              const isPopular = (plan as any).is_popular ?? false;
+
+              return (
+                <motion.div
+                  key={plan.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className={`relative rounded-2xl p-6 border transition-all ${
+                    isPopular
+                      ? "bg-primary/10 border-primary/40 shadow-lg shadow-primary/10"
+                      : "bg-section-dark-foreground/5 border-section-dark-foreground/10 hover:border-primary/20"
                   }`}
                 >
-                  Invest Now
-                </Button>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
+                  {isPopular && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold text-accent-foreground text-xs font-bold px-4 py-1 rounded-full flex items-center gap-1">
+                      <Star size={12} /> POPULAR
+                    </div>
+                  )}
+                  <h3 className="font-display font-bold text-xl mb-1">{plan.name}</h3>
+                  <div className="flex items-baseline gap-1 mb-4">
+                    <span className="text-4xl font-display font-bold text-primary">
+                      {Number(plan.roi_percentage)}%
+                    </span>
+                    <span className="text-section-dark-foreground/50 text-sm">/ Weekly</span>
+                  </div>
+                  <div className="space-y-2 text-sm text-section-dark-foreground/60 mb-6">
+                    <p>Min: <span className="text-section-dark-foreground font-medium">${Number(plan.min_amount).toLocaleString()}</span></p>
+                    <p>Max: <span className="text-section-dark-foreground font-medium">${Number(plan.max_amount).toLocaleString()}</span></p>
+                    <p>Duration: <span className="text-section-dark-foreground font-medium">{plan.duration_days} Days</span></p>
+                  </div>
+                  <ul className="space-y-2 mb-6">
+                    {features.map((f) => (
+                      <li key={f} className="flex items-center gap-2 text-sm text-section-dark-foreground/70">
+                        <Check size={14} className="text-primary flex-shrink-0" /> {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link to="/signup">
+                    <Button
+                      className={`w-full ${
+                        isPopular ? "bg-primary hover:bg-primary/90" : "bg-section-dark-foreground/10 hover:bg-primary/20 text-section-dark-foreground"
+                      }`}
+                    >
+                      Invest Now
+                    </Button>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );
