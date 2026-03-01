@@ -7,15 +7,9 @@ import {
 const services = [
   { icon: TrendingUp, title: "Forex & Stocks", desc: "Trade global currencies and equities with leverage and real-time analysis." },
   { icon: Bitcoin, title: "Crypto Trading", desc: "Invest in Bitcoin, Ethereum, and 100+ altcoins with competitive spreads." },
-  { icon: Building2, title: "Real Estate", desc: "Fractional ownership in premium global properties for passive income." },
-  { icon: Landmark, title: "Loaning", desc: "Flexible peer-to-peer lending with attractive interest rates." },
   { icon: Gem, title: "NFTs", desc: "Curated NFT investments in art, gaming, and digital collectibles." },
   { icon: Cpu, title: "Mining", desc: "Cloud mining solutions for Bitcoin and other proof-of-work cryptocurrencies." },
   { icon: Globe, title: "Metaverse", desc: "Early-stage investments in virtual real estate and metaverse projects." },
-  { icon: Wallet, title: "Wealth Management", desc: "Personalized portfolio management by expert financial advisors." },
-  { icon: CircleDollarSign, title: "Gold", desc: "Digital gold investments backed by physical reserves in secure vaults." },
-  { icon: Droplets, title: "Crude Oil", desc: "Commodity trading in crude oil futures and spot markets." },
-  { icon: Wheat, title: "Agriculture", desc: "Invest in sustainable farming and agricultural commodity markets." },
   { icon: BarChart3, title: "ETFs", desc: "Diversified exchange-traded funds across multiple sectors and geographies." },
 ];
 
