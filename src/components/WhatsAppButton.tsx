@@ -1,6 +1,6 @@
 import { MessageCircle } from "lucide-react";
 
-const WHATSAPP_NUMBER = "1234567890"; // Replace with actual support number
+const WHATSAPP_NUMBER = "17735025597";
 const WHATSAPP_MESSAGE = encodeURIComponent("Hello! I need help with my account.");
 
 export default function WhatsAppButton() {
