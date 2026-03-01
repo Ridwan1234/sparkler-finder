@@ -312,6 +312,9 @@ export default function Overview() {
         </Card>
       </div>
 
+      {/* Price Alerts */}
+      <PriceAlerts />
+
       {/* Two-column: Active Investments + Recent Transactions */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Active Investments */}
