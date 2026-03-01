@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { motion } from "framer-motion";
 
 const containerVariants = {
@@ -29,6 +30,7 @@ const Signup = () => {
   const [referralCode, setReferralCode] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const { signUp } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -144,8 +146,21 @@ const Signup = () => {
               <Input id="referral" value={referralCode} onChange={(e) => setReferralCode(e.target.value)} placeholder="Enter referral code" className={inputClass} />
             </motion.div>
 
+            <motion.div variants={itemVariants} className="flex items-start gap-2">
+              <Checkbox
+                id="terms"
+                checked={agreedToTerms}
+                onCheckedChange={(checked) => setAgreedToTerms(checked === true)}
+                className="mt-0.5"
+              />
+              <Label htmlFor="terms" className="text-sm text-muted-foreground font-normal leading-snug cursor-pointer">
+                I agree to the{" "}
+                <Link to="/terms" target="_blank" className="text-primary hover:underline">Terms & Agreement</Link>
+              </Label>
+            </motion.div>
+
             <motion.div variants={itemVariants}>
-              <Button type="submit" className="w-full relative overflow-hidden group" disabled={loading}>
+              <Button type="submit" className="w-full relative overflow-hidden group" disabled={loading || !agreedToTerms}>
                 <span className="relative z-10">{loading ? "Creating account..." : "Create Account"}</span>
                 <motion.div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-primary opacity-0 group-hover:opacity-100 transition-opacity" />
               </Button>
