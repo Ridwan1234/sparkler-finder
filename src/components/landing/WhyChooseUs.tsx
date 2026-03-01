@@ -28,15 +28,20 @@ const WhyChooseUs = () => {
           {features.map((f, i) => (
             <motion.div
               key={f.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 30, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="text-center p-6"
+              transition={{ delay: i * 0.12, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: -8, transition: { duration: 0.3 } }}
+              className="text-center p-6 rounded-2xl hover:bg-card hover:shadow-lg hover:shadow-primary/5 transition-all cursor-default"
             >
-              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-5">
+              <motion.div
+                whileHover={{ scale: 1.15, rotate: -8 }}
+                transition={{ type: "spring", stiffness: 300 }}
+                className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-5"
+              >
                 <f.icon size={30} className="text-primary" />
-              </div>
+              </motion.div>
               <h3 className="font-display font-semibold text-lg mb-2">{f.title}</h3>
               <p className="text-muted-foreground text-sm">{f.desc}</p>
             </motion.div>
