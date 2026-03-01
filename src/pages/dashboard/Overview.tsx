@@ -477,6 +477,7 @@ export default function Overview() {
           </Card>
         </motion.div>
       </motion.div>
+      )}
 
       {/* Quick Actions */}
       <motion.div
