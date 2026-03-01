@@ -21,6 +21,7 @@ import {
 } from "recharts";
 import PriceAlerts from "@/components/dashboard/PriceAlerts";
 import { motion } from "framer-motion";
+import { StatCardsSkeleton, ChartSkeleton, PieSkeleton, ListCardSkeleton } from "@/components/dashboard/DashboardSkeletons";
 
 const PIE_COLORS = [
   "hsl(152, 87%, 30%)",
