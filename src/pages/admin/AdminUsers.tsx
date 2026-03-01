@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format } from "date-fns";
-import { Users, ChevronDown, ChevronUp, DollarSign, TrendingUp, Search, Filter } from "lucide-react";
+import { Users, ChevronDown, ChevronUp, DollarSign, TrendingUp, Search, Filter, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface UserProfile {
   user_id: string;
@@ -111,6 +112,31 @@ export default function AdminUsers() {
   const totalBalance = users?.reduce((s, u) => s + u.balance, 0) ?? 0;
   const totalActiveInvestments = users?.reduce((s, u) => s + u.investments.active, 0) ?? 0;
 
+  const exportCSV = () => {
+    const headers = ["Name", "Phone", "Referral Code", "Joined", "Balance", "Total Deposits", "Deposit Count", "Total Withdrawals", "Withdrawal Count", "Active Investments", "Investment Amount"];
+    const rows = filteredUsers.map((u) => [
+      u.profile.full_name || "No name",
+      u.profile.phone || "",
+      u.profile.referral_code || "",
+      format(new Date(u.profile.created_at), "yyyy-MM-dd"),
+      u.balance.toFixed(2),
+      u.deposits.total.toFixed(2),
+      u.deposits.count,
+      u.withdrawals.total.toFixed(2),
+      u.withdrawals.count,
+      u.investments.active,
+      u.investments.totalAmount.toFixed(2),
+    ]);
+    const csv = [headers, ...rows].map((r) => r.map((v) => `"${v}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `users-export-${format(new Date(), "yyyy-MM-dd")}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div>
       <h1 className="font-display text-2xl font-bold text-section-dark-foreground mb-6">
@@ -186,8 +212,14 @@ export default function AdminUsers() {
               </SelectContent>
             </Select>
           </div>
-          <div className="text-xs text-muted-foreground mb-3">
-            Showing {filteredUsers.length} of {totalUsers} users
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs text-muted-foreground">
+              Showing {filteredUsers.length} of {totalUsers} users
+            </span>
+            <Button variant="outline" size="sm" onClick={exportCSV} className="gap-2 border-border/20">
+              <Download className="h-3.5 w-3.5" />
+              Export CSV
+            </Button>
           </div>
           <Table>
             <TableHeader>
