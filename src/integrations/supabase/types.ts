@@ -121,6 +121,39 @@ export type Database = {
           },
         ]
       }
+      price_alerts: {
+        Row: {
+          coin: string
+          created_at: string
+          direction: string
+          id: string
+          is_triggered: boolean
+          target_price: number
+          triggered_at: string | null
+          user_id: string
+        }
+        Insert: {
+          coin: string
+          created_at?: string
+          direction: string
+          id?: string
+          is_triggered?: boolean
+          target_price: number
+          triggered_at?: string | null
+          user_id: string
+        }
+        Update: {
+          coin?: string
+          created_at?: string
+          direction?: string
+          id?: string
+          is_triggered?: boolean
+          target_price?: number
+          triggered_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
