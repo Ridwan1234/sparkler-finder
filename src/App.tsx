@@ -20,6 +20,7 @@ import Transactions from "./pages/dashboard/Transactions";
 import Profile from "./pages/dashboard/Profile";
 import Referrals from "./pages/dashboard/Referrals";
 import ActiveInvestments from "./pages/dashboard/ActiveInvestments";
+import Alerts from "./pages/dashboard/Alerts";
 import AdminLayout from "./components/admin/AdminLayout";
 import AdminOverview from "./pages/admin/AdminOverview";
 import AdminDeposits from "./pages/admin/AdminDeposits";
@@ -62,6 +63,7 @@ const App = () => (
               <Route path="transactions" element={<Transactions />} />
               <Route path="profile" element={<Profile />} />
               <Route path="referrals" element={<Referrals />} />
+              <Route path="alerts" element={<Alerts />} />
             </Route>
             <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
               <Route index element={<AdminOverview />} />
