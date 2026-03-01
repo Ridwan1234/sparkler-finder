@@ -47,11 +47,16 @@ const AboutSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.15 }}
-              className="bg-card border border-border rounded-xl p-8 hover:shadow-lg hover:border-primary/30 transition-all group"
+              whileHover={{ y: -8, transition: { duration: 0.3 } }}
+              className="bg-card border border-border rounded-xl p-8 hover:shadow-lg hover:shadow-primary/5 hover:border-primary/30 transition-all group cursor-default"
             >
-              <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors">
+              <motion.div
+                whileHover={{ rotate: 12, scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 300 }}
+                className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors"
+              >
                 <f.icon size={28} className="text-primary" />
-              </div>
+              </motion.div>
               <h3 className="font-display font-semibold text-xl mb-3">{f.title}</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">{f.desc}</p>
             </motion.div>

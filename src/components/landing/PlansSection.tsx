@@ -6,6 +6,14 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 
+const cardVariants = {
+  hidden: { opacity: 0, y: 40, scale: 0.95 } as const,
+  visible: (i: number) => ({
+    opacity: 1, y: 0, scale: 1,
+    transition: { delay: i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
+  }),
+};
+
 const PlansSection = () => {
   const { data: plans, isLoading } = useQuery({
     queryKey: ["investment_plans"],
@@ -55,7 +63,9 @@ const PlansSection = () => {
               viewport={{ once: true }}
               className="mt-6 inline-flex items-center gap-2 bg-gold/10 border border-gold/30 text-gold px-5 py-2.5 rounded-full text-sm font-semibold"
             >
-              <Gift size={16} />
+              <motion.div animate={{ rotate: [0, 15, -15, 0] }} transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 3 }}>
+                <Gift size={16} />
+              </motion.div>
               {bonusPercent}% First Deposit Bonus for New Investors!
             </motion.div>
           )}
@@ -76,20 +86,28 @@ const PlansSection = () => {
               return (
                 <motion.div
                   key={plan.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  custom={i}
+                  variants={cardVariants}
+                  initial="hidden"
+                  whileInView="visible"
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className={`relative rounded-2xl p-6 border transition-all ${
+                  whileHover={{ y: -8, transition: { duration: 0.3 } }}
+                  className={`relative rounded-2xl p-6 border transition-all cursor-default ${
                     isPopular
                       ? "bg-primary/10 border-primary/40 shadow-lg shadow-primary/10"
-                      : "bg-section-dark-foreground/5 border-section-dark-foreground/10 hover:border-primary/20"
+                      : "glass-card hover:border-primary/20"
                   }`}
                 >
                   {isPopular && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold text-accent-foreground text-xs font-bold px-4 py-1 rounded-full flex items-center gap-1">
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      whileInView={{ scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ type: "spring", stiffness: 400, delay: 0.3 + i * 0.1 }}
+                      className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold text-accent-foreground text-xs font-bold px-4 py-1 rounded-full flex items-center gap-1"
+                    >
                       <Star size={12} /> POPULAR
-                    </div>
+                    </motion.div>
                   )}
                   <h3 className="font-display font-bold text-xl mb-1">{plan.name}</h3>
                   <div className="flex items-baseline gap-1 mb-4">
@@ -112,13 +130,15 @@ const PlansSection = () => {
                     ))}
                   </ul>
                   <Link to="/signup">
-                    <Button
-                      className={`w-full ${
-                        isPopular ? "bg-primary hover:bg-primary/90" : "bg-section-dark-foreground/10 hover:bg-primary/20 text-section-dark-foreground"
-                      }`}
-                    >
-                      Invest Now
-                    </Button>
+                    <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                      <Button
+                        className={`w-full ${
+                          isPopular ? "bg-primary hover:bg-primary/90" : "bg-section-dark-foreground/10 hover:bg-primary/20 text-section-dark-foreground"
+                        }`}
+                      >
+                        Invest Now
+                      </Button>
+                    </motion.div>
                   </Link>
                 </motion.div>
               );

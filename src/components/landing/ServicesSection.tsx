@@ -19,6 +19,16 @@ const services = [
   { icon: BarChart3, title: "ETFs", desc: "Diversified exchange-traded funds across multiple sectors and geographies." },
 ];
 
+const containerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.06 } },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30, scale: 0.95 } as const,
+  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const } },
+};
+
 const ServicesSection = () => {
   return (
     <section id="services" className="py-20 lg:py-28 section-dark">
@@ -38,22 +48,31 @@ const ServicesSection = () => {
           </p>
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          {services.map((s, i) => (
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
+        >
+          {services.map((s) => (
             <motion.div
               key={s.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.05 }}
-              className="bg-section-dark-foreground/5 border border-section-dark-foreground/10 rounded-xl p-6 hover:bg-section-dark-foreground/10 hover:border-primary/30 transition-all group cursor-pointer"
+              variants={cardVariants}
+              whileHover={{ y: -6, transition: { duration: 0.25 } }}
+              className="glass-card rounded-xl p-6 hover:bg-section-dark-foreground/10 hover:border-primary/30 transition-colors group cursor-default"
             >
-              <s.icon size={32} className="text-primary mb-4 group-hover:scale-110 transition-transform" />
+              <motion.div
+                whileHover={{ scale: 1.2, rotate: 8 }}
+                transition={{ type: "spring", stiffness: 400 }}
+              >
+                <s.icon size={32} className="text-primary mb-4 transition-transform" />
+              </motion.div>
               <h3 className="font-display font-semibold mb-2">{s.title}</h3>
               <p className="text-section-dark-foreground/50 text-sm">{s.desc}</p>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
