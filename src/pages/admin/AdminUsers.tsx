@@ -26,6 +26,9 @@ interface UserDetail {
 }
 
 export default function AdminUsers() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<"newest" | "balance_high" | "balance_low" | "deposits">("newest");
+  const [filterBy, setFilterBy] = useState<"all" | "has_investments" | "no_investments" | "positive_balance">("all");
   const [expandedUser, setExpandedUser] = useState<string | null>(null);
 
   const { data: users, isLoading } = useQuery({
