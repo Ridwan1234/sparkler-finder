@@ -33,6 +33,7 @@ import ServicesPage from "./pages/Services";
 import PlansPage from "./pages/PlansPage";
 import FAQPage from "./pages/FAQ";
 import ContactPage from "./pages/Contact";
+import WhatsAppButton from "./components/WhatsAppButton";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <WhatsAppButton />
       <BrowserRouter>
         <AuthProvider>
           <Routes>
