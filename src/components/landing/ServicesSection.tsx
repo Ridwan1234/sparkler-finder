@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import {
-  TrendingUp, Bitcoin, Building2, Landmark, Gem, Cpu,
-  Globe, Wallet, CircleDollarSign, Droplets, Wheat, BarChart3,
+  TrendingUp, Bitcoin, Gem, Cpu,
+  Globe, BarChart3,
 } from "lucide-react";
 
 const services = [
