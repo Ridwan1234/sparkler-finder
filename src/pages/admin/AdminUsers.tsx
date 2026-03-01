@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format } from "date-fns";
-import { Users, ChevronDown, ChevronUp, DollarSign, TrendingUp } from "lucide-react";
+import { Users, ChevronDown, ChevronUp, DollarSign, TrendingUp, Search, Filter } from "lucide-react";
 
 interface UserProfile {
   user_id: string;
@@ -24,6 +26,9 @@ interface UserDetail {
 }
 
 export default function AdminUsers() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<"newest" | "balance_high" | "balance_low" | "deposits">("newest");
+  const [filterBy, setFilterBy] = useState<"all" | "has_investments" | "no_investments" | "positive_balance">("all");
   const [expandedUser, setExpandedUser] = useState<string | null>(null);
 
   const { data: users, isLoading } = useQuery({
@@ -74,6 +79,34 @@ export default function AdminUsers() {
     },
   });
 
+  const filteredUsers = useMemo(() => {
+    if (!users) return [];
+    let result = users.filter((u) => {
+      const q = searchQuery.toLowerCase();
+      if (q && !(
+        (u.profile.full_name?.toLowerCase().includes(q)) ||
+        (u.profile.phone?.toLowerCase().includes(q)) ||
+        (u.profile.referral_code?.toLowerCase().includes(q)) ||
+        (u.profile.user_id.toLowerCase().includes(q))
+      )) return false;
+
+      if (filterBy === "has_investments" && u.investments.active === 0) return false;
+      if (filterBy === "no_investments" && u.investments.active > 0) return false;
+      if (filterBy === "positive_balance" && u.balance <= 0) return false;
+      return true;
+    });
+
+    result.sort((a, b) => {
+      switch (sortBy) {
+        case "balance_high": return b.balance - a.balance;
+        case "balance_low": return a.balance - b.balance;
+        case "deposits": return b.deposits.total - a.deposits.total;
+        default: return new Date(b.profile.created_at).getTime() - new Date(a.profile.created_at).getTime();
+      }
+    });
+    return result;
+  }, [users, searchQuery, sortBy, filterBy]);
+
   const totalUsers = users?.length ?? 0;
   const totalBalance = users?.reduce((s, u) => s + u.balance, 0) ?? 0;
   const totalActiveInvestments = users?.reduce((s, u) => s + u.investments.active, 0) ?? 0;
@@ -119,6 +152,43 @@ export default function AdminUsers() {
 
       <Card className="bg-card/5 border-border/10">
         <CardContent className="pt-6">
+          <div className="flex flex-col sm:flex-row gap-3 mb-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by name, phone, referral code..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 bg-background/50 border-border/20"
+              />
+            </div>
+            <Select value={filterBy} onValueChange={(v: any) => setFilterBy(v)}>
+              <SelectTrigger className="w-full sm:w-[180px] bg-background/50 border-border/20">
+                <Filter className="h-4 w-4 mr-2 text-muted-foreground" />
+                <SelectValue placeholder="Filter" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Users</SelectItem>
+                <SelectItem value="has_investments">Has Investments</SelectItem>
+                <SelectItem value="no_investments">No Investments</SelectItem>
+                <SelectItem value="positive_balance">Positive Balance</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={sortBy} onValueChange={(v: any) => setSortBy(v)}>
+              <SelectTrigger className="w-full sm:w-[180px] bg-background/50 border-border/20">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Newest First</SelectItem>
+                <SelectItem value="balance_high">Balance: High → Low</SelectItem>
+                <SelectItem value="balance_low">Balance: Low → High</SelectItem>
+                <SelectItem value="deposits">Most Deposits</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="text-xs text-muted-foreground mb-3">
+            Showing {filteredUsers.length} of {totalUsers} users
+          </div>
           <Table>
             <TableHeader>
               <TableRow className="border-border/10">
@@ -132,7 +202,7 @@ export default function AdminUsers() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users?.map((u) => (
+              {filteredUsers.map((u) => (
                 <>
                   <TableRow key={u.profile.user_id} className="border-border/10 cursor-pointer" onClick={() => setExpandedUser(expandedUser === u.profile.user_id ? null : u.profile.user_id)}>
                     <TableCell className="text-section-dark-foreground font-medium">
@@ -183,10 +253,10 @@ export default function AdminUsers() {
                   )}
                 </>
               ))}
-              {!users?.length && (
+              {!filteredUsers.length && (
                 <TableRow>
                   <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
-                    {isLoading ? "Loading users..." : "No users found"}
+                    {isLoading ? "Loading users..." : searchQuery || filterBy !== "all" ? "No users match your filters" : "No users found"}
                   </TableCell>
                 </TableRow>
               )}
