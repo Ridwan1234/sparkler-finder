@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format } from "date-fns";
-import { Users, ChevronDown, ChevronUp, DollarSign, TrendingUp, Search, Filter } from "lucide-react";
+import { Users, ChevronDown, ChevronUp, DollarSign, TrendingUp, Search, Filter, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface UserProfile {
   user_id: string;
@@ -186,8 +187,14 @@ export default function AdminUsers() {
               </SelectContent>
             </Select>
           </div>
-          <div className="text-xs text-muted-foreground mb-3">
-            Showing {filteredUsers.length} of {totalUsers} users
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs text-muted-foreground">
+              Showing {filteredUsers.length} of {totalUsers} users
+            </span>
+            <Button variant="outline" size="sm" onClick={exportCSV} className="gap-2 border-border/20">
+              <Download className="h-3.5 w-3.5" />
+              Export CSV
+            </Button>
           </div>
           <Table>
             <TableHeader>
