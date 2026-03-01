@@ -253,10 +253,10 @@ export default function AdminUsers() {
                   )}
                 </>
               ))}
-              {!users?.length && (
+              {!filteredUsers.length && (
                 <TableRow>
                   <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
-                    {isLoading ? "Loading users..." : "No users found"}
+                    {isLoading ? "Loading users..." : searchQuery || filterBy !== "all" ? "No users match your filters" : "No users found"}
                   </TableCell>
                 </TableRow>
               )}
