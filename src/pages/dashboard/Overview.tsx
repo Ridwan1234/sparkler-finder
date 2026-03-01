@@ -354,6 +354,12 @@ export default function Overview() {
       </motion.div>
 
       {/* Two-column: Active Investments + Recent Transactions */}
+      {(invLoading || txLoading) ? (
+        <div className="grid gap-6 lg:grid-cols-2">
+          <ListCardSkeleton rows={3} />
+          <ListCardSkeleton rows={5} />
+        </div>
+      ) : (
       <motion.div
         variants={stagger}
         initial="hidden"
