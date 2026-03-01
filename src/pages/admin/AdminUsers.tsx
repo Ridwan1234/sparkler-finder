@@ -112,7 +112,32 @@ export default function AdminUsers() {
   const totalBalance = users?.reduce((s, u) => s + u.balance, 0) ?? 0;
   const totalActiveInvestments = users?.reduce((s, u) => s + u.investments.active, 0) ?? 0;
 
-  return (
+  const exportCSV = () => {
+    const headers = ["Name", "Phone", "Referral Code", "Joined", "Balance", "Total Deposits", "Deposit Count", "Total Withdrawals", "Withdrawal Count", "Active Investments", "Investment Amount"];
+    const rows = filteredUsers.map((u) => [
+      u.profile.full_name || "No name",
+      u.profile.phone || "",
+      u.profile.referral_code || "",
+      format(new Date(u.profile.created_at), "yyyy-MM-dd"),
+      u.balance.toFixed(2),
+      u.deposits.total.toFixed(2),
+      u.deposits.count,
+      u.withdrawals.total.toFixed(2),
+      u.withdrawals.count,
+      u.investments.active,
+      u.investments.totalAmount.toFixed(2),
+    ]);
+    const csv = [headers, ...rows].map((r) => r.map((v) => `"${v}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `users-export-${format(new Date(), "yyyy-MM-dd")}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+
     <div>
       <h1 className="font-display text-2xl font-bold text-section-dark-foreground mb-6">
         User Management
