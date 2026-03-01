@@ -79,6 +79,34 @@ export default function AdminUsers() {
     },
   });
 
+  const filteredUsers = useMemo(() => {
+    if (!users) return [];
+    let result = users.filter((u) => {
+      const q = searchQuery.toLowerCase();
+      if (q && !(
+        (u.profile.full_name?.toLowerCase().includes(q)) ||
+        (u.profile.phone?.toLowerCase().includes(q)) ||
+        (u.profile.referral_code?.toLowerCase().includes(q)) ||
+        (u.profile.user_id.toLowerCase().includes(q))
+      )) return false;
+
+      if (filterBy === "has_investments" && u.investments.active === 0) return false;
+      if (filterBy === "no_investments" && u.investments.active > 0) return false;
+      if (filterBy === "positive_balance" && u.balance <= 0) return false;
+      return true;
+    });
+
+    result.sort((a, b) => {
+      switch (sortBy) {
+        case "balance_high": return b.balance - a.balance;
+        case "balance_low": return a.balance - b.balance;
+        case "deposits": return b.deposits.total - a.deposits.total;
+        default: return new Date(b.profile.created_at).getTime() - new Date(a.profile.created_at).getTime();
+      }
+    });
+    return result;
+  }, [users, searchQuery, sortBy, filterBy]);
+
   const totalUsers = users?.length ?? 0;
   const totalBalance = users?.reduce((s, u) => s + u.balance, 0) ?? 0;
   const totalActiveInvestments = users?.reduce((s, u) => s + u.investments.active, 0) ?? 0;
