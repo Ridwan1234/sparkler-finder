@@ -21,22 +21,14 @@ const Contact = () => {
     <div className="min-h-screen">
       <Header />
       <div className="pt-20" />
+      <PageHero
+        label="Contact Us"
+        title="Get In"
+        highlight="Touch"
+        description="Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible."
+      />
       <section className="py-20 lg:py-28 section-dark">
         <div className="container max-w-5xl">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <span className="text-primary font-medium text-sm uppercase tracking-wider">Contact Us</span>
-            <h1 className="text-3xl md:text-4xl font-display font-bold mt-3 mb-4">
-              Get In Touch
-            </h1>
-            <p className="text-section-dark-foreground/60 max-w-2xl mx-auto">
-              Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
-            </p>
-          </motion.div>
 
           <div className="grid md:grid-cols-2 gap-10">
             <motion.div
