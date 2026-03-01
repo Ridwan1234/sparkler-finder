@@ -37,6 +37,7 @@ import ServicesPage from "./pages/Services";
 import PlansPage from "./pages/PlansPage";
 import FAQPage from "./pages/FAQ";
 import ContactPage from "./pages/Contact";
+import TermsPage from "./pages/Terms";
 import WhatsAppButton from "./components/WhatsAppButton";
 
 const queryClient = new QueryClient();
@@ -53,6 +54,7 @@ const AnimatedRoutes = () => {
           <Route path="/plans" element={<PlansPage />} />
           <Route path="/faq" element={<FAQPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/terms" element={<TermsPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />

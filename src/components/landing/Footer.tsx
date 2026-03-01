@@ -49,6 +49,7 @@ const Footer = () => {
                 { label: "Investment Plans", href: "/plans" },
                 { label: "FAQs", href: "/faq" },
                 { label: "Contact Us", href: "/contact" },
+                { label: "Terms & Agreement", href: "/terms" },
               ].map((link) => (
                 <li key={link.label}>
                   <Link
