@@ -19,6 +19,7 @@ import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
   PieChart, Pie, Cell, Legend
 } from "recharts";
+import PriceAlerts from "@/components/dashboard/PriceAlerts";
 
 const PIE_COLORS = [
   "hsl(152, 87%, 30%)",
