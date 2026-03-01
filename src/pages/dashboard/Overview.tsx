@@ -157,32 +157,36 @@ export default function Overview() {
       </motion.div>
 
       {/* Stat Cards */}
-      <motion.div
-        variants={stagger}
-        initial="hidden"
-        animate="visible"
-        className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-      >
-        {stats.map((s, i) => (
-          <motion.div key={s.label} variants={fadeUp}>
-            <Card className="bg-card/5 border-border/10 hover:border-primary/20 transition-all duration-300 hover:shadow-[0_0_20px_hsl(152,87%,30%,0.05)]">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-xs font-medium text-muted-foreground">{s.label}</CardTitle>
-                <motion.div
-                  className={`p-1.5 rounded-md ${s.bg}`}
-                  whileHover={{ scale: 1.2, rotate: 10 }}
-                  transition={{ type: "spring", stiffness: 400 }}
-                >
-                  <s.icon className={`h-3.5 w-3.5 ${s.color}`} />
-                </motion.div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-xl font-bold text-section-dark-foreground">{s.value}</p>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-      </motion.div>
+      {balanceLoading ? (
+        <StatCardsSkeleton />
+      ) : (
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          animate="visible"
+          className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          {stats.map((s, i) => (
+            <motion.div key={s.label} variants={fadeUp}>
+              <Card className="bg-card/5 border-border/10 hover:border-primary/20 transition-all duration-300 hover:shadow-[0_0_20px_hsl(152,87%,30%,0.05)]">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-xs font-medium text-muted-foreground">{s.label}</CardTitle>
+                  <motion.div
+                    className={`p-1.5 rounded-md ${s.bg}`}
+                    whileHover={{ scale: 1.2, rotate: 10 }}
+                    transition={{ type: "spring", stiffness: 400 }}
+                  >
+                    <s.icon className={`h-3.5 w-3.5 ${s.color}`} />
+                  </motion.div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-xl font-bold text-section-dark-foreground">{s.value}</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
 
       {/* Pending alerts */}
       {(pendingDeposits! > 0 || pendingWithdrawals > 0) && (
