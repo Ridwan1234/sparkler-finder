@@ -215,7 +215,12 @@ export default function Overview() {
         </motion.div>
       )}
 
-      {/* Live Crypto Chart + Portfolio Pie */}
+      {(chartLoading && tickerLoading) ? (
+        <div className="grid gap-6 lg:grid-cols-3">
+          <ChartSkeleton />
+          <PieSkeleton />
+        </div>
+      ) : (
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -337,6 +342,7 @@ export default function Overview() {
           </CardContent>
         </Card>
       </motion.div>
+      )}
 
       {/* Price Alerts */}
       <motion.div
