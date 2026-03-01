@@ -1,28 +1,16 @@
 import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
-
-const testimonials = [
-  {
-    name: "James K.",
-    role: "Crypto Investor",
-    text: "CoinStamp has transformed my investment portfolio. The returns are consistent and the platform is incredibly easy to use.",
-    rating: 5,
-  },
-  {
-    name: "Sarah M.",
-    role: "Forex Trader",
-    text: "I've been trading forex for years, and CoinStamp offers the best spreads and execution I've experienced. Truly professional.",
-    rating: 5,
-  },
-  {
-    name: "David L.",
-    role: "Real Estate Investor",
-    text: "The fractional real estate feature is brilliant. I can diversify across multiple properties with minimal capital.",
-    rating: 5,
-  },
-];
+import { useTranslation } from "react-i18next";
 
 const TestimonialsSection = () => {
+  const { t } = useTranslation();
+
+  const testimonials = [
+    { name: t("testimonials.t1Name"), role: t("testimonials.t1Role"), text: t("testimonials.t1Text"), rating: 5 },
+    { name: t("testimonials.t2Name"), role: t("testimonials.t2Role"), text: t("testimonials.t2Text"), rating: 5 },
+    { name: t("testimonials.t3Name"), role: t("testimonials.t3Role"), text: t("testimonials.t3Text"), rating: 5 },
+  ];
+
   return (
     <section className="py-20 lg:py-28 bg-background overflow-hidden">
       <div className="container">
@@ -32,16 +20,14 @@ const TestimonialsSection = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="text-primary font-medium text-sm uppercase tracking-wider">Testimonials</span>
-          <h2 className="text-3xl md:text-4xl font-display font-bold mt-3 mb-4">
-            What Our Investors Say
-          </h2>
+          <span className="text-primary font-medium text-sm uppercase tracking-wider">{t("testimonials.label")}</span>
+          <h2 className="text-3xl md:text-4xl font-display font-bold mt-3 mb-4">{t("testimonials.title")}</h2>
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-6">
-          {testimonials.map((t, i) => (
+          {testimonials.map((tItem, i) => (
             <motion.div
-              key={t.name}
+              key={i}
               initial={{ opacity: 0, y: 40, rotateY: -5 }}
               whileInView={{ opacity: 1, y: 0, rotateY: 0 }}
               viewport={{ once: true }}
@@ -59,7 +45,7 @@ const TestimonialsSection = () => {
                 <Quote size={48} className="text-primary" />
               </motion.div>
               <div className="flex gap-1 mb-4">
-                {Array.from({ length: t.rating }).map((_, j) => (
+                {Array.from({ length: tItem.rating }).map((_, j) => (
                   <motion.div
                     key={j}
                     initial={{ opacity: 0, scale: 0 }}
@@ -71,17 +57,17 @@ const TestimonialsSection = () => {
                   </motion.div>
                 ))}
               </div>
-              <p className="text-muted-foreground mb-6 text-sm leading-relaxed relative z-10">"{t.text}"</p>
+              <p className="text-muted-foreground mb-6 text-sm leading-relaxed relative z-10">"{tItem.text}"</p>
               <div className="flex items-center gap-3">
                 <motion.div
                   whileHover={{ scale: 1.1 }}
                   className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center"
                 >
-                  <span className="text-primary font-bold text-sm">{t.name[0]}</span>
+                  <span className="text-primary font-bold text-sm">{tItem.name[0]}</span>
                 </motion.div>
                 <div>
-                  <p className="font-semibold text-sm">{t.name}</p>
-                  <p className="text-muted-foreground text-xs">{t.role}</p>
+                  <p className="font-semibold text-sm">{tItem.name}</p>
+                  <p className="text-muted-foreground text-xs">{tItem.role}</p>
                 </div>
               </div>
             </motion.div>

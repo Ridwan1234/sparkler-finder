@@ -2,12 +2,7 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { ArrowRight, TrendingUp, Shield, Users } from "lucide-react";
 import { Link } from "react-router-dom";
-
-const stats = [
-  { label: "Active Users", value: "50K+", icon: Users },
-  { label: "Total Invested", value: "$120M+", icon: TrendingUp },
-  { label: "Secure Transactions", value: "99.9%", icon: Shield },
-];
+import { useTranslation } from "react-i18next";
 
 const containerVariants = {
   hidden: {},
@@ -22,6 +17,14 @@ const itemVariants = {
 };
 
 const HeroSection = () => {
+  const { t } = useTranslation();
+
+  const stats = [
+    { label: t("hero.activeUsers"), value: "50K+", icon: Users },
+    { label: t("hero.totalInvested"), value: "$120M+", icon: TrendingUp },
+    { label: t("hero.secureTransactions"), value: "99.9%", icon: Shield },
+  ];
+
   return (
     <section id="home" className="hero-gradient min-h-screen flex items-center pt-20 relative overflow-hidden">
       {/* Animated background blobs */}
@@ -58,34 +61,34 @@ const HeroSection = () => {
               variants={itemVariants}
               className="inline-block px-4 py-1.5 rounded-full bg-primary/20 text-primary text-sm font-medium mb-6"
             >
-              #1 Trusted Investment Platform
+              {t("hero.badge")}
             </motion.span>
             <motion.h1
               variants={itemVariants}
               className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-section-dark-foreground leading-tight mb-6"
             >
-              Smart Solution For{" "}
-              <span className="gradient-text">Business</span>{" "}
-              Investment
+              {t("hero.title")}{" "}
+              <span className="gradient-text">{t("hero.titleHighlight")}</span>{" "}
+              {t("hero.titleEnd")}
             </motion.h1>
             <motion.p
               variants={itemVariants}
               className="text-lg text-section-dark-foreground/60 mb-8 max-w-lg"
             >
-              Invest in crypto, forex, stocks, real estate and more with our secure, transparent, and high-yield investment platform trusted by thousands worldwide.
+              {t("hero.description")}
             </motion.p>
             <motion.div variants={itemVariants} className="flex flex-wrap gap-4 mb-12">
               <Link to="/signup">
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
                   <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 text-base px-8 shimmer-bg animate-shimmer">
-                    Get Started <ArrowRight size={18} />
+                    {t("nav.getStarted")} <ArrowRight size={18} />
                   </Button>
                 </motion.div>
               </Link>
               <Link to="/login">
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
                   <Button size="lg" variant="outline" className="border-section-dark-foreground/20 text-section-dark-foreground hover:bg-section-dark-foreground/10 text-base px-8">
-                    Login
+                    {t("nav.login")}
                   </Button>
                 </motion.div>
               </Link>
@@ -140,8 +143,8 @@ const HeroSection = () => {
                   >
                     <TrendingUp size={64} className="text-primary mx-auto mb-4" />
                   </motion.div>
-                  <p className="text-2xl font-display font-bold text-section-dark-foreground">Grow Your</p>
-                  <p className="text-2xl font-display font-bold gradient-text">Wealth</p>
+                  <p className="text-2xl font-display font-bold text-section-dark-foreground">{t("hero.growYour")}</p>
+                  <p className="text-2xl font-display font-bold gradient-text">{t("hero.wealth")}</p>
                 </div>
               </motion.div>
             </div>

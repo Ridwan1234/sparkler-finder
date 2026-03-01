@@ -3,15 +3,7 @@ import {
   TrendingUp, Bitcoin, Gem, Cpu,
   Globe, BarChart3,
 } from "lucide-react";
-
-const services = [
-  { icon: TrendingUp, title: "Forex & Stocks", desc: "Trade global currencies and equities with leverage and real-time analysis." },
-  { icon: Bitcoin, title: "Crypto Trading", desc: "Invest in Bitcoin, Ethereum, and 100+ altcoins with competitive spreads." },
-  { icon: Gem, title: "NFTs", desc: "Curated NFT investments in art, gaming, and digital collectibles." },
-  { icon: Cpu, title: "Mining", desc: "Cloud mining solutions for Bitcoin and other proof-of-work cryptocurrencies." },
-  { icon: Globe, title: "Metaverse", desc: "Early-stage investments in virtual real estate and metaverse projects." },
-  { icon: BarChart3, title: "ETFs", desc: "Diversified exchange-traded funds across multiple sectors and geographies." },
-];
+import { useTranslation } from "react-i18next";
 
 const containerVariants = {
   hidden: {},
@@ -24,6 +16,17 @@ const cardVariants = {
 };
 
 const ServicesSection = () => {
+  const { t } = useTranslation();
+
+  const services = [
+    { icon: TrendingUp, title: t("services.forexStocks"), desc: t("services.forexDesc") },
+    { icon: Bitcoin, title: t("services.cryptoTrading"), desc: t("services.cryptoDesc") },
+    { icon: Gem, title: t("services.nfts"), desc: t("services.nftsDesc") },
+    { icon: Cpu, title: t("services.mining"), desc: t("services.miningDesc") },
+    { icon: Globe, title: t("services.metaverse"), desc: t("services.metaverseDesc") },
+    { icon: BarChart3, title: t("services.etfs"), desc: t("services.etfsDesc") },
+  ];
+
   return (
     <section id="services" className="py-20 lg:py-28 section-dark">
       <div className="container">
@@ -33,13 +36,9 @@ const ServicesSection = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="text-primary font-medium text-sm uppercase tracking-wider">Our Services</span>
-          <h2 className="text-3xl md:text-4xl font-display font-bold mt-3 mb-4">
-            Diverse Investment Opportunities
-          </h2>
-          <p className="text-section-dark-foreground/60 max-w-2xl mx-auto">
-            From traditional assets to cutting-edge digital investments, we offer a complete suite of services.
-          </p>
+          <span className="text-primary font-medium text-sm uppercase tracking-wider">{t("services.label")}</span>
+          <h2 className="text-3xl md:text-4xl font-display font-bold mt-3 mb-4">{t("services.title")}</h2>
+          <p className="text-section-dark-foreground/60 max-w-2xl mx-auto">{t("services.description")}</p>
         </motion.div>
 
         <motion.div

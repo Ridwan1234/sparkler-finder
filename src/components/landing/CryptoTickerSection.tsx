@@ -4,8 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+import { useTranslation } from "react-i18next";
 
 export default function CryptoTickerSection() {
+  const { t } = useTranslation();
   const [coin, setCoin] = useState<"BTC" | "ETH" | "BNB">("BTC");
   const [days, setDays] = useState<number>(30);
   const { data: ticker, isLoading: tickerLoading } = useCryptoTicker();
@@ -20,10 +22,10 @@ export default function CryptoTickerSection() {
       <div className="container mx-auto px-4 max-w-6xl">
         <div className="text-center mb-12">
           <h2 className="font-display text-3xl md:text-4xl font-bold text-section-dark-foreground mb-3">
-            Live Market Prices
+            {t("cryptoTicker.title")}
           </h2>
           <p className="text-muted-foreground max-w-lg mx-auto">
-            Track real-time cryptocurrency prices and market trends
+            {t("cryptoTicker.description")}
           </p>
         </div>
 
@@ -81,7 +83,7 @@ export default function CryptoTickerSection() {
           <CardContent>
             <div className="h-72">
               {chartLoading ? (
-                <div className="h-full flex items-center justify-center text-muted-foreground text-sm">Loading chart…</div>
+                <div className="h-full flex items-center justify-center text-muted-foreground text-sm">{t("common.loading")}</div>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={chartData ?? []} margin={{ top: 5, right: 5, left: -10, bottom: 0 }}>

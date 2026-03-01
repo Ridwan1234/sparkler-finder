@@ -1,14 +1,17 @@
 import { motion } from "framer-motion";
 import { BarChart2, Headphones, ShieldCheck, Percent } from "lucide-react";
-
-const features = [
-  { icon: BarChart2, title: "Real-Time Data", desc: "Live market data and analytics to make informed investment decisions." },
-  { icon: Headphones, title: "24/7 Support", desc: "Expert support team available around the clock for all your queries." },
-  { icon: ShieldCheck, title: "Higher Security", desc: "Enterprise-grade security with multi-layer encryption and cold storage." },
-  { icon: Percent, title: "Lower Commissions", desc: "Industry-leading low fees so you keep more of your returns." },
-];
+import { useTranslation } from "react-i18next";
 
 const WhyChooseUs = () => {
+  const { t } = useTranslation();
+
+  const features = [
+    { icon: BarChart2, title: t("whyChooseUs.realTimeData"), desc: t("whyChooseUs.realTimeDesc") },
+    { icon: Headphones, title: t("whyChooseUs.support247"), desc: t("whyChooseUs.supportDesc") },
+    { icon: ShieldCheck, title: t("whyChooseUs.higherSecurity"), desc: t("whyChooseUs.securityDesc") },
+    { icon: Percent, title: t("whyChooseUs.lowerCommissions"), desc: t("whyChooseUs.commissionsDesc") },
+  ];
+
   return (
     <section className="py-20 lg:py-28 bg-background">
       <div className="container">
@@ -18,16 +21,14 @@ const WhyChooseUs = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="text-primary font-medium text-sm uppercase tracking-wider">Why Choose Us</span>
-          <h2 className="text-3xl md:text-4xl font-display font-bold mt-3 mb-4">
-            Built For Serious Investors
-          </h2>
+          <span className="text-primary font-medium text-sm uppercase tracking-wider">{t("whyChooseUs.label")}</span>
+          <h2 className="text-3xl md:text-4xl font-display font-bold mt-3 mb-4">{t("whyChooseUs.title")}</h2>
         </motion.div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((f, i) => (
             <motion.div
-              key={f.title}
+              key={i}
               initial={{ opacity: 0, y: 30, scale: 0.95 }}
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true }}
