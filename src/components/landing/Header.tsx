@@ -108,7 +108,8 @@ const Header = () => {
                   </Link>
                 </motion.div>
               ))}
-              <div className="flex gap-3 pt-3">
+              <div className="flex gap-3 pt-3 items-center">
+                <ThemeToggle />
                 <Link to="/login" className="flex-1">
                   <Button variant="outline" className="w-full border-primary/30 text-primary">Login</Button>
                 </Link>
