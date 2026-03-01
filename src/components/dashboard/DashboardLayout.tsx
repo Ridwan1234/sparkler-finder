@@ -1,8 +1,12 @@
 import { Outlet } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "./DashboardSidebar";
+import { usePriceAlertChecker } from "@/hooks/usePriceAlertChecker";
 
 export default function DashboardLayout() {
+  // Global price alert checker — runs everywhere in the dashboard
+  usePriceAlertChecker();
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-section-dark">
