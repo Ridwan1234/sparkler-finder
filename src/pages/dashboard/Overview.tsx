@@ -1,41 +1,58 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useBalance } from "@/hooks/useBalance";
+import { useCryptoChart, useCryptoTicker } from "@/hooks/useCryptoPrices";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  DollarSign, TrendingUp, ArrowDownToLine, ArrowUpFromLine,
-  Clock, ArrowRight, Gift, Wallet, Activity
+  DollarSign, TrendingUp, TrendingDown, ArrowDownToLine, ArrowUpFromLine,
+  Clock, ArrowRight, Gift, Wallet, Activity, PieChart as PieChartIcon
 } from "lucide-react";
-import { format, subDays } from "date-fns";
+import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import { useState, useMemo } from "react";
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+import { useState } from "react";
+import {
+  AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
+  PieChart, Pie, Cell, Legend
+} from "recharts";
+
+const PIE_COLORS = [
+  "hsl(152, 87%, 30%)",
+  "hsl(45, 93%, 58%)",
+  "hsl(200, 70%, 50%)",
+  "hsl(280, 60%, 55%)",
+  "hsl(350, 65%, 55%)",
+  "hsl(170, 60%, 40%)",
+];
 
 export default function Overview() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [chartPeriod, setChartPeriod] = useState<"7d" | "30d" | "90d">("30d");
   const [chartCoin, setChartCoin] = useState<"BTC" | "ETH" | "BNB">("BTC");
+  const [chartDays, setChartDays] = useState(30);
   const {
     balance, activeInvestments, totalROI, totalDeposits,
-    totalWithdrawals, totalBonuses, pendingWithdrawals, totalPrincipalReturns
+    totalWithdrawals, totalBonuses, pendingWithdrawals,
   } = useBalance(user?.id);
+
+  // Live crypto data
+  const { data: ticker } = useCryptoTicker();
+  const { data: chartData, isLoading: chartLoading } = useCryptoChart(chartCoin, chartDays);
+  const COIN_MAP: Record<string, string> = { BTC: "bitcoin", ETH: "ethereum", BNB: "binancecoin" };
+  const activeTicker = ticker?.find((t) => t.id === COIN_MAP[chartCoin]);
+  const isUp = (activeTicker?.price_change_percentage_24h ?? 0) >= 0;
 
   // Recent transactions
   const { data: recentTx } = useQuery({
     queryKey: ["recent_transactions", user?.id],
     queryFn: async () => {
       const { data } = await supabase
-        .from("transactions")
-        .select("*")
-        .eq("user_id", user!.id)
-        .order("created_at", { ascending: false })
-        .limit(5);
+        .from("transactions").select("*").eq("user_id", user!.id)
+        .order("created_at", { ascending: false }).limit(5);
       return data ?? [];
     },
     enabled: !!user,
@@ -46,12 +63,21 @@ export default function Overview() {
     queryKey: ["active_investments", user?.id],
     queryFn: async () => {
       const { data } = await supabase
-        .from("investments")
-        .select("*, investment_plans(*)")
-        .eq("user_id", user!.id)
-        .eq("status", "active")
-        .order("expires_at", { ascending: true })
-        .limit(3);
+        .from("investments").select("*, investment_plans(*)")
+        .eq("user_id", user!.id).eq("status", "active")
+        .order("expires_at", { ascending: true }).limit(3);
+      return data ?? [];
+    },
+    enabled: !!user,
+  });
+
+  // All investments for pie chart
+  const { data: allInvestments } = useQuery({
+    queryKey: ["all_investments_pie", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("investments").select("amount, investment_plans(name)")
+        .eq("user_id", user!.id).eq("status", "active");
       return data ?? [];
     },
     enabled: !!user,
@@ -62,37 +88,23 @@ export default function Overview() {
     queryKey: ["pending_deposits_count", user?.id],
     queryFn: async () => {
       const { count } = await supabase
-        .from("deposits")
-        .select("id", { count: "exact", head: true })
-        .eq("user_id", user!.id)
-        .eq("status", "pending");
+        .from("deposits").select("id", { count: "exact", head: true })
+        .eq("user_id", user!.id).eq("status", "pending");
       return count ?? 0;
     },
     enabled: !!user,
   });
 
-  // Generate simulated crypto price data
-  const chartData = useMemo(() => {
-    const days = chartPeriod === "7d" ? 7 : chartPeriod === "30d" ? 30 : 90;
-    const basePrices: Record<string, { base: number; vol: number }> = {
-      BTC: { base: 67400, vol: 2200 },
-      ETH: { base: 3520, vol: 180 },
-      BNB: { base: 605, vol: 25 },
-    };
-    const { base, vol } = basePrices[chartCoin];
-    return Array.from({ length: days }, (_, i) => {
-      const seed = chartCoin.charCodeAt(0) + days;
-      const noise = Math.sin(seed + i * 0.7) * vol + Math.cos(seed * 0.3 + i * 1.1) * vol * 0.5;
-      return {
-        date: format(subDays(new Date(), days - 1 - i), "MMM d"),
-        price: Math.round(base + noise),
-      };
+  // Build pie data
+  const pieData = (() => {
+    if (!allInvestments || allInvestments.length === 0) return [];
+    const grouped: Record<string, number> = {};
+    allInvestments.forEach((inv) => {
+      const name = (inv.investment_plans as any)?.name ?? "Unknown";
+      grouped[name] = (grouped[name] ?? 0) + Number(inv.amount);
     });
-  }, [chartCoin, chartPeriod]);
-
-  const priceChange = chartData.length >= 2 ? chartData[chartData.length - 1].price - chartData[0].price : 0;
-  const priceChangePercent = chartData.length >= 2 ? ((priceChange / chartData[0].price) * 100).toFixed(2) : "0";
-
+    return Object.entries(grouped).map(([name, value]) => ({ name, value }));
+  })();
 
   const stats = [
     { label: "Available Balance", value: `$${balance.toLocaleString()}`, icon: DollarSign, color: "text-primary", bg: "bg-primary/10" },
@@ -165,84 +177,139 @@ export default function Overview() {
         </div>
       )}
 
-      {/* Crypto Price Chart */}
-      <Card className="bg-card/5 border-border/10">
-        <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2">
-          <div>
+      {/* Live Crypto Chart + Portfolio Pie */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* Crypto Chart — 2/3 width */}
+        <Card className="bg-card/5 border-border/10 lg:col-span-2">
+          <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2">
+            <div>
+              <CardTitle className="text-section-dark-foreground text-base flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 text-primary" /> Market Overview
+              </CardTitle>
+              <p className="text-xs text-muted-foreground mt-1">
+                {chartCoin}/USD
+                {activeTicker && (
+                  <span className={`ml-2 font-semibold ${isUp ? "text-primary" : "text-destructive"}`}>
+                    {isUp ? "+" : ""}{activeTicker.price_change_percentage_24h.toFixed(2)}%
+                  </span>
+                )}
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Tabs value={chartCoin} onValueChange={(v) => setChartCoin(v as "BTC" | "ETH" | "BNB")}>
+                <TabsList className="h-8 bg-background/10">
+                  {(["BTC", "ETH", "BNB"] as const).map((c) => (
+                    <TabsTrigger key={c} value={c} className="text-xs px-2.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{c}</TabsTrigger>
+                  ))}
+                </TabsList>
+              </Tabs>
+              <Tabs value={String(chartDays)} onValueChange={(v) => setChartDays(Number(v))}>
+                <TabsList className="h-8 bg-background/10">
+                  {[{ v: "7", l: "7D" }, { v: "30", l: "30D" }, { v: "90", l: "90D" }].map((p) => (
+                    <TabsTrigger key={p.v} value={p.v} className="text-xs px-2.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{p.l}</TabsTrigger>
+                  ))}
+                </TabsList>
+              </Tabs>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {/* Ticker row */}
+            <div className="flex gap-4 mb-4 overflow-x-auto pb-1">
+              {(["BTC", "ETH", "BNB"] as const).map((sym) => {
+                const t = ticker?.find((x) => x.id === COIN_MAP[sym]);
+                const up = (t?.price_change_percentage_24h ?? 0) >= 0;
+                return (
+                  <div key={sym} className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs whitespace-nowrap ${chartCoin === sym ? "border-primary/30 bg-primary/5" : "border-border/10"}`}>
+                    {t?.image && <img src={t.image} alt={sym} className="w-4 h-4 rounded-full" />}
+                    <span className="font-semibold text-section-dark-foreground">{sym}</span>
+                    <span className="text-section-dark-foreground">{t ? `$${t.current_price.toLocaleString()}` : "—"}</span>
+                    <span className={`flex items-center gap-0.5 ${up ? "text-primary" : "text-destructive"}`}>
+                      {up ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                      {t ? `${t.price_change_percentage_24h.toFixed(1)}%` : ""}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="h-64">
+              {chartLoading ? (
+                <div className="h-full flex items-center justify-center text-muted-foreground text-sm">Loading…</div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={chartData ?? []} margin={{ top: 5, right: 5, left: -10, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="dashPriceGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="hsl(152, 87%, 30%)" stopOpacity={0.3} />
+                        <stop offset="100%" stopColor="hsl(152, 87%, 30%)" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(155, 20%, 18%)" vertical={false} />
+                    <XAxis dataKey="date" tick={{ fontSize: 11, fill: "hsl(150, 10%, 55%)" }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+                    <YAxis tick={{ fontSize: 11, fill: "hsl(150, 10%, 55%)" }} axisLine={false} tickLine={false} tickFormatter={(v) => v >= 1000 ? `$${(v / 1000).toFixed(1)}k` : `$${v}`} domain={["auto", "auto"]} />
+                    <Tooltip
+                      contentStyle={{ background: "hsl(155, 25%, 9%)", border: "1px solid hsl(155, 20%, 18%)", borderRadius: "8px", fontSize: "12px", color: "hsl(150, 10%, 90%)" }}
+                      formatter={(value: number) => [`$${value.toLocaleString()}`, chartCoin]}
+                    />
+                    <Area type="monotone" dataKey="price" stroke="hsl(152, 87%, 30%)" strokeWidth={2} fill="url(#dashPriceGrad)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Portfolio Allocation Pie — 1/3 width */}
+        <Card className="bg-card/5 border-border/10">
+          <CardHeader>
             <CardTitle className="text-section-dark-foreground text-base flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-primary" /> Market Overview
+              <PieChartIcon className="h-4 w-4 text-gold" /> Portfolio Allocation
             </CardTitle>
-            <p className="text-xs text-muted-foreground mt-1">
-              {chartCoin}/USD
-              <span className={`ml-2 font-semibold ${priceChange >= 0 ? "text-primary" : "text-destructive"}`}>
-                {priceChange >= 0 ? "+" : ""}{priceChangePercent}%
-              </span>
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Tabs value={chartCoin} onValueChange={(v) => setChartCoin(v as "BTC" | "ETH" | "BNB")}>
-              <TabsList className="h-8 bg-background/10">
-                <TabsTrigger value="BTC" className="text-xs px-2.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">BTC</TabsTrigger>
-                <TabsTrigger value="ETH" className="text-xs px-2.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">ETH</TabsTrigger>
-                <TabsTrigger value="BNB" className="text-xs px-2.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">BNB</TabsTrigger>
-              </TabsList>
-            </Tabs>
-            <Tabs value={chartPeriod} onValueChange={(v) => setChartPeriod(v as "7d" | "30d" | "90d")}>
-              <TabsList className="h-8 bg-background/10">
-                <TabsTrigger value="7d" className="text-xs px-2.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">7D</TabsTrigger>
-                <TabsTrigger value="30d" className="text-xs px-2.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">30D</TabsTrigger>
-                <TabsTrigger value="90d" className="text-xs px-2.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">90D</TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chartData} margin={{ top: 5, right: 5, left: -10, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="hsl(152, 87%, 30%)" stopOpacity={0.3} />
-                    <stop offset="100%" stopColor="hsl(152, 87%, 30%)" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(155, 20%, 18%)" vertical={false} />
-                <XAxis
-                  dataKey="date"
-                  tick={{ fontSize: 11, fill: "hsl(150, 10%, 55%)" }}
-                  axisLine={false}
-                  tickLine={false}
-                  interval={chartPeriod === "7d" ? 0 : chartPeriod === "30d" ? 4 : 10}
-                />
-                <YAxis
-                  tick={{ fontSize: 11, fill: "hsl(150, 10%, 55%)" }}
-                  axisLine={false}
-                  tickLine={false}
-                  tickFormatter={(v) => `$${(v / 1000).toFixed(1)}k`}
-                  domain={["auto", "auto"]}
-                />
-                <Tooltip
-                  contentStyle={{
-                    background: "hsl(155, 25%, 9%)",
-                    border: "1px solid hsl(155, 20%, 18%)",
-                    borderRadius: "8px",
-                    fontSize: "12px",
-                    color: "hsl(150, 10%, 90%)",
-                  }}
-                  formatter={(value: number) => [`$${value.toLocaleString()}`, chartCoin]}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="price"
-                  stroke="hsl(152, 87%, 30%)"
-                  strokeWidth={2}
-                  fill="url(#priceGradient)"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
+          </CardHeader>
+          <CardContent>
+            {pieData.length > 0 ? (
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={pieData}
+                      cx="50%"
+                      cy="45%"
+                      innerRadius={50}
+                      outerRadius={80}
+                      paddingAngle={3}
+                      dataKey="value"
+                      nameKey="name"
+                      stroke="none"
+                    >
+                      {pieData.map((_, i) => (
+                        <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      contentStyle={{ background: "hsl(155, 25%, 9%)", border: "1px solid hsl(155, 20%, 18%)", borderRadius: "8px", fontSize: "12px", color: "hsl(150, 10%, 90%)" }}
+                      formatter={(value: number) => [`$${value.toLocaleString()}`, ""]}
+                    />
+                    <Legend
+                      verticalAlign="bottom"
+                      iconType="circle"
+                      iconSize={8}
+                      formatter={(value: string) => <span className="text-xs text-muted-foreground">{value}</span>}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="text-center py-10 space-y-2">
+                <PieChartIcon className="h-8 w-8 text-muted-foreground/50 mx-auto" />
+                <p className="text-sm text-muted-foreground">No active investments</p>
+                <Button size="sm" variant="outline" className="border-border/20 text-section-dark-foreground" onClick={() => navigate("/dashboard/plans")}>
+                  Start Investing
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Two-column: Active Investments + Recent Transactions */}
       <div className="grid gap-6 lg:grid-cols-2">
@@ -252,12 +319,7 @@ export default function Overview() {
             <CardTitle className="text-section-dark-foreground text-base flex items-center gap-2">
               <Activity className="h-4 w-4 text-primary" /> Active Investments
             </CardTitle>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-primary text-xs gap-1"
-              onClick={() => navigate("/dashboard/investments")}
-            >
+            <Button variant="ghost" size="sm" className="text-primary text-xs gap-1" onClick={() => navigate("/dashboard/investments")}>
               View All <ArrowRight className="h-3 w-3" />
             </Button>
           </CardHeader>
@@ -307,12 +369,7 @@ export default function Overview() {
             <CardTitle className="text-section-dark-foreground text-base flex items-center gap-2">
               <DollarSign className="h-4 w-4 text-primary" /> Recent Transactions
             </CardTitle>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-primary text-xs gap-1"
-              onClick={() => navigate("/dashboard/transactions")}
-            >
+            <Button variant="ghost" size="sm" className="text-primary text-xs gap-1" onClick={() => navigate("/dashboard/transactions")}>
               View All <ArrowRight className="h-3 w-3" />
             </Button>
           </CardHeader>
@@ -355,26 +412,17 @@ export default function Overview() {
 
       {/* Quick Actions */}
       <div className="grid gap-4 sm:grid-cols-3">
-        <button
-          onClick={() => navigate("/dashboard/plans")}
-          className="group bg-card/5 border border-border/10 rounded-xl p-5 text-left hover:border-primary/30 transition-all"
-        >
+        <button onClick={() => navigate("/dashboard/plans")} className="group bg-card/5 border border-border/10 rounded-xl p-5 text-left hover:border-primary/30 transition-all">
           <TrendingUp className="h-6 w-6 text-primary mb-3 group-hover:scale-110 transition-transform" />
           <p className="font-semibold text-section-dark-foreground text-sm">Start Investing</p>
           <p className="text-xs text-muted-foreground mt-1">Browse plans and grow your portfolio</p>
         </button>
-        <button
-          onClick={() => navigate("/dashboard/referrals")}
-          className="group bg-card/5 border border-border/10 rounded-xl p-5 text-left hover:border-gold/30 transition-all"
-        >
+        <button onClick={() => navigate("/dashboard/referrals")} className="group bg-card/5 border border-border/10 rounded-xl p-5 text-left hover:border-gold/30 transition-all">
           <Gift className="h-6 w-6 text-gold mb-3 group-hover:scale-110 transition-transform" />
           <p className="font-semibold text-section-dark-foreground text-sm">Refer Friends</p>
           <p className="text-xs text-muted-foreground mt-1">Share your link and earn rewards</p>
         </button>
-        <button
-          onClick={() => navigate("/dashboard/profile")}
-          className="group bg-card/5 border border-border/10 rounded-xl p-5 text-left hover:border-primary/30 transition-all"
-        >
+        <button onClick={() => navigate("/dashboard/profile")} className="group bg-card/5 border border-border/10 rounded-xl p-5 text-left hover:border-primary/30 transition-all">
           <Wallet className="h-6 w-6 text-primary mb-3 group-hover:scale-110 transition-transform" />
           <p className="font-semibold text-section-dark-foreground text-sm">Manage Profile</p>
           <p className="text-xs text-muted-foreground mt-1">Update your account details</p>
