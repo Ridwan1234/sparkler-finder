@@ -19,6 +19,7 @@ import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
   PieChart, Pie, Cell, Legend
 } from "recharts";
+import PriceAlerts from "@/components/dashboard/PriceAlerts";
 
 const PIE_COLORS = [
   "hsl(152, 87%, 30%)",
@@ -310,6 +311,9 @@ export default function Overview() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Price Alerts */}
+      <PriceAlerts />
 
       {/* Two-column: Active Investments + Recent Transactions */}
       <div className="grid gap-6 lg:grid-cols-2">
