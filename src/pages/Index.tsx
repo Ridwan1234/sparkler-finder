@@ -4,6 +4,7 @@ import AboutSection from "@/components/landing/AboutSection";
 import ServicesSection from "@/components/landing/ServicesSection";
 import WhyChooseUs from "@/components/landing/WhyChooseUs";
 import CryptoTickerSection from "@/components/landing/CryptoTickerSection";
+import { CryptoMarquee } from "@/components/dashboard/CryptoMarquee";
 import PlansSection from "@/components/landing/PlansSection";
 import TestimonialsSection from "@/components/landing/TestimonialsSection";
 import FAQSection from "@/components/landing/FAQSection";
@@ -13,6 +14,9 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <Header />
+      <div className="pt-16 md:pt-20">
+        <CryptoMarquee />
+      </div>
       <HeroSection />
       <AboutSection />
       <ServicesSection />

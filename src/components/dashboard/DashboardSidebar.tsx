@@ -9,6 +9,7 @@ import {
   Users,
   LogOut,
   Shield,
+  Bell,
 } from "lucide-react";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { NavLink } from "@/components/NavLink";
@@ -35,6 +36,7 @@ const mainItems = [
   { title: "Deposits", url: "/dashboard/deposits", icon: ArrowDownToLine },
   { title: "Withdrawals", url: "/dashboard/withdrawals", icon: ArrowUpFromLine },
   { title: "Transactions", url: "/dashboard/transactions", icon: History },
+  { title: "Price Alerts", url: "/dashboard/alerts", icon: Bell },
 ];
 
 const accountItems = [
