@@ -20,6 +20,7 @@ import {
   PieChart, Pie, Cell, Legend
 } from "recharts";
 import PriceAlerts from "@/components/dashboard/PriceAlerts";
+import { motion } from "framer-motion";
 
 const PIE_COLORS = [
   "hsl(152, 87%, 30%)",
@@ -29,6 +30,16 @@ const PIE_COLORS = [
   "hsl(350, 65%, 55%)",
   "hsl(170, 60%, 40%)",
 ];
+
+const stagger = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.07 } },
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24, scale: 0.97 },
+  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] as const } },
+};
 
 export default function Overview() {
   const { user } = useAuth();
@@ -47,7 +58,6 @@ export default function Overview() {
   const activeTicker = ticker?.find((t) => t.id === COIN_MAP[chartCoin]);
   const isUp = (activeTicker?.price_change_percentage_24h ?? 0) >= 0;
 
-  // Recent transactions
   const { data: recentTx } = useQuery({
     queryKey: ["recent_transactions", user?.id],
     queryFn: async () => {
@@ -59,7 +69,6 @@ export default function Overview() {
     enabled: !!user,
   });
 
-  // Active investments with plans
   const { data: activeInvList } = useQuery({
     queryKey: ["active_investments", user?.id],
     queryFn: async () => {
@@ -72,7 +81,6 @@ export default function Overview() {
     enabled: !!user,
   });
 
-  // All investments for pie chart
   const { data: allInvestments } = useQuery({
     queryKey: ["all_investments_pie", user?.id],
     queryFn: async () => {
@@ -84,7 +92,6 @@ export default function Overview() {
     enabled: !!user,
   });
 
-  // Pending deposits count
   const { data: pendingDeposits } = useQuery({
     queryKey: ["pending_deposits_count", user?.id],
     queryFn: async () => {
@@ -96,7 +103,6 @@ export default function Overview() {
     enabled: !!user,
   });
 
-  // Build pie data
   const pieData = (() => {
     if (!allInvestments || allInvestments.length === 0) return [];
     const grouped: Record<string, number> = {};
@@ -129,7 +135,13 @@ export default function Overview() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
+      >
         <h1 className="font-display text-2xl font-bold text-section-dark-foreground">
           Welcome back, {user?.user_metadata?.full_name || user?.email?.split("@")[0]}
         </h1>
@@ -141,33 +153,53 @@ export default function Overview() {
             <ArrowUpFromLine className="h-3.5 w-3.5" /> Withdraw
           </Button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Stat Cards */}
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-        {stats.map((s) => (
-          <Card key={s.label} className="bg-card/5 border-border/10">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-xs font-medium text-muted-foreground">{s.label}</CardTitle>
-              <div className={`p-1.5 rounded-md ${s.bg}`}>
-                <s.icon className={`h-3.5 w-3.5 ${s.color}`} />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xl font-bold text-section-dark-foreground">{s.value}</p>
-            </CardContent>
-          </Card>
+      <motion.div
+        variants={stagger}
+        initial="hidden"
+        animate="visible"
+        className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+      >
+        {stats.map((s, i) => (
+          <motion.div key={s.label} variants={fadeUp}>
+            <Card className="bg-card/5 border-border/10 hover:border-primary/20 transition-all duration-300 hover:shadow-[0_0_20px_hsl(152,87%,30%,0.05)]">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-xs font-medium text-muted-foreground">{s.label}</CardTitle>
+                <motion.div
+                  className={`p-1.5 rounded-md ${s.bg}`}
+                  whileHover={{ scale: 1.2, rotate: 10 }}
+                  transition={{ type: "spring", stiffness: 400 }}
+                >
+                  <s.icon className={`h-3.5 w-3.5 ${s.color}`} />
+                </motion.div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-xl font-bold text-section-dark-foreground">{s.value}</p>
+              </CardContent>
+            </Card>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       {/* Pending alerts */}
       {(pendingDeposits! > 0 || pendingWithdrawals > 0) && (
-        <div className="flex flex-wrap gap-3">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4, delay: 0.3 }}
+          className="flex flex-wrap gap-3"
+        >
           {pendingDeposits! > 0 && (
-            <div className="flex items-center gap-2 bg-gold/10 border border-gold/30 text-gold px-4 py-2 rounded-lg text-sm">
+            <motion.div
+              className="flex items-center gap-2 bg-gold/10 border border-gold/30 text-gold px-4 py-2 rounded-lg text-sm"
+              animate={{ scale: [1, 1.02, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
               <Clock className="h-4 w-4" />
               {pendingDeposits} deposit{pendingDeposits! > 1 ? "s" : ""} pending approval
-            </div>
+            </motion.div>
           )}
           {pendingWithdrawals > 0 && (
             <div className="flex items-center gap-2 bg-gold/10 border border-gold/30 text-gold px-4 py-2 rounded-lg text-sm">
@@ -175,11 +207,16 @@ export default function Overview() {
               ${pendingWithdrawals.toLocaleString()} in pending withdrawals
             </div>
           )}
-        </div>
+        </motion.div>
       )}
 
       {/* Live Crypto Chart + Portfolio Pie */}
-      <div className="grid gap-6 lg:grid-cols-3">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="grid gap-6 lg:grid-cols-3"
+      >
         {/* Crypto Chart — 2/3 width */}
         <Card className="bg-card/5 border-border/10 lg:col-span-2">
           <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2">
@@ -214,13 +251,12 @@ export default function Overview() {
             </div>
           </CardHeader>
           <CardContent>
-            {/* Ticker row */}
             <div className="flex gap-4 mb-4 overflow-x-auto pb-1">
               {(["BTC", "ETH", "BNB"] as const).map((sym) => {
                 const t = ticker?.find((x) => x.id === COIN_MAP[sym]);
                 const up = (t?.price_change_percentage_24h ?? 0) >= 0;
                 return (
-                  <div key={sym} className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs whitespace-nowrap ${chartCoin === sym ? "border-primary/30 bg-primary/5" : "border-border/10"}`}>
+                  <div key={sym} className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs whitespace-nowrap transition-all duration-200 ${chartCoin === sym ? "border-primary/30 bg-primary/5" : "border-border/10"}`}>
                     {t?.image && <img src={t.image} alt={sym} className="w-4 h-4 rounded-full" />}
                     <span className="font-semibold text-section-dark-foreground">{sym}</span>
                     <span className="text-section-dark-foreground">{t ? `$${t.current_price.toLocaleString()}` : "—"}</span>
@@ -259,7 +295,7 @@ export default function Overview() {
           </CardContent>
         </Card>
 
-        {/* Portfolio Allocation Pie — 1/3 width */}
+        {/* Portfolio Allocation Pie */}
         <Card className="bg-card/5 border-border/10">
           <CardHeader>
             <CardTitle className="text-section-dark-foreground text-base flex items-center gap-2">
@@ -271,17 +307,7 @@ export default function Overview() {
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie
-                      data={pieData}
-                      cx="50%"
-                      cy="45%"
-                      innerRadius={50}
-                      outerRadius={80}
-                      paddingAngle={3}
-                      dataKey="value"
-                      nameKey="name"
-                      stroke="none"
-                    >
+                    <Pie data={pieData} cx="50%" cy="45%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value" nameKey="name" stroke="none">
                       {pieData.map((_, i) => (
                         <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
                       ))}
@@ -290,12 +316,7 @@ export default function Overview() {
                       contentStyle={{ background: "hsl(155, 25%, 9%)", border: "1px solid hsl(155, 20%, 18%)", borderRadius: "8px", fontSize: "12px", color: "hsl(150, 10%, 90%)" }}
                       formatter={(value: number) => [`$${value.toLocaleString()}`, ""]}
                     />
-                    <Legend
-                      verticalAlign="bottom"
-                      iconType="circle"
-                      iconSize={8}
-                      formatter={(value: string) => <span className="text-xs text-muted-foreground">{value}</span>}
-                    />
+                    <Legend verticalAlign="bottom" iconType="circle" iconSize={8} formatter={(value: string) => <span className="text-xs text-muted-foreground">{value}</span>} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -310,128 +331,167 @@ export default function Overview() {
             )}
           </CardContent>
         </Card>
-      </div>
+      </motion.div>
 
       {/* Price Alerts */}
-      <PriceAlerts />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.35 }}
+      >
+        <PriceAlerts />
+      </motion.div>
 
       {/* Two-column: Active Investments + Recent Transactions */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      <motion.div
+        variants={stagger}
+        initial="hidden"
+        animate="visible"
+        className="grid gap-6 lg:grid-cols-2"
+      >
         {/* Active Investments */}
-        <Card className="bg-card/5 border-border/10">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-section-dark-foreground text-base flex items-center gap-2">
-              <Activity className="h-4 w-4 text-primary" /> Active Investments
-            </CardTitle>
-            <Button variant="ghost" size="sm" className="text-primary text-xs gap-1" onClick={() => navigate("/dashboard/investments")}>
-              View All <ArrowRight className="h-3 w-3" />
-            </Button>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {activeInvList && activeInvList.length > 0 ? (
-              activeInvList.map((inv) => {
-                const plan = inv.investment_plans;
-                const startMs = new Date(inv.started_at).getTime();
-                const endMs = new Date(inv.expires_at).getTime();
-                const totalDuration = endMs - startMs || 1;
-                const elapsed = now - startMs;
-                const progress = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
-                const remaining = Math.max(0, endMs - now);
-                const daysLeft = Math.ceil(remaining / (24 * 60 * 60 * 1000));
+        <motion.div variants={fadeUp}>
+          <Card className="bg-card/5 border-border/10">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-section-dark-foreground text-base flex items-center gap-2">
+                <Activity className="h-4 w-4 text-primary" /> Active Investments
+              </CardTitle>
+              <Button variant="ghost" size="sm" className="text-primary text-xs gap-1" onClick={() => navigate("/dashboard/investments")}>
+                View All <ArrowRight className="h-3 w-3" />
+              </Button>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {activeInvList && activeInvList.length > 0 ? (
+                activeInvList.map((inv) => {
+                  const plan = inv.investment_plans;
+                  const startMs = new Date(inv.started_at).getTime();
+                  const endMs = new Date(inv.expires_at).getTime();
+                  const totalDuration = endMs - startMs || 1;
+                  const elapsed = now - startMs;
+                  const progress = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
+                  const remaining = Math.max(0, endMs - now);
+                  const daysLeft = Math.ceil(remaining / (24 * 60 * 60 * 1000));
 
-                return (
-                  <div key={inv.id} className="bg-background/5 border border-border/10 rounded-lg p-4 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-semibold text-section-dark-foreground text-sm">{plan?.name ?? "Plan"}</p>
-                        <p className="text-xs text-muted-foreground">${Number(inv.amount).toLocaleString()} invested</p>
+                  return (
+                    <motion.div
+                      key={inv.id}
+                      className="bg-background/5 border border-border/10 rounded-lg p-4 space-y-3 hover:border-primary/20 transition-all duration-200"
+                      whileHover={{ x: 4 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-semibold text-section-dark-foreground text-sm">{plan?.name ?? "Plan"}</p>
+                          <p className="text-xs text-muted-foreground">${Number(inv.amount).toLocaleString()} invested</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-bold text-gold">{Number(plan?.roi_percentage ?? 0)}% ROI</p>
+                          <p className="text-xs text-muted-foreground">{daysLeft}d left</p>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm font-bold text-gold">{Number(plan?.roi_percentage ?? 0)}% ROI</p>
-                        <p className="text-xs text-muted-foreground">{daysLeft}d left</p>
-                      </div>
-                    </div>
-                    <Progress value={progress} className="h-1.5" />
-                  </div>
-                );
-              })
-            ) : (
-              <div className="text-center py-6 space-y-2">
-                <Wallet className="h-8 w-8 text-muted-foreground/50 mx-auto" />
-                <p className="text-sm text-muted-foreground">No active investments</p>
-                <Button size="sm" variant="outline" className="border-border/20 text-section-dark-foreground" onClick={() => navigate("/dashboard/plans")}>
-                  Browse Plans
-                </Button>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                      <Progress value={progress} className="h-1.5" />
+                    </motion.div>
+                  );
+                })
+              ) : (
+                <div className="text-center py-6 space-y-2">
+                  <Wallet className="h-8 w-8 text-muted-foreground/50 mx-auto" />
+                  <p className="text-sm text-muted-foreground">No active investments</p>
+                  <Button size="sm" variant="outline" className="border-border/20 text-section-dark-foreground" onClick={() => navigate("/dashboard/plans")}>
+                    Browse Plans
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
 
         {/* Recent Transactions */}
-        <Card className="bg-card/5 border-border/10">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-section-dark-foreground text-base flex items-center gap-2">
-              <DollarSign className="h-4 w-4 text-primary" /> Recent Transactions
-            </CardTitle>
-            <Button variant="ghost" size="sm" className="text-primary text-xs gap-1" onClick={() => navigate("/dashboard/transactions")}>
-              View All <ArrowRight className="h-3 w-3" />
-            </Button>
-          </CardHeader>
-          <CardContent>
-            {recentTx && recentTx.length > 0 ? (
-              <div className="space-y-2">
-                {recentTx.map((t) => (
-                  <div key={t.id} className="flex items-center justify-between py-2 border-b border-border/5 last:border-0">
-                    <div className="flex items-center gap-3">
-                      <Badge variant="outline" className={`text-[10px] ${typeColor[t.type] ?? ""}`}>
-                        {t.type}
-                      </Badge>
-                      <div>
-                        <p className="text-sm text-section-dark-foreground">{t.description ?? t.type}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {t.created_at && !isNaN(new Date(t.created_at).getTime())
-                            ? format(new Date(t.created_at), "MMM d, yyyy")
-                            : "—"}
-                        </p>
+        <motion.div variants={fadeUp}>
+          <Card className="bg-card/5 border-border/10">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-section-dark-foreground text-base flex items-center gap-2">
+                <DollarSign className="h-4 w-4 text-primary" /> Recent Transactions
+              </CardTitle>
+              <Button variant="ghost" size="sm" className="text-primary text-xs gap-1" onClick={() => navigate("/dashboard/transactions")}>
+                View All <ArrowRight className="h-3 w-3" />
+              </Button>
+            </CardHeader>
+            <CardContent>
+              {recentTx && recentTx.length > 0 ? (
+                <div className="space-y-2">
+                  {recentTx.map((t, i) => (
+                    <motion.div
+                      key={t.id}
+                      className="flex items-center justify-between py-2 border-b border-border/5 last:border-0 hover:bg-primary/5 rounded px-2 -mx-2 transition-colors"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.4 + i * 0.05 }}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Badge variant="outline" className={`text-[10px] ${typeColor[t.type] ?? ""}`}>
+                          {t.type}
+                        </Badge>
+                        <div>
+                          <p className="text-sm text-section-dark-foreground">{t.description ?? t.type}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {t.created_at && !isNaN(new Date(t.created_at).getTime())
+                              ? format(new Date(t.created_at), "MMM d, yyyy")
+                              : "—"}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                    <p className={`text-sm font-semibold ${
-                      ["roi", "bonus", "principal_return"].includes(t.type)
-                        ? "text-primary"
-                        : t.type === "investment" ? "text-gold" : "text-section-dark-foreground"
-                    }`}>
-                      {["roi", "bonus", "principal_return"].includes(t.type) ? "+" : ""}${Number(t.amount).toLocaleString()}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-6">
-                <p className="text-sm text-muted-foreground">No transactions yet</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+                      <p className={`text-sm font-semibold ${
+                        ["roi", "bonus", "principal_return"].includes(t.type)
+                          ? "text-primary"
+                          : t.type === "investment" ? "text-gold" : "text-section-dark-foreground"
+                      }`}>
+                        {["roi", "bonus", "principal_return"].includes(t.type) ? "+" : ""}${Number(t.amount).toLocaleString()}
+                      </p>
+                    </motion.div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-6">
+                  <p className="text-sm text-muted-foreground">No transactions yet</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
+      </motion.div>
 
       {/* Quick Actions */}
-      <div className="grid gap-4 sm:grid-cols-3">
-        <button onClick={() => navigate("/dashboard/plans")} className="group bg-card/5 border border-border/10 rounded-xl p-5 text-left hover:border-primary/30 transition-all">
-          <TrendingUp className="h-6 w-6 text-primary mb-3 group-hover:scale-110 transition-transform" />
-          <p className="font-semibold text-section-dark-foreground text-sm">Start Investing</p>
-          <p className="text-xs text-muted-foreground mt-1">Browse plans and grow your portfolio</p>
-        </button>
-        <button onClick={() => navigate("/dashboard/referrals")} className="group bg-card/5 border border-border/10 rounded-xl p-5 text-left hover:border-gold/30 transition-all">
-          <Gift className="h-6 w-6 text-gold mb-3 group-hover:scale-110 transition-transform" />
-          <p className="font-semibold text-section-dark-foreground text-sm">Refer Friends</p>
-          <p className="text-xs text-muted-foreground mt-1">Share your link and earn rewards</p>
-        </button>
-        <button onClick={() => navigate("/dashboard/profile")} className="group bg-card/5 border border-border/10 rounded-xl p-5 text-left hover:border-primary/30 transition-all">
-          <Wallet className="h-6 w-6 text-primary mb-3 group-hover:scale-110 transition-transform" />
-          <p className="font-semibold text-section-dark-foreground text-sm">Manage Profile</p>
-          <p className="text-xs text-muted-foreground mt-1">Update your account details</p>
-        </button>
-      </div>
+      <motion.div
+        variants={stagger}
+        initial="hidden"
+        animate="visible"
+        className="grid gap-4 sm:grid-cols-3"
+      >
+        {[
+          { onClick: () => navigate("/dashboard/plans"), icon: TrendingUp, color: "text-primary", hoverBorder: "hover:border-primary/30", title: "Start Investing", desc: "Browse plans and grow your portfolio" },
+          { onClick: () => navigate("/dashboard/referrals"), icon: Gift, color: "text-gold", hoverBorder: "hover:border-gold/30", title: "Refer Friends", desc: "Share your link and earn rewards" },
+          { onClick: () => navigate("/dashboard/profile"), icon: Wallet, color: "text-primary", hoverBorder: "hover:border-primary/30", title: "Manage Profile", desc: "Update your account details" },
+        ].map((action) => (
+          <motion.button
+            key={action.title}
+            variants={fadeUp}
+            onClick={action.onClick}
+            className={`group bg-card/5 border border-border/10 rounded-xl p-5 text-left ${action.hoverBorder} transition-all duration-300`}
+            whileHover={{ y: -4, boxShadow: "0 8px 30px hsl(152, 87%, 30%, 0.08)" }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <motion.div
+              whileHover={{ scale: 1.15, rotate: 8 }}
+              transition={{ type: "spring", stiffness: 400 }}
+            >
+              <action.icon className={`h-6 w-6 ${action.color} mb-3`} />
+            </motion.div>
+            <p className="font-semibold text-section-dark-foreground text-sm">{action.title}</p>
+            <p className="text-xs text-muted-foreground mt-1">{action.desc}</p>
+          </motion.button>
+        ))}
+      </motion.div>
     </div>
   );
 }
