@@ -49,17 +49,17 @@ export default function Overview() {
   const [chartDays, setChartDays] = useState(30);
   const {
     balance, activeInvestments, totalROI, totalDeposits,
-    totalWithdrawals, totalBonuses, pendingWithdrawals,
+    totalWithdrawals, totalBonuses, pendingWithdrawals, isLoading: balanceLoading,
   } = useBalance(user?.id);
 
   // Live crypto data
-  const { data: ticker } = useCryptoTicker();
+  const { data: ticker, isLoading: tickerLoading } = useCryptoTicker();
   const { data: chartData, isLoading: chartLoading } = useCryptoChart(chartCoin, chartDays);
   const COIN_MAP: Record<string, string> = { BTC: "bitcoin", ETH: "ethereum", BNB: "binancecoin" };
   const activeTicker = ticker?.find((t) => t.id === COIN_MAP[chartCoin]);
   const isUp = (activeTicker?.price_change_percentage_24h ?? 0) >= 0;
 
-  const { data: recentTx } = useQuery({
+  const { data: recentTx, isLoading: txLoading } = useQuery({
     queryKey: ["recent_transactions", user?.id],
     queryFn: async () => {
       const { data } = await supabase
@@ -70,7 +70,7 @@ export default function Overview() {
     enabled: !!user,
   });
 
-  const { data: activeInvList } = useQuery({
+  const { data: activeInvList, isLoading: invLoading } = useQuery({
     queryKey: ["active_investments", user?.id],
     queryFn: async () => {
       const { data } = await supabase
