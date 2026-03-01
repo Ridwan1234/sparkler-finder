@@ -21,6 +21,7 @@ import {
 } from "recharts";
 import PriceAlerts from "@/components/dashboard/PriceAlerts";
 import { motion } from "framer-motion";
+import { StatCardsSkeleton, ChartSkeleton, PieSkeleton, ListCardSkeleton } from "@/components/dashboard/DashboardSkeletons";
 
 const PIE_COLORS = [
   "hsl(152, 87%, 30%)",
@@ -48,17 +49,17 @@ export default function Overview() {
   const [chartDays, setChartDays] = useState(30);
   const {
     balance, activeInvestments, totalROI, totalDeposits,
-    totalWithdrawals, totalBonuses, pendingWithdrawals,
+    totalWithdrawals, totalBonuses, pendingWithdrawals, isLoading: balanceLoading,
   } = useBalance(user?.id);
 
   // Live crypto data
-  const { data: ticker } = useCryptoTicker();
+  const { data: ticker, isLoading: tickerLoading } = useCryptoTicker();
   const { data: chartData, isLoading: chartLoading } = useCryptoChart(chartCoin, chartDays);
   const COIN_MAP: Record<string, string> = { BTC: "bitcoin", ETH: "ethereum", BNB: "binancecoin" };
   const activeTicker = ticker?.find((t) => t.id === COIN_MAP[chartCoin]);
   const isUp = (activeTicker?.price_change_percentage_24h ?? 0) >= 0;
 
-  const { data: recentTx } = useQuery({
+  const { data: recentTx, isLoading: txLoading } = useQuery({
     queryKey: ["recent_transactions", user?.id],
     queryFn: async () => {
       const { data } = await supabase
@@ -69,7 +70,7 @@ export default function Overview() {
     enabled: !!user,
   });
 
-  const { data: activeInvList } = useQuery({
+  const { data: activeInvList, isLoading: invLoading } = useQuery({
     queryKey: ["active_investments", user?.id],
     queryFn: async () => {
       const { data } = await supabase
@@ -156,32 +157,36 @@ export default function Overview() {
       </motion.div>
 
       {/* Stat Cards */}
-      <motion.div
-        variants={stagger}
-        initial="hidden"
-        animate="visible"
-        className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-      >
-        {stats.map((s, i) => (
-          <motion.div key={s.label} variants={fadeUp}>
-            <Card className="bg-card/5 border-border/10 hover:border-primary/20 transition-all duration-300 hover:shadow-[0_0_20px_hsl(152,87%,30%,0.05)]">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-xs font-medium text-muted-foreground">{s.label}</CardTitle>
-                <motion.div
-                  className={`p-1.5 rounded-md ${s.bg}`}
-                  whileHover={{ scale: 1.2, rotate: 10 }}
-                  transition={{ type: "spring", stiffness: 400 }}
-                >
-                  <s.icon className={`h-3.5 w-3.5 ${s.color}`} />
-                </motion.div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-xl font-bold text-section-dark-foreground">{s.value}</p>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-      </motion.div>
+      {balanceLoading ? (
+        <StatCardsSkeleton />
+      ) : (
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          animate="visible"
+          className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          {stats.map((s, i) => (
+            <motion.div key={s.label} variants={fadeUp}>
+              <Card className="bg-card/5 border-border/10 hover:border-primary/20 transition-all duration-300 hover:shadow-[0_0_20px_hsl(152,87%,30%,0.05)]">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-xs font-medium text-muted-foreground">{s.label}</CardTitle>
+                  <motion.div
+                    className={`p-1.5 rounded-md ${s.bg}`}
+                    whileHover={{ scale: 1.2, rotate: 10 }}
+                    transition={{ type: "spring", stiffness: 400 }}
+                  >
+                    <s.icon className={`h-3.5 w-3.5 ${s.color}`} />
+                  </motion.div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-xl font-bold text-section-dark-foreground">{s.value}</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
 
       {/* Pending alerts */}
       {(pendingDeposits! > 0 || pendingWithdrawals > 0) && (
@@ -210,7 +215,12 @@ export default function Overview() {
         </motion.div>
       )}
 
-      {/* Live Crypto Chart + Portfolio Pie */}
+      {(chartLoading && tickerLoading) ? (
+        <div className="grid gap-6 lg:grid-cols-3">
+          <ChartSkeleton />
+          <PieSkeleton />
+        </div>
+      ) : (
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -332,6 +342,7 @@ export default function Overview() {
           </CardContent>
         </Card>
       </motion.div>
+      )}
 
       {/* Price Alerts */}
       <motion.div
@@ -343,6 +354,12 @@ export default function Overview() {
       </motion.div>
 
       {/* Two-column: Active Investments + Recent Transactions */}
+      {(invLoading || txLoading) ? (
+        <div className="grid gap-6 lg:grid-cols-2">
+          <ListCardSkeleton rows={3} />
+          <ListCardSkeleton rows={5} />
+        </div>
+      ) : (
       <motion.div
         variants={stagger}
         initial="hidden"
@@ -460,6 +477,7 @@ export default function Overview() {
           </Card>
         </motion.div>
       </motion.div>
+      )}
 
       {/* Quick Actions */}
       <motion.div

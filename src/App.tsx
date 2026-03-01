@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import AdminRoute from "@/components/AdminRoute";
 import PageTransition from "@/components/PageTransition";
+import ScrollToTop from "@/components/ScrollToTop";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -86,6 +87,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <WhatsAppButton />
+      <ScrollToTop />
       <BrowserRouter>
         <AuthProvider>
           <AnimatedRoutes />
