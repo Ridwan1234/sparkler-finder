@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useCryptoTicker } from "@/hooks/useCryptoPrices";
@@ -83,35 +83,7 @@ export default function PriceAlerts() {
     },
   });
 
-  // Client-side alert checking against live prices
-  useEffect(() => {
-    if (!ticker || !alerts) return;
-    const COIN_MAP: Record<string, string> = { BTC: "bitcoin", ETH: "ethereum", BNB: "binancecoin" };
-
-    alerts.forEach((alert) => {
-      if (alert.is_triggered) return;
-      const t = ticker.find((x) => x.id === COIN_MAP[alert.coin]);
-      if (!t) return;
-
-      const triggered =
-        (alert.direction === "above" && t.current_price >= alert.target_price) ||
-        (alert.direction === "below" && t.current_price <= alert.target_price);
-
-      if (triggered) {
-        // Update in DB
-        supabase
-          .from("price_alerts")
-          .update({ is_triggered: true, triggered_at: new Date().toISOString() })
-          .eq("id", alert.id)
-          .then(() => queryClient.invalidateQueries({ queryKey: ["price_alerts"] }));
-
-        toast.success(
-          `🔔 ${alert.coin} is now ${alert.direction === "above" ? "above" : "below"} $${alert.target_price.toLocaleString()}! Current: $${t.current_price.toLocaleString()}`,
-          { duration: 8000 }
-        );
-      }
-    });
-  }, [ticker, alerts, queryClient]);
+  // Alert checking is now handled globally by usePriceAlertChecker in DashboardLayout
 
   const COIN_MAP: Record<string, string> = { BTC: "bitcoin", ETH: "ethereum", BNB: "binancecoin" };
 
