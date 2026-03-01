@@ -137,7 +137,7 @@ export default function AdminUsers() {
     URL.revokeObjectURL(url);
   };
 
-
+  return (
     <div>
       <h1 className="font-display text-2xl font-bold text-section-dark-foreground mb-6">
         User Management
