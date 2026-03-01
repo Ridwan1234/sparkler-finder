@@ -152,6 +152,43 @@ export default function AdminUsers() {
 
       <Card className="bg-card/5 border-border/10">
         <CardContent className="pt-6">
+          <div className="flex flex-col sm:flex-row gap-3 mb-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by name, phone, referral code..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 bg-background/50 border-border/20"
+              />
+            </div>
+            <Select value={filterBy} onValueChange={(v: any) => setFilterBy(v)}>
+              <SelectTrigger className="w-full sm:w-[180px] bg-background/50 border-border/20">
+                <Filter className="h-4 w-4 mr-2 text-muted-foreground" />
+                <SelectValue placeholder="Filter" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Users</SelectItem>
+                <SelectItem value="has_investments">Has Investments</SelectItem>
+                <SelectItem value="no_investments">No Investments</SelectItem>
+                <SelectItem value="positive_balance">Positive Balance</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={sortBy} onValueChange={(v: any) => setSortBy(v)}>
+              <SelectTrigger className="w-full sm:w-[180px] bg-background/50 border-border/20">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Newest First</SelectItem>
+                <SelectItem value="balance_high">Balance: High → Low</SelectItem>
+                <SelectItem value="balance_low">Balance: Low → High</SelectItem>
+                <SelectItem value="deposits">Most Deposits</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="text-xs text-muted-foreground mb-3">
+            Showing {filteredUsers.length} of {totalUsers} users
+          </div>
           <Table>
             <TableHeader>
               <TableRow className="border-border/10">
@@ -165,7 +202,7 @@ export default function AdminUsers() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users?.map((u) => (
+              {filteredUsers.map((u) => (
                 <>
                   <TableRow key={u.profile.user_id} className="border-border/10 cursor-pointer" onClick={() => setExpandedUser(expandedUser === u.profile.user_id ? null : u.profile.user_id)}>
                     <TableCell className="text-section-dark-foreground font-medium">
