@@ -2,10 +2,12 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import AdminRoute from "@/components/AdminRoute";
+import PageTransition from "@/components/PageTransition";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -37,6 +39,47 @@ import WhatsAppButton from "./components/WhatsAppButton";
 
 const queryClient = new QueryClient();
 
+const AnimatedRoutes = () => {
+  const location = useLocation();
+  return (
+    <AnimatePresence mode="wait">
+      <PageTransition key={location.pathname}>
+        <Routes location={location}>
+          <Route path="/" element={<Index />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/services" element={<ServicesPage />} />
+          <Route path="/plans" element={<PlansPage />} />
+          <Route path="/faq" element={<FAQPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
+            <Route index element={<Overview />} />
+            <Route path="plans" element={<Plans />} />
+            <Route path="investments" element={<ActiveInvestments />} />
+            <Route path="deposits" element={<Deposits />} />
+            <Route path="withdrawals" element={<Withdrawals />} />
+            <Route path="transactions" element={<Transactions />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="referrals" element={<Referrals />} />
+            <Route path="alerts" element={<Alerts />} />
+          </Route>
+          <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
+            <Route index element={<AdminOverview />} />
+            <Route path="deposits" element={<AdminDeposits />} />
+            <Route path="withdrawals" element={<AdminWithdrawals />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="settings" element={<AdminSettings />} />
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </PageTransition>
+    </AnimatePresence>
+  );
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -45,37 +88,7 @@ const App = () => (
       <WhatsAppButton />
       <BrowserRouter>
         <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/services" element={<ServicesPage />} />
-            <Route path="/plans" element={<PlansPage />} />
-            <Route path="/faq" element={<FAQPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
-              <Route index element={<Overview />} />
-              <Route path="plans" element={<Plans />} />
-              <Route path="investments" element={<ActiveInvestments />} />
-              <Route path="deposits" element={<Deposits />} />
-              <Route path="withdrawals" element={<Withdrawals />} />
-              <Route path="transactions" element={<Transactions />} />
-              <Route path="profile" element={<Profile />} />
-              <Route path="referrals" element={<Referrals />} />
-              <Route path="alerts" element={<Alerts />} />
-            </Route>
-            <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
-              <Route index element={<AdminOverview />} />
-              <Route path="deposits" element={<AdminDeposits />} />
-              <Route path="withdrawals" element={<AdminWithdrawals />} />
-              <Route path="users" element={<AdminUsers />} />
-              <Route path="settings" element={<AdminSettings />} />
-            </Route>
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <AnimatedRoutes />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
