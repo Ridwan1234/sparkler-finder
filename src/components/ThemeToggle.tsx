@@ -1,10 +1,21 @@
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sun, Moon } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export function ThemeToggle({ className = "" }: { className?: string }) {
-  const { theme, setTheme } = useTheme();
-  const isDark = theme === "dark";
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) {
+    return (
+      <div className={`w-9 h-9 rounded-lg border border-border/20 bg-background/10 ${className}`} />
+    );
+  }
+
+  const isDark = resolvedTheme === "dark";
 
   return (
     <button
