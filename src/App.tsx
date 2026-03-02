@@ -25,6 +25,7 @@ import Profile from "./pages/dashboard/Profile";
 import Referrals from "./pages/dashboard/Referrals";
 import ActiveInvestments from "./pages/dashboard/ActiveInvestments";
 import Alerts from "./pages/dashboard/Alerts";
+import SpotMarket from "./pages/dashboard/SpotMarket";
 import AdminLayout from "./components/admin/AdminLayout";
 import AdminOverview from "./pages/admin/AdminOverview";
 import AdminDeposits from "./pages/admin/AdminDeposits";
@@ -66,6 +67,7 @@ const AnimatedRoutes = () => {
             <Route path="deposits" element={<Deposits />} />
             <Route path="withdrawals" element={<Withdrawals />} />
             <Route path="transactions" element={<Transactions />} />
+            <Route path="spot-market" element={<SpotMarket />} />
             <Route path="profile" element={<Profile />} />
             <Route path="referrals" element={<Referrals />} />
             <Route path="alerts" element={<Alerts />} />

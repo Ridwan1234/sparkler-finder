@@ -279,6 +279,7 @@
       "deposits": "存款",
       "withdrawals": "提款",
       "transactions": "交易",
+      "spotMarket": "现货市场",
       "priceAlerts": "价格预警",
       "account": "账户",
       "profile": "个人资料",
@@ -415,6 +416,8 @@
       "deposit": "存款",
       "withdrawal": "提款",
       "investment": "投资",
+      "spot_buy": "现货买入",
+      "spot_sell": "现货卖出",
       "roi": "ROI",
       "bonus": "奖金",
       "principal_return": "本金返还"

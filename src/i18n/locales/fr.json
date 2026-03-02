@@ -279,6 +279,7 @@
       "deposits": "Dépôts",
       "withdrawals": "Retraits",
       "transactions": "Transactions",
+      "spotMarket": "Marché Spot",
       "priceAlerts": "Alertes de prix",
       "account": "Compte",
       "profile": "Profil",
@@ -415,6 +416,8 @@
       "deposit": "Dépôt",
       "withdrawal": "Retrait",
       "investment": "Investissement",
+      "spot_buy": "Achat Spot",
+      "spot_sell": "Vente Spot",
       "roi": "ROI",
       "bonus": "Bonus",
       "principal_return": "Retour du capital"

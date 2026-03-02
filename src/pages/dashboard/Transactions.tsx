@@ -28,6 +28,8 @@ export default function Transactions() {
     deposit: "bg-primary/20 text-primary border-primary/30",
     withdrawal: "bg-destructive/20 text-destructive border-destructive/30",
     investment: "bg-gold/20 text-gold border-gold/30",
+    spot_buy: "bg-primary/20 text-primary border-primary/30",
+    spot_sell: "bg-destructive/20 text-destructive border-destructive/30",
     roi: "bg-primary/20 text-primary border-primary/30",
   };
 

@@ -279,6 +279,7 @@
       "deposits": "Einzahlungen",
       "withdrawals": "Auszahlungen",
       "transactions": "Transaktionen",
+      "spotMarket": "Spot-Markt",
       "priceAlerts": "Preisalarme",
       "account": "Konto",
       "profile": "Profil",
@@ -415,6 +416,8 @@
       "deposit": "Einzahlung",
       "withdrawal": "Auszahlung",
       "investment": "Investition",
+      "spot_buy": "Spot-Kauf",
+      "spot_sell": "Spot-Verkauf",
       "roi": "ROI",
       "bonus": "Bonus",
       "principal_return": "Kapitalrückzahlung"

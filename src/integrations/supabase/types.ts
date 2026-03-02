@@ -211,6 +211,75 @@ export type Database = {
         }
         Relationships: []
       }
+      spot_orders: {
+        Row: {
+          coin_symbol: string
+          created_at: string
+          id: string
+          order_type: string
+          price_usd: number
+          quantity: number
+          realized_pnl: number
+          total_usd: number
+          user_id: string
+        }
+        Insert: {
+          coin_symbol: string
+          created_at?: string
+          id?: string
+          order_type: string
+          price_usd: number
+          quantity: number
+          realized_pnl?: number
+          total_usd: number
+          user_id: string
+        }
+        Update: {
+          coin_symbol?: string
+          created_at?: string
+          id?: string
+          order_type?: string
+          price_usd?: number
+          quantity?: number
+          realized_pnl?: number
+          total_usd?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      spot_positions: {
+        Row: {
+          avg_buy_price: number
+          coin_symbol: string
+          created_at: string
+          id: string
+          invested_usd: number
+          quantity: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avg_buy_price?: number
+          coin_symbol: string
+          created_at?: string
+          id?: string
+          invested_usd?: number
+          quantity?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avg_buy_price?: number
+          coin_symbol?: string
+          created_at?: string
+          id?: string
+          invested_usd?: number
+          quantity?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
           amount: number

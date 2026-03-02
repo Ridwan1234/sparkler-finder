@@ -279,6 +279,7 @@
       "deposits": "Deposits",
       "withdrawals": "Withdrawals",
       "transactions": "Transactions",
+      "spotMarket": "Spot Market",
       "priceAlerts": "Price Alerts",
       "account": "Account",
       "profile": "Profile",
@@ -415,9 +416,16 @@
       "deposit": "Deposit",
       "withdrawal": "Withdrawal",
       "investment": "Investment",
+      "spot_buy": "Spot Buy",
+      "spot_sell": "Spot Sell",
       "roi": "ROI",
       "bonus": "Bonus",
       "principal_return": "Principal Return"
+    },
+    "spot": {
+      "title": "Spot Market",
+      "buySuccess": "Buy order executed",
+      "sellSuccess": "Sell order executed"
     },
     "alerts": {
       "title": "Price Alerts",

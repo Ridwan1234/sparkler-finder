@@ -77,9 +77,20 @@ export function useBalance(userId: string | undefined): BalanceResult {
   const totalROI = transactions?.filter(t => t.type === "roi").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
   const totalPrincipalReturns = transactions?.filter(t => t.type === "principal_return").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
   const totalInvested = transactions?.filter(t => t.type === "investment").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
+  const totalSpotBuys = transactions?.filter(t => t.type === "spot_buy").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
+  const totalSpotSells = transactions?.filter(t => t.type === "spot_sell").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
   const activeInvestments = investments?.filter(i => i.status === "active").reduce((s, i) => s + Number(i.amount), 0) ?? 0;
 
-  const balance = totalDeposits + totalBonuses + totalROI + totalPrincipalReturns - totalWithdrawals - totalInvested - pendingWithdrawals;
+  const balance =
+    totalDeposits +
+    totalBonuses +
+    totalROI +
+    totalPrincipalReturns +
+    totalSpotSells -
+    totalWithdrawals -
+    totalInvested -
+    totalSpotBuys -
+    pendingWithdrawals;
 
   return {
     balance,

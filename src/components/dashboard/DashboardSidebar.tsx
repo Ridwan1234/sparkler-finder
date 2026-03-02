@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, TrendingUp, Wallet, ArrowDownToLine, ArrowUpFromLine,
-  History, User, Users, LogOut, Shield, Bell,
+  History, User, Users, LogOut, Shield, Bell, Coins,
 } from "lucide-react";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { NavLink } from "@/components/NavLink";
@@ -29,6 +29,7 @@ export function DashboardSidebar() {
     { title: t("dashboard.sidebar.deposits"), url: "/dashboard/deposits", icon: ArrowDownToLine },
     { title: t("dashboard.sidebar.withdrawals"), url: "/dashboard/withdrawals", icon: ArrowUpFromLine },
     { title: t("dashboard.sidebar.transactions"), url: "/dashboard/transactions", icon: History },
+    { title: t("dashboard.sidebar.spotMarket"), url: "/dashboard/spot-market", icon: Coins },
     { title: t("dashboard.sidebar.priceAlerts"), url: "/dashboard/alerts", icon: Bell },
   ];
 
