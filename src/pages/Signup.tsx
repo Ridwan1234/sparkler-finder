@@ -105,9 +105,9 @@ const Signup = () => {
               whileHover={{ scale: 1.1, rotate: 5 }}
               transition={{ type: "spring", stiffness: 400 }}
             >
-              <span className="text-primary-foreground font-display font-bold text-lg">C</span>
+              <span className="text-primary-foreground font-display font-bold text-lg">H</span>
             </motion.div>
-            <span className="font-display font-bold text-xl text-section-dark-foreground">CoinStamp</span>
+            <span className="font-display font-bold text-xl text-section-dark-foreground">HarborForge</span>
           </motion.div>
 
           <motion.h1 variants={itemVariants} className="font-display text-2xl font-bold text-section-dark-foreground mt-6 mb-1">

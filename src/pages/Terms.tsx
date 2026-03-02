@@ -16,7 +16,7 @@ const sections = [
     icon: FileText,
     title: "1. Acceptance of Terms",
     content: [
-      "By accessing or using the CoinStamp platform, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this site.",
+      "By accessing or using the HarborForge platform, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this site.",
       "We reserve the right to modify these terms at any time. Changes will be effective immediately upon posting to the platform. Your continued use of the platform after changes constitutes acceptance of the modified terms.",
     ],
   },
@@ -34,7 +34,7 @@ const sections = [
     title: "3. Investment Risks & Disclaimers",
     content: [
       "All investments carry risk, including the potential loss of principal. Past performance does not guarantee future results. Cryptocurrency and digital asset markets are highly volatile.",
-      "CoinStamp does not provide financial, tax, or legal advice. You should consult with qualified professionals before making any investment decisions.",
+      "HarborForge does not provide financial, tax, or legal advice. You should consult with qualified professionals before making any investment decisions.",
       "Returns mentioned on the platform are projected estimates and are not guaranteed. Market conditions may affect actual returns.",
     ],
   },
@@ -136,8 +136,8 @@ const Terms = () => {
             </h3>
             <p className="text-muted-foreground text-sm">
               {t("terms.questionsDesc")}{" "}
-              <a href="mailto:support@coinstamp.org" className="text-primary hover:underline">
-                support@coinstamp.org
+              <a href="mailto:support@harborforge.org" className="text-primary hover:underline">
+                support@harborforge.org
               </a>
             </p>
           </motion.div>

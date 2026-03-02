@@ -57,11 +57,11 @@ export default function Withdrawals() {
   const create = useMutation({
     mutationFn: async () => {
       const amt = Number(amount);
-      if (!amount || amt <= 0) throw new Error("Enter a valid amount");
-      if (!wallet.trim()) throw new Error("Enter wallet address");
-      if (!hasInvestment) throw new Error("You must have at least one investment to withdraw");
-      if (minWithdrawal > 0 && amt < minWithdrawal) throw new Error(`Minimum withdrawal is $${minWithdrawal.toLocaleString()}`);
-      if (amt > balance) throw new Error(`Insufficient balance. Available: $${balance.toLocaleString()}`);
+      if (!amount || amt <= 0) throw new Error(t("dashboard.withdrawals.errors.validAmount"));
+      if (!wallet.trim()) throw new Error(t("dashboard.withdrawals.errors.walletRequired"));
+      if (!hasInvestment) throw new Error(t("dashboard.withdrawals.errors.needInvestment"));
+      if (minWithdrawal > 0 && amt < minWithdrawal) throw new Error(t("dashboard.withdrawals.errors.minWithdrawal", { amount: minWithdrawal.toLocaleString() }));
+      if (amt > balance) throw new Error(t("dashboard.withdrawals.errors.insufficientBalance", { amount: balance.toLocaleString() }));
       const { error } = await supabase.from("withdrawals").insert({
         user_id: user!.id,
         amount: amt,
@@ -151,7 +151,7 @@ export default function Withdrawals() {
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline" className={statusColor[w.status] ?? ""}>
-                      {w.status}
+                      {t(`dashboard.status.${w.status}` as const, { defaultValue: w.status })}
                     </Badge>
                   </TableCell>
                 </TableRow>

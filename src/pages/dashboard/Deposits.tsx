@@ -52,8 +52,8 @@ export default function Deposits() {
 
   const create = useMutation({
     mutationFn: async () => {
-      if (!amount || Number(amount) <= 0) throw new Error("Enter a valid amount");
-      if (!selectedWallet) throw new Error("Select a wallet to deposit to");
+      if (!amount || Number(amount) <= 0) throw new Error(t("dashboard.deposits.errors.validAmount"));
+      if (!selectedWallet) throw new Error(t("dashboard.deposits.errors.selectWallet"));
       const { error } = await supabase.from("deposits").insert({
         user_id: user!.id,
         amount: Number(amount),
@@ -185,7 +185,7 @@ export default function Deposits() {
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline" className={statusColor[d.status] ?? ""}>
-                      {d.status}
+                      {t(`dashboard.status.${d.status}` as const, { defaultValue: d.status })}
                     </Badge>
                   </TableCell>
                 </TableRow>

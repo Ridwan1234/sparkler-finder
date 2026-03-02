@@ -45,9 +45,9 @@ export function DashboardSidebar() {
       <SidebarContent>
         <div className="px-4 py-5 border-b border-sidebar-border">
           {!collapsed ? (
-            <span className="font-display text-lg font-bold text-primary">InvestPro</span>
+            <span className="font-display text-lg font-bold text-primary">HarborForge</span>
           ) : (
-            <span className="font-display text-lg font-bold text-primary">IP</span>
+            <span className="font-display text-lg font-bold text-primary">HF</span>
           )}
         </div>
 

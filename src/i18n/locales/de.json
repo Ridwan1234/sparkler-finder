@@ -24,24 +24,24 @@
   "about": {
     "label": "Über uns",
     "title": "Erfahrene Handelsplattform",
-    "description": "CoinStamp ist eine führende Multi-Asset-Investitionsplattform mit vielfältigen Möglichkeiten in Kryptowährung, Forex, Aktien, Immobilien und mehr.",
+    "description": "HarborForge ist eine führende Multi-Asset-Investitionsplattform mit vielfältigen Möglichkeiten in Kryptowährung, Forex, Aktien, Immobilien und mehr.",
     "provenTrackRecord": "Bewährte Erfolgsbilanz",
     "provenDesc": "Jahre konstanter Renditen mit transparenter Berichterstattung und geprüften Ergebnissen.",
     "transparencySecurity": "Transparenz & Sicherheit",
     "transparencyDesc": "Bankgrade-Verschlüsselung, 2FA und Cold Storage für maximalen Schutz.",
     "support247": "24/7 Kundensupport",
     "supportDesc": "Engagiertes Support-Team rund um die Uhr per Live-Chat und E-Mail erreichbar.",
-    "pageLabel": "Über CoinStamp",
+    "pageLabel": "Über HarborForge",
     "pageTitle": "Die Zukunft des",
     "pageTitleHighlight": "Multi-Asset-Investierens gestalten",
-    "pageDescription": "Seit 2018 steht CoinStamp an der Spitze der Finanzinnovation — sichere, transparente und diversifizierte Investitionslösungen.",
+    "pageDescription": "Seit 2018 steht HarborForge an der Spitze der Finanzinnovation — sichere, transparente und diversifizierte Investitionslösungen.",
     "assetsManaged": "Verwaltetes Vermögen",
     "activeInvestors": "Aktive Investoren",
     "countriesServed": "Bediente Länder",
     "uptimeGuarantee": "Verfügbarkeitsgarantie",
     "ourStory": "Unsere Geschichte",
     "storyTitle": "Von der Vision zur globalen Plattform",
-    "storyP1": "CoinStamp entstand aus einer einfachen, aber mächtigen Idee: Jeder verdient Zugang zu denselben Vermögensaufbau-Tools, die zuvor institutionellen Investoren vorbehalten waren.",
+    "storyP1": "HarborForge entstand aus einer einfachen, aber mächtigen Idee: Jeder verdient Zugang zu denselben Vermögensaufbau-Tools, die zuvor institutionellen Investoren vorbehalten waren.",
     "storyP2": "Was als kleines Fintech-Team begann, ist zu einer vertrauenswürdigen globalen Plattform gewachsen, die über 150.000 Investoren in 45+ Ländern bedient.",
     "storyP3": "Wir sind reguliert, geprüft und den höchsten Standards für Compliance und Datenschutz verpflichtet.",
     "whatDrivesUs": "Was uns antreibt",
@@ -50,15 +50,15 @@
     "ourMission": "Unsere Mission",
     "missionDesc": "Den Zugang zu erstklassigen Investitionsmöglichkeiten durch eine sichere, transparente und intuitive Plattform zu demokratisieren.",
     "globalReach": "Globale Reichweite",
-    "globalReachDesc": "In über 45 Ländern tätig, überbrückt CoinStamp die Kluft zwischen traditioneller Finanzwelt und digitaler Wirtschaft.",
+    "globalReachDesc": "In über 45 Ländern tätig, überbrückt HarborForge die Kluft zwischen traditioneller Finanzwelt und digitaler Wirtschaft.",
     "communityFirst": "Gemeinschaft zuerst",
     "communityDesc": "Wir glauben, dass gemeinsames Investieren besser ist. Unser gemeinschaftsorientierter Ansatz umfasst Bildungsressourcen und Experten-Webinare.",
     "innovationDriven": "Innovationsgetrieben",
     "innovationDesc": "Von KI-gestützter Marktanalyse bis hin zu fraktioniertem Immobilieninvestment — wir innovieren ständig.",
     "regulatedCompliant": "Reguliert & Konform",
-    "regulatedDesc": "CoinStamp hält internationale Regulierungsstandards ein und wird regelmäßig von Dritten geprüft.",
+    "regulatedDesc": "HarborForge hält internationale Regulierungsstandards ein und wird regelmäßig von Dritten geprüft.",
     "milestones": {
-      "2018": "CoinStamp gegründet mit der Vision, Multi-Asset-Investieren zu vereinfachen.",
+      "2018": "HarborForge gegründet mit der Vision, Multi-Asset-Investieren zu vereinfachen.",
       "2019": "Start von Krypto- und Forex-Handel mit institutioneller Infrastruktur.",
       "2020": "Über 50.000 registrierte Nutzer und Expansion in 20+ Länder.",
       "2021": "Einführung von fraktioniertem Immobilienbesitz und Aktien-Investmentplänen.",
@@ -124,7 +124,7 @@
   "faq": {
     "label": "FAQ",
     "title": "Häufig gestellte Fragen",
-    "q1": "Wie fange ich mit CoinStamp an?",
+    "q1": "Wie fange ich mit HarborForge an?",
     "a1": "Erstellen Sie einfach ein Konto, verifizieren Sie Ihre Identität, wählen Sie einen Investitionsplan und tätigen Sie Ihre erste Einzahlung.",
     "q2": "Wie hoch ist der Mindestinvestitionsbetrag?",
     "a2": "Unser Standardplan beginnt bei nur 100 $, für jeden zugänglich.",
@@ -146,10 +146,10 @@
     "title": "Was unsere Investoren sagen",
     "t1Name": "James K.",
     "t1Role": "Krypto-Investor",
-    "t1Text": "CoinStamp hat mein Investitionsportfolio transformiert. Die Renditen sind konstant und die Plattform ist unglaublich einfach zu bedienen.",
+    "t1Text": "HarborForge hat mein Investitionsportfolio transformiert. Die Renditen sind konstant und die Plattform ist unglaublich einfach zu bedienen.",
     "t2Name": "Sarah M.",
     "t2Role": "Forex-Händlerin",
-    "t2Text": "Ich handle seit Jahren Forex, und CoinStamp bietet die besten Spreads und Ausführungen, die ich je erlebt habe.",
+    "t2Text": "Ich handle seit Jahren Forex, und HarborForge bietet die besten Spreads und Ausführungen, die ich je erlebt habe.",
     "t3Name": "David L.",
     "t3Role": "Immobilieninvestor",
     "t3Text": "Die fraktionierte Immobilienfunktion ist brillant. Ich kann mit minimalem Kapital über mehrere Immobilien diversifizieren."
@@ -299,7 +299,11 @@
       "status": "Status",
       "noDeposits": "Noch keine Einzahlungen",
       "depositSubmitted": "Einzahlungsantrag eingereicht!",
-      "addressCopied": "Adresse kopiert!"
+      "addressCopied": "Adresse kopiert!",
+      "errors": {
+        "validAmount": "Geben Sie einen gültigen Betrag ein",
+        "selectWallet": "Wählen Sie ein Wallet für die Einzahlung"
+      }
     },
     "withdrawals": {
       "title": "Auszahlungen",
@@ -316,7 +320,14 @@
       "wallet": "Wallet",
       "status": "Status",
       "noWithdrawals": "Noch keine Auszahlungen",
-      "withdrawalSubmitted": "Auszahlungsantrag eingereicht!"
+      "withdrawalSubmitted": "Auszahlungsantrag eingereicht!",
+      "errors": {
+        "validAmount": "Geben Sie einen gültigen Betrag ein",
+        "walletRequired": "Geben Sie eine Wallet-Adresse ein",
+        "needInvestment": "Sie benötigen mindestens eine Investition für eine Auszahlung",
+        "minWithdrawal": "Mindestauszahlung ist ${{amount}}",
+        "insufficientBalance": "Unzureichendes Guthaben. Verfügbar: ${{amount}}"
+      }
     },
     "plans": {
       "title": "Investitionspläne",
@@ -329,7 +340,13 @@
       "confirm": "Bestätigen",
       "cancel": "Abbrechen",
       "investNow": "Jetzt investieren",
-      "investmentCreated": "Investition erfolgreich erstellt!"
+      "investmentCreated": "Investition erfolgreich erstellt!",
+      "investmentDescription": "Investition in den {{plan}}-Plan",
+      "errors": {
+        "planNotFound": "Plan nicht gefunden",
+        "amountRange": "Betrag muss zwischen ${{min}} und ${{max}} liegen",
+        "insufficientBalance": "Unzureichendes Guthaben. Verfügbar: ${{amount}}"
+      }
     },
     "profile": {
       "title": "Profileinstellungen",
@@ -369,11 +386,54 @@
       "progress": "Fortschritt",
       "timeRemaining": "Verbleibende Zeit",
       "roiEarned": "ROI verdient",
-      "investmentCompleted": "Investition abgeschlossen!"
+      "investmentCompleted": "Investition abgeschlossen!",
+      "completedDescription": "{{plan}}: ${{amount}} -> +${{roi}}"
+    },
+    "overview": {
+      "unknownPlan": "Unbekannter Plan",
+      "pendingDeposit_one": "{{count}} Einzahlung ausstehend",
+      "pendingDeposit_other": "{{count}} Einzahlungen ausstehend",
+      "daysLeft_one": "{{count}}T verbleibend",
+      "daysLeft_other": "{{count}}T verbleibend",
+      "browsePlans": "Pläne durchsuchen",
+      "investedSuffix": "investiert",
+      "quickActionInvestDesc": "Durchsuchen Sie Pläne und bauen Sie Ihr Portfolio aus",
+      "referFriends": "Freunde werben",
+      "quickActionReferDesc": "Teilen Sie Ihren Link und verdienen Sie Belohnungen",
+      "manageProfile": "Profil verwalten",
+      "quickActionProfileDesc": "Aktualisieren Sie Ihre Kontodaten"
+    },
+    "status": {
+      "pending": "Ausstehend",
+      "approved": "Genehmigt",
+      "rejected": "Abgelehnt"
+    },
+    "transactionTypes": {
+      "deposit": "Einzahlung",
+      "withdrawal": "Auszahlung",
+      "investment": "Investition",
+      "roi": "ROI",
+      "bonus": "Bonus",
+      "principal_return": "Kapitalrückzahlung"
     },
     "alerts": {
       "title": "Preisalarme",
-      "description": "Setzen Sie Preisschwellen für BTC, ETH und BNB. Sie erhalten In-App-Benachrichtigungen, wenn Preise Ihre Ziele erreichen."
+      "description": "Setzen Sie Preisschwellen für BTC, ETH und BNB. Sie erhalten In-App-Benachrichtigungen, wenn Preise Ihre Ziele erreichen.",
+      "coin": "Coin",
+      "direction": "Richtung",
+      "above": "Über",
+      "below": "Unter",
+      "targetPrice": "Zielpreis ($)",
+      "targetPricePlaceholder": "z.B. 70000",
+      "add": "Hinzufügen",
+      "currentPrice": "Aktueller Preis {{coin}}",
+      "triggered": "Ausgelöst",
+      "watching": "Beobachtung...",
+      "noAlerts": "Keine Alarme gesetzt",
+      "createHint": "Erstellen Sie oben einen Alarm, um benachrichtigt zu werden",
+      "invalidPrice": "Ungültiger Preis",
+      "alertCreated": "Preisalarm erstellt!",
+      "alertRemoved": "Alarm entfernt"
     }
   },
   "cryptoTicker": {

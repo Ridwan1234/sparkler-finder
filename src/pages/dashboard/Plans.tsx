@@ -62,11 +62,11 @@ export default function Plans() {
   const invest = useMutation({
     mutationFn: async ({ planId, amount }: { planId: string; amount: number }) => {
       const plan = plans?.find((p) => p.id === planId);
-      if (!plan) throw new Error("Plan not found");
+      if (!plan) throw new Error(t("dashboard.plans.errors.planNotFound"));
       if (amount < Number(plan.min_amount) || amount > Number(plan.max_amount))
-        throw new Error(`Amount must be between $${plan.min_amount} and $${plan.max_amount}`);
+        throw new Error(t("dashboard.plans.errors.amountRange", { min: plan.min_amount, max: plan.max_amount }));
       if (amount > balance)
-        throw new Error(`Insufficient balance. Your available balance is $${balance.toLocaleString()}`);
+        throw new Error(t("dashboard.plans.errors.insufficientBalance", { amount: balance.toLocaleString() }));
 
       const expiresAt = new Date();
       expiresAt.setDate(expiresAt.getDate() + plan.duration_days);
@@ -83,7 +83,7 @@ export default function Plans() {
         user_id: user!.id,
         amount,
         type: "investment",
-        description: `Investment in ${plan.name} plan`,
+        description: t("dashboard.plans.investmentDescription", { plan: plan.name }),
       });
       if (txError) throw txError;
     },

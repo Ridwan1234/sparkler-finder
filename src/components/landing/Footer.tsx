@@ -41,9 +41,9 @@ const Footer = () => {
           <motion.div variants={itemVariants}>
             <div className="flex items-center gap-2 mb-4">
               <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-display font-bold text-lg">C</span>
+                <span className="text-primary-foreground font-display font-bold text-lg">H</span>
               </div>
-              <span className="font-display font-bold text-xl">CoinStamp</span>
+              <span className="font-display font-bold text-xl">HarborForge</span>
             </div>
             <p className="text-section-dark-foreground/50 text-sm mb-4">{t("footer.brandDesc")}</p>
           </motion.div>
@@ -67,7 +67,7 @@ const Footer = () => {
           <motion.div variants={itemVariants}>
             <h4 className="font-display font-semibold mb-4">{t("footer.contact")}</h4>
             <ul className="space-y-3 text-sm text-section-dark-foreground/50">
-              <li className="flex items-center gap-2"><Mail size={14} className="text-primary" /> support@coinstamp.org</li>
+              <li className="flex items-center gap-2"><Mail size={14} className="text-primary" /> support@harborforge.org</li>
               <li className="flex items-center gap-2"><Phone size={14} className="text-primary" /> +1 (555) 123-4567</li>
               <li className="flex items-center gap-2"><MapPin size={14} className="text-primary" /> 123 Finance St, New York</li>
             </ul>
@@ -94,7 +94,7 @@ const Footer = () => {
         className="border-t border-section-dark-foreground/10 py-6"
       >
         <div className="container text-center text-sm text-section-dark-foreground/40">
-          © {new Date().getFullYear()} CoinStamp. {t("footer.copyright")}
+          © {new Date().getFullYear()} HarborForge. {t("footer.copyright")}
         </div>
       </motion.div>
     </footer>

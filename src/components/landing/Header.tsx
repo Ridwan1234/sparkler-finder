@@ -34,9 +34,9 @@ const Header = () => {
             transition={{ type: "spring", stiffness: 400 }}
             className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center"
           >
-            <span className="text-primary-foreground font-display font-bold text-lg">C</span>
+            <span className="text-primary-foreground font-display font-bold text-lg">H</span>
           </motion.div>
-          <span className="font-display font-bold text-xl text-section-dark-foreground">CoinStamp</span>
+          <span className="font-display font-bold text-xl text-section-dark-foreground">HarborForge</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">

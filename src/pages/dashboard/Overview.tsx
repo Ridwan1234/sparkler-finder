@@ -22,6 +22,7 @@ import {
 import PriceAlerts from "@/components/dashboard/PriceAlerts";
 import { motion } from "framer-motion";
 import { StatCardsSkeleton, ChartSkeleton, PieSkeleton, ListCardSkeleton } from "@/components/dashboard/DashboardSkeletons";
+import { useTranslation } from "react-i18next";
 
 const PIE_COLORS = [
   "hsl(152, 87%, 30%)",
@@ -43,6 +44,7 @@ const fadeUp = {
 };
 
 export default function Overview() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [chartCoin, setChartCoin] = useState<"BTC" | "ETH" | "BNB">("BTC");
@@ -108,19 +110,19 @@ export default function Overview() {
     if (!allInvestments || allInvestments.length === 0) return [];
     const grouped: Record<string, number> = {};
     allInvestments.forEach((inv) => {
-      const name = (inv.investment_plans as any)?.name ?? "Unknown";
+      const name = (inv.investment_plans as any)?.name ?? t("dashboard.overview.unknownPlan");
       grouped[name] = (grouped[name] ?? 0) + Number(inv.amount);
     });
     return Object.entries(grouped).map(([name, value]) => ({ name, value }));
   })();
 
   const stats = [
-    { label: "Available Balance", value: `$${balance.toLocaleString()}`, icon: DollarSign, color: "text-primary", bg: "bg-primary/10" },
-    { label: "Active Investments", value: `$${activeInvestments.toLocaleString()}`, icon: TrendingUp, color: "text-gold", bg: "bg-gold/10" },
-    { label: "Total ROI Earned", value: `$${totalROI.toLocaleString()}`, icon: TrendingUp, color: "text-primary", bg: "bg-primary/10" },
-    { label: "Total Deposits", value: `$${totalDeposits.toLocaleString()}`, icon: ArrowDownToLine, color: "text-primary", bg: "bg-primary/10" },
-    { label: "Total Withdrawals", value: `$${totalWithdrawals.toLocaleString()}`, icon: ArrowUpFromLine, color: "text-destructive", bg: "bg-destructive/10" },
-    { label: "Bonuses Earned", value: `$${totalBonuses.toLocaleString()}`, icon: Gift, color: "text-gold", bg: "bg-gold/10" },
+    { label: t("dashboard.availableBalance"), value: `$${balance.toLocaleString()}`, icon: DollarSign, color: "text-primary", bg: "bg-primary/10" },
+    { label: t("dashboard.activeInvestments"), value: `$${activeInvestments.toLocaleString()}`, icon: TrendingUp, color: "text-gold", bg: "bg-gold/10" },
+    { label: t("dashboard.totalROI"), value: `$${totalROI.toLocaleString()}`, icon: TrendingUp, color: "text-primary", bg: "bg-primary/10" },
+    { label: t("dashboard.totalDeposits"), value: `$${totalDeposits.toLocaleString()}`, icon: ArrowDownToLine, color: "text-primary", bg: "bg-primary/10" },
+    { label: t("dashboard.totalWithdrawals"), value: `$${totalWithdrawals.toLocaleString()}`, icon: ArrowUpFromLine, color: "text-destructive", bg: "bg-destructive/10" },
+    { label: t("dashboard.bonusesEarned"), value: `$${totalBonuses.toLocaleString()}`, icon: Gift, color: "text-gold", bg: "bg-gold/10" },
   ];
 
   const typeColor: Record<string, string> = {
@@ -144,14 +146,14 @@ export default function Overview() {
         className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
       >
         <h1 className="font-display text-2xl font-bold text-section-dark-foreground">
-          Welcome back, {user?.user_metadata?.full_name || user?.email?.split("@")[0]}
+          {t("dashboard.welcomeBack")} {user?.user_metadata?.full_name || user?.email?.split("@")[0]}
         </h1>
         <div className="flex gap-2">
           <Button size="sm" onClick={() => navigate("/dashboard/deposits")} className="gap-1.5">
-            <ArrowDownToLine className="h-3.5 w-3.5" /> Deposit
+            <ArrowDownToLine className="h-3.5 w-3.5" /> {t("dashboard.deposit")}
           </Button>
           <Button size="sm" variant="outline" onClick={() => navigate("/dashboard/withdrawals")} className="gap-1.5 border-border/20 text-section-dark-foreground">
-            <ArrowUpFromLine className="h-3.5 w-3.5" /> Withdraw
+            <ArrowUpFromLine className="h-3.5 w-3.5" /> {t("dashboard.withdraw")}
           </Button>
         </div>
       </motion.div>
@@ -203,13 +205,13 @@ export default function Overview() {
               transition={{ duration: 2, repeat: Infinity }}
             >
               <Clock className="h-4 w-4" />
-              {pendingDeposits} deposit{pendingDeposits! > 1 ? "s" : ""} pending approval
+              {pendingDeposits} {t("dashboard.overview.pendingDeposit", { count: pendingDeposits! })}
             </motion.div>
           )}
           {pendingWithdrawals > 0 && (
             <div className="flex items-center gap-2 bg-gold/10 border border-gold/30 text-gold px-4 py-2 rounded-lg text-sm">
               <Clock className="h-4 w-4" />
-              ${pendingWithdrawals.toLocaleString()} in pending withdrawals
+              ${pendingWithdrawals.toLocaleString()} {t("dashboard.pendingWithdrawals")}
             </div>
           )}
         </motion.div>
@@ -232,7 +234,7 @@ export default function Overview() {
           <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2">
             <div>
               <CardTitle className="text-section-dark-foreground text-base flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-primary" /> Market Overview
+                <TrendingUp className="h-4 w-4 text-primary" /> {t("dashboard.marketOverview")}
               </CardTitle>
               <p className="text-xs text-muted-foreground mt-1">
                 {chartCoin}/USD
@@ -263,16 +265,16 @@ export default function Overview() {
           <CardContent>
             <div className="flex gap-4 mb-4 overflow-x-auto pb-1">
               {(["BTC", "ETH", "BNB"] as const).map((sym) => {
-                const t = ticker?.find((x) => x.id === COIN_MAP[sym]);
-                const up = (t?.price_change_percentage_24h ?? 0) >= 0;
+                const tickerItem = ticker?.find((x) => x.id === COIN_MAP[sym]);
+                const up = (tickerItem?.price_change_percentage_24h ?? 0) >= 0;
                 return (
                   <div key={sym} className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs whitespace-nowrap transition-all duration-200 ${chartCoin === sym ? "border-primary/30 bg-primary/5" : "border-border/10"}`}>
-                    {t?.image && <img src={t.image} alt={sym} className="w-4 h-4 rounded-full" />}
+                    {tickerItem?.image && <img src={tickerItem.image} alt={sym} className="w-4 h-4 rounded-full" />}
                     <span className="font-semibold text-section-dark-foreground">{sym}</span>
-                    <span className="text-section-dark-foreground">{t ? `$${t.current_price.toLocaleString()}` : "—"}</span>
+                    <span className="text-section-dark-foreground">{tickerItem ? `$${tickerItem.current_price.toLocaleString()}` : "—"}</span>
                     <span className={`flex items-center gap-0.5 ${up ? "text-primary" : "text-destructive"}`}>
                       {up ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
-                      {t ? `${t.price_change_percentage_24h.toFixed(1)}%` : ""}
+                      {tickerItem ? `${tickerItem.price_change_percentage_24h.toFixed(1)}%` : ""}
                     </span>
                   </div>
                 );
@@ -280,7 +282,7 @@ export default function Overview() {
             </div>
             <div className="h-64">
               {chartLoading ? (
-                <div className="h-full flex items-center justify-center text-muted-foreground text-sm">Loading…</div>
+                <div className="h-full flex items-center justify-center text-muted-foreground text-sm">{t("common.loading")}</div>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={chartData ?? []} margin={{ top: 5, right: 5, left: -10, bottom: 0 }}>
@@ -309,7 +311,7 @@ export default function Overview() {
         <Card className="bg-card/5 border-border/10">
           <CardHeader>
             <CardTitle className="text-section-dark-foreground text-base flex items-center gap-2">
-              <PieChartIcon className="h-4 w-4 text-gold" /> Portfolio Allocation
+              <PieChartIcon className="h-4 w-4 text-gold" /> {t("dashboard.portfolioAllocation")}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -333,9 +335,9 @@ export default function Overview() {
             ) : (
               <div className="text-center py-10 space-y-2">
                 <PieChartIcon className="h-8 w-8 text-muted-foreground/50 mx-auto" />
-                <p className="text-sm text-muted-foreground">No active investments</p>
+                <p className="text-sm text-muted-foreground">{t("dashboard.noActiveInvestments")}</p>
                 <Button size="sm" variant="outline" className="border-border/20 text-section-dark-foreground" onClick={() => navigate("/dashboard/plans")}>
-                  Start Investing
+                  {t("dashboard.startInvesting")}
                 </Button>
               </div>
             )}
@@ -371,10 +373,10 @@ export default function Overview() {
           <Card className="bg-card/5 border-border/10">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-section-dark-foreground text-base flex items-center gap-2">
-                <Activity className="h-4 w-4 text-primary" /> Active Investments
+                <Activity className="h-4 w-4 text-primary" /> {t("dashboard.activeInvestments")}
               </CardTitle>
               <Button variant="ghost" size="sm" className="text-primary text-xs gap-1" onClick={() => navigate("/dashboard/investments")}>
-                View All <ArrowRight className="h-3 w-3" />
+                {t("dashboard.viewAll")} <ArrowRight className="h-3 w-3" />
               </Button>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -398,12 +400,12 @@ export default function Overview() {
                     >
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="font-semibold text-section-dark-foreground text-sm">{plan?.name ?? "Plan"}</p>
-                          <p className="text-xs text-muted-foreground">${Number(inv.amount).toLocaleString()} invested</p>
+                          <p className="font-semibold text-section-dark-foreground text-sm">{plan?.name ?? t("dashboard.overview.unknownPlan")}</p>
+                          <p className="text-xs text-muted-foreground">${Number(inv.amount).toLocaleString()} {t("dashboard.overview.investedSuffix")}</p>
                         </div>
                         <div className="text-right">
-                          <p className="text-sm font-bold text-gold">{Number(plan?.roi_percentage ?? 0)}% ROI</p>
-                          <p className="text-xs text-muted-foreground">{daysLeft}d left</p>
+                          <p className="text-sm font-bold text-gold">{Number(plan?.roi_percentage ?? 0)}% {t("dashboard.plans.roi")}</p>
+                          <p className="text-xs text-muted-foreground">{t("dashboard.overview.daysLeft", { count: daysLeft })}</p>
                         </div>
                       </div>
                       <Progress value={progress} className="h-1.5" />
@@ -413,9 +415,9 @@ export default function Overview() {
               ) : (
                 <div className="text-center py-6 space-y-2">
                   <Wallet className="h-8 w-8 text-muted-foreground/50 mx-auto" />
-                  <p className="text-sm text-muted-foreground">No active investments</p>
+                  <p className="text-sm text-muted-foreground">{t("dashboard.noActiveInvestments")}</p>
                   <Button size="sm" variant="outline" className="border-border/20 text-section-dark-foreground" onClick={() => navigate("/dashboard/plans")}>
-                    Browse Plans
+                    {t("dashboard.overview.browsePlans")}
                   </Button>
                 </div>
               )}
@@ -428,49 +430,49 @@ export default function Overview() {
           <Card className="bg-card/5 border-border/10">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-section-dark-foreground text-base flex items-center gap-2">
-                <DollarSign className="h-4 w-4 text-primary" /> Recent Transactions
+                <DollarSign className="h-4 w-4 text-primary" /> {t("dashboard.recentTransactions")}
               </CardTitle>
               <Button variant="ghost" size="sm" className="text-primary text-xs gap-1" onClick={() => navigate("/dashboard/transactions")}>
-                View All <ArrowRight className="h-3 w-3" />
+                {t("dashboard.viewAll")} <ArrowRight className="h-3 w-3" />
               </Button>
             </CardHeader>
             <CardContent>
               {recentTx && recentTx.length > 0 ? (
                 <div className="space-y-2">
-                  {recentTx.map((t, i) => (
+                  {recentTx.map((tx, i) => (
                     <motion.div
-                      key={t.id}
+                      key={tx.id}
                       className="flex items-center justify-between py-2 border-b border-border/5 last:border-0 hover:bg-primary/5 rounded px-2 -mx-2 transition-colors"
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.4 + i * 0.05 }}
                     >
                       <div className="flex items-center gap-3">
-                        <Badge variant="outline" className={`text-[10px] ${typeColor[t.type] ?? ""}`}>
-                          {t.type}
+                        <Badge variant="outline" className={`text-[10px] ${typeColor[tx.type] ?? ""}`}>
+                          {t(`dashboard.transactionTypes.${tx.type}` as const, { defaultValue: tx.type })}
                         </Badge>
                         <div>
-                          <p className="text-sm text-section-dark-foreground">{t.description ?? t.type}</p>
+                          <p className="text-sm text-section-dark-foreground">{tx.description ?? tx.type}</p>
                           <p className="text-xs text-muted-foreground">
-                            {t.created_at && !isNaN(new Date(t.created_at).getTime())
-                              ? format(new Date(t.created_at), "MMM d, yyyy")
+                            {tx.created_at && !isNaN(new Date(tx.created_at).getTime())
+                              ? format(new Date(tx.created_at), "MMM d, yyyy")
                               : "—"}
                           </p>
                         </div>
                       </div>
                       <p className={`text-sm font-semibold ${
-                        ["roi", "bonus", "principal_return"].includes(t.type)
+                        ["roi", "bonus", "principal_return"].includes(tx.type)
                           ? "text-primary"
-                          : t.type === "investment" ? "text-gold" : "text-section-dark-foreground"
+                          : tx.type === "investment" ? "text-gold" : "text-section-dark-foreground"
                       }`}>
-                        {["roi", "bonus", "principal_return"].includes(t.type) ? "+" : ""}${Number(t.amount).toLocaleString()}
+                        {["roi", "bonus", "principal_return"].includes(tx.type) ? "+" : ""}${Number(tx.amount).toLocaleString()}
                       </p>
                     </motion.div>
                   ))}
                 </div>
               ) : (
                 <div className="text-center py-6">
-                  <p className="text-sm text-muted-foreground">No transactions yet</p>
+                  <p className="text-sm text-muted-foreground">{t("dashboard.transactions.noTransactions")}</p>
                 </div>
               )}
             </CardContent>
@@ -487,9 +489,9 @@ export default function Overview() {
         className="grid gap-4 sm:grid-cols-3"
       >
         {[
-          { onClick: () => navigate("/dashboard/plans"), icon: TrendingUp, color: "text-primary", hoverBorder: "hover:border-primary/30", title: "Start Investing", desc: "Browse plans and grow your portfolio" },
-          { onClick: () => navigate("/dashboard/referrals"), icon: Gift, color: "text-gold", hoverBorder: "hover:border-gold/30", title: "Refer Friends", desc: "Share your link and earn rewards" },
-          { onClick: () => navigate("/dashboard/profile"), icon: Wallet, color: "text-primary", hoverBorder: "hover:border-primary/30", title: "Manage Profile", desc: "Update your account details" },
+          { onClick: () => navigate("/dashboard/plans"), icon: TrendingUp, color: "text-primary", hoverBorder: "hover:border-primary/30", title: t("dashboard.startInvesting"), desc: t("dashboard.overview.quickActionInvestDesc") },
+          { onClick: () => navigate("/dashboard/referrals"), icon: Gift, color: "text-gold", hoverBorder: "hover:border-gold/30", title: t("dashboard.overview.referFriends"), desc: t("dashboard.overview.quickActionReferDesc") },
+          { onClick: () => navigate("/dashboard/profile"), icon: Wallet, color: "text-primary", hoverBorder: "hover:border-primary/30", title: t("dashboard.overview.manageProfile"), desc: t("dashboard.overview.quickActionProfileDesc") },
         ].map((action) => (
           <motion.button
             key={action.title}

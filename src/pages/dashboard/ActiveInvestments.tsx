@@ -18,8 +18,8 @@ function useCountdown() {
   return now;
 }
 
-function formatTimeLeft(ms: number) {
-  if (ms <= 0) return "Completed";
+function formatTimeLeft(ms: number, t: (key: string, options?: any) => string) {
+  if (ms <= 0) return t("dashboard.investments.completed");
   const totalSec = Math.floor(ms / 1000);
   const d = Math.floor(totalSec / 86400);
   const h = Math.floor((totalSec % 86400) / 3600);
@@ -63,7 +63,11 @@ export default function ActiveInvestments() {
           const plan = inv.investment_plans;
           const roi = plan ? Number((inv.amount * plan.roi_percentage / 100).toFixed(2)) : 0;
           toast.success(`🎉 ${t("dashboard.investments.investmentCompleted")}`, {
-            description: `${plan?.name ?? ""} — $${Number(inv.amount).toLocaleString()} → +$${roi.toLocaleString()}`,
+            description: t("dashboard.investments.completedDescription", {
+              plan: plan?.name ?? t("dashboard.overview.unknownPlan"),
+              amount: Number(inv.amount).toLocaleString(),
+              roi: roi.toLocaleString(),
+            }),
             duration: 8000,
           });
           queryClient.invalidateQueries({ queryKey: ["transactions"] });
@@ -126,7 +130,7 @@ export default function ActiveInvestments() {
                   <CardContent className="pt-6 space-y-4">
                     <div className="flex items-center justify-between">
                       <span className="font-display font-bold text-section-dark-foreground">
-                        {plan?.name ?? "Unknown Plan"}
+                        {plan?.name ?? t("dashboard.overview.unknownPlan")}
                       </span>
                       <Badge className="bg-primary/20 text-primary border-primary/30" variant="outline">
                         {t("dashboard.investments.active")}
@@ -173,7 +177,7 @@ export default function ActiveInvestments() {
                     <div className="bg-primary/5 border border-primary/10 rounded-lg px-3 py-2 text-center">
                       <p className="text-xs text-muted-foreground mb-0.5">{t("dashboard.investments.timeRemaining")}</p>
                       <p className="text-lg font-bold text-primary font-mono">
-                        {formatTimeLeft(remaining)}
+                        {formatTimeLeft(remaining, t)}
                       </p>
                     </div>
                   </CardContent>
@@ -201,7 +205,7 @@ export default function ActiveInvestments() {
                   <CardContent className="pt-6 space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="font-display font-bold text-section-dark-foreground">
-                        {plan?.name ?? "Unknown Plan"}
+                        {plan?.name ?? t("dashboard.overview.unknownPlan")}
                       </span>
                       <Badge className="bg-gold/20 text-gold border-gold/30" variant="outline">
                         {t("dashboard.investments.completed")}

@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Bell, BellRing, Plus, Trash2, TrendingUp, TrendingDown } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 interface PriceAlert {
   id: string;
@@ -28,6 +29,7 @@ interface PriceAlert {
 }
 
 export default function PriceAlerts() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { data: ticker } = useCryptoTicker();
@@ -54,7 +56,7 @@ export default function PriceAlerts() {
   const createAlert = useMutation({
     mutationFn: async () => {
       const price = parseFloat(targetPrice);
-      if (isNaN(price) || price <= 0) throw new Error("Invalid price");
+      if (isNaN(price) || price <= 0) throw new Error(t("dashboard.alerts.invalidPrice"));
       const { error } = await supabase.from("price_alerts").insert({
         user_id: user!.id,
         coin,
@@ -66,7 +68,7 @@ export default function PriceAlerts() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["price_alerts"] });
       setTargetPrice("");
-      toast.success("Price alert created!");
+      toast.success(t("dashboard.alerts.alertCreated"));
     },
     onError: (e) => toast.error(e.message),
   });
@@ -79,7 +81,7 @@ export default function PriceAlerts() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["price_alerts"] });
-      toast.success("Alert removed");
+      toast.success(t("dashboard.alerts.alertRemoved"));
     },
   });
 
@@ -91,14 +93,14 @@ export default function PriceAlerts() {
     <Card className="bg-card/5 border-border/10">
       <CardHeader>
         <CardTitle className="text-section-dark-foreground text-base flex items-center gap-2">
-          <Bell className="h-4 w-4 text-gold" /> Price Alerts
+          <Bell className="h-4 w-4 text-gold" /> {t("dashboard.alerts.title")}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Create form */}
         <div className="flex flex-wrap items-end gap-2">
           <div className="space-y-1">
-            <label className="text-xs text-muted-foreground">Coin</label>
+            <label className="text-xs text-muted-foreground">{t("dashboard.alerts.coin")}</label>
             <Select value={coin} onValueChange={setCoin}>
               <SelectTrigger className="w-24 h-9 bg-background/10 border-border/20 text-section-dark-foreground">
                 <SelectValue />
@@ -111,22 +113,22 @@ export default function PriceAlerts() {
             </Select>
           </div>
           <div className="space-y-1">
-            <label className="text-xs text-muted-foreground">Direction</label>
+            <label className="text-xs text-muted-foreground">{t("dashboard.alerts.direction")}</label>
             <Select value={direction} onValueChange={setDirection}>
               <SelectTrigger className="w-28 h-9 bg-background/10 border-border/20 text-section-dark-foreground">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="above">Above ↑</SelectItem>
-                <SelectItem value="below">Below ↓</SelectItem>
+                <SelectItem value="above">{t("dashboard.alerts.above")} ↑</SelectItem>
+                <SelectItem value="below">{t("dashboard.alerts.below")} ↓</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-1 flex-1 min-w-[120px]">
-            <label className="text-xs text-muted-foreground">Target Price ($)</label>
+            <label className="text-xs text-muted-foreground">{t("dashboard.alerts.targetPrice")}</label>
             <Input
               type="number"
-              placeholder="e.g. 70000"
+              placeholder={t("dashboard.alerts.targetPricePlaceholder")}
               value={targetPrice}
               onChange={(e) => setTargetPrice(e.target.value)}
               className="h-9 bg-background/10 border-border/20 text-section-dark-foreground"
@@ -138,14 +140,14 @@ export default function PriceAlerts() {
             disabled={!targetPrice || createAlert.isPending}
             className="gap-1 h-9"
           >
-            <Plus className="h-3.5 w-3.5" /> Add
+            <Plus className="h-3.5 w-3.5" /> {t("dashboard.alerts.add")}
           </Button>
         </div>
 
         {/* Current price hint */}
         {ticker && (
           <p className="text-xs text-muted-foreground">
-            Current {coin}: ${ticker.find((t) => t.id === COIN_MAP[coin])?.current_price.toLocaleString() ?? "—"}
+            {t("dashboard.alerts.currentPrice", { coin })}: ${ticker.find((tickerItem) => tickerItem.id === COIN_MAP[coin])?.current_price.toLocaleString() ?? "—"}
           </p>
         )}
 
@@ -183,14 +185,14 @@ export default function PriceAlerts() {
                         ) : (
                           <TrendingDown className="h-2.5 w-2.5 mr-1" />
                         )}
-                        {a.direction}
+                        {a.direction === "above" ? t("dashboard.alerts.above") : t("dashboard.alerts.below")}
                       </Badge>
                       <span className="text-sm text-section-dark-foreground">
                         ${a.target_price.toLocaleString()}
                       </span>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      {a.is_triggered ? "Triggered ✓" : "Watching…"}
+                      {a.is_triggered ? t("dashboard.alerts.triggered") : t("dashboard.alerts.watching")}
                     </p>
                   </div>
                 </div>
@@ -207,8 +209,8 @@ export default function PriceAlerts() {
           ) : (
             <div className="text-center py-6">
               <Bell className="h-8 w-8 text-muted-foreground/50 mx-auto mb-2" />
-              <p className="text-sm text-muted-foreground">No alerts set</p>
-              <p className="text-xs text-muted-foreground">Create one above to get notified</p>
+              <p className="text-sm text-muted-foreground">{t("dashboard.alerts.noAlerts")}</p>
+              <p className="text-xs text-muted-foreground">{t("dashboard.alerts.createHint")}</p>
             </div>
           )}
         </div>

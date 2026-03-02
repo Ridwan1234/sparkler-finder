@@ -24,24 +24,24 @@
   "about": {
     "label": "About Us",
     "title": "Experienced Trading Platform",
-    "description": "CoinStamp is a leading multi-asset investment platform offering diverse opportunities across cryptocurrency, forex, stocks, real estate, and more.",
+    "description": "HarborForge is a leading multi-asset investment platform offering diverse opportunities across cryptocurrency, forex, stocks, real estate, and more.",
     "provenTrackRecord": "Proven Track Record",
     "provenDesc": "Years of consistent returns with transparent reporting and audited results.",
     "transparencySecurity": "Transparency & Security",
     "transparencyDesc": "Bank-grade encryption, 2FA, and cold storage for maximum asset protection.",
     "support247": "24/7 Customer Support",
     "supportDesc": "Dedicated support team available round the clock via live chat and email.",
-    "pageLabel": "About CoinStamp",
+    "pageLabel": "About HarborForge",
     "pageTitle": "Building the Future of",
     "pageTitleHighlight": "Multi-Asset Investing",
-    "pageDescription": "Since 2018, CoinStamp has been at the forefront of financial innovation — providing individuals and institutions with secure, transparent, and diversified investment solutions across cryptocurrency, forex, stocks, real estate, and more.",
+    "pageDescription": "Since 2018, HarborForge has been at the forefront of financial innovation — providing individuals and institutions with secure, transparent, and diversified investment solutions across cryptocurrency, forex, stocks, real estate, and more.",
     "assetsManaged": "Assets Managed",
     "activeInvestors": "Active Investors",
     "countriesServed": "Countries Served",
     "uptimeGuarantee": "Uptime Guarantee",
     "ourStory": "Our Story",
     "storyTitle": "From Vision to Global Platform",
-    "storyP1": "CoinStamp was born out of a simple yet powerful idea: that everyone deserves access to the same wealth-building tools previously reserved for institutional investors and high-net-worth individuals.",
+    "storyP1": "HarborForge was born out of a simple yet powerful idea: that everyone deserves access to the same wealth-building tools previously reserved for institutional investors and high-net-worth individuals.",
     "storyP2": "What started as a small team of fintech enthusiasts has grown into a trusted global platform serving over 150,000 investors across 45+ countries. Our proprietary technology combines real-time market analytics, risk management algorithms, and automated portfolio optimization to deliver consistent returns.",
     "storyP3": "We are regulated, audited, and committed to the highest standards of compliance and data protection. Every dollar invested on our platform is safeguarded by bank-grade encryption, cold storage solutions, and multi-signature authentication protocols.",
     "whatDrivesUs": "What Drives Us",
@@ -50,15 +50,15 @@
     "ourMission": "Our Mission",
     "missionDesc": "To democratize access to world-class investment opportunities by providing a secure, transparent, and intuitive platform that empowers individuals to build lasting wealth across multiple asset classes.",
     "globalReach": "Global Reach",
-    "globalReachDesc": "Operating across 45+ countries, CoinStamp bridges the gap between traditional finance and the digital economy — giving every investor access to diversified portfolios regardless of location.",
+    "globalReachDesc": "Operating across 45+ countries, HarborForge bridges the gap between traditional finance and the digital economy — giving every investor access to diversified portfolios regardless of location.",
     "communityFirst": "Community First",
     "communityDesc": "We believe investing is better together. Our community-driven approach includes educational resources, expert webinars, and peer-to-peer insights to help you make confident decisions.",
     "innovationDriven": "Innovation Driven",
     "innovationDesc": "From AI-powered market analytics to fractional real estate investing, we continuously innovate to bring cutting-edge tools and opportunities to our growing investor base.",
     "regulatedCompliant": "Regulated & Compliant",
-    "regulatedDesc": "CoinStamp adheres to international regulatory standards and undergoes regular third-party audits to ensure the safety and integrity of your investments.",
+    "regulatedDesc": "HarborForge adheres to international regulatory standards and undergoes regular third-party audits to ensure the safety and integrity of your investments.",
     "milestones": {
-      "2018": "CoinStamp founded with a vision to simplify multi-asset investing.",
+      "2018": "HarborForge founded with a vision to simplify multi-asset investing.",
       "2019": "Launched cryptocurrency and forex trading with institutional-grade infrastructure.",
       "2020": "Surpassed 50,000 registered users and expanded to 20+ countries.",
       "2021": "Introduced fractional real estate and stock investment plans.",
@@ -124,7 +124,7 @@
   "faq": {
     "label": "FAQ",
     "title": "Frequently Asked Questions",
-    "q1": "How do I get started with CoinStamp?",
+    "q1": "How do I get started with HarborForge?",
     "a1": "Simply create an account, verify your identity, choose an investment plan, and make your first deposit. Our platform guides you through every step.",
     "q2": "What is the minimum investment amount?",
     "a2": "Our Standard plan starts at just $100, making it accessible for everyone. Higher-tier plans offer greater returns with higher minimums.",
@@ -146,10 +146,10 @@
     "title": "What Our Investors Say",
     "t1Name": "James K.",
     "t1Role": "Crypto Investor",
-    "t1Text": "CoinStamp has transformed my investment portfolio. The returns are consistent and the platform is incredibly easy to use.",
+    "t1Text": "HarborForge has transformed my investment portfolio. The returns are consistent and the platform is incredibly easy to use.",
     "t2Name": "Sarah M.",
     "t2Role": "Forex Trader",
-    "t2Text": "I've been trading forex for years, and CoinStamp offers the best spreads and execution I've experienced. Truly professional.",
+    "t2Text": "I've been trading forex for years, and HarborForge offers the best spreads and execution I've experienced. Truly professional.",
     "t3Name": "David L.",
     "t3Role": "Real Estate Investor",
     "t3Text": "The fractional real estate feature is brilliant. I can diversify across multiple properties with minimal capital."
@@ -189,7 +189,7 @@
     "label": "Legal",
     "title": "Rules &",
     "highlight": "Agreement",
-    "description": "Please read these terms carefully before using our platform. By using CoinStamp, you agree to comply with and be bound by the following terms and conditions.",
+    "description": "Please read these terms carefully before using our platform. By using HarborForge, you agree to comply with and be bound by the following terms and conditions.",
     "lastUpdated": "Last updated",
     "questionsTitle": "Questions About Our Terms?",
     "questionsDesc": "If you have any questions about these Terms of Service or our Privacy Policy, please contact us at"
@@ -299,7 +299,11 @@
       "status": "Status",
       "noDeposits": "No deposits yet",
       "depositSubmitted": "Deposit request submitted!",
-      "addressCopied": "Address copied!"
+      "addressCopied": "Address copied!",
+      "errors": {
+        "validAmount": "Enter a valid amount",
+        "selectWallet": "Select a wallet to deposit to"
+      }
     },
     "withdrawals": {
       "title": "Withdrawals",
@@ -316,7 +320,14 @@
       "wallet": "Wallet",
       "status": "Status",
       "noWithdrawals": "No withdrawals yet",
-      "withdrawalSubmitted": "Withdrawal request submitted!"
+      "withdrawalSubmitted": "Withdrawal request submitted!",
+      "errors": {
+        "validAmount": "Enter a valid amount",
+        "walletRequired": "Enter wallet address",
+        "needInvestment": "You must have at least one investment to withdraw",
+        "minWithdrawal": "Minimum withdrawal is ${{amount}}",
+        "insufficientBalance": "Insufficient balance. Available: ${{amount}}"
+      }
     },
     "plans": {
       "title": "Investment Plans",
@@ -329,7 +340,13 @@
       "confirm": "Confirm",
       "cancel": "Cancel",
       "investNow": "Invest Now",
-      "investmentCreated": "Investment created successfully!"
+      "investmentCreated": "Investment created successfully!",
+      "investmentDescription": "Investment in {{plan}} plan",
+      "errors": {
+        "planNotFound": "Plan not found",
+        "amountRange": "Amount must be between ${{min}} and ${{max}}",
+        "insufficientBalance": "Insufficient balance. Your available balance is ${{amount}}"
+      }
     },
     "profile": {
       "title": "Profile Settings",
@@ -369,11 +386,54 @@
       "progress": "Progress",
       "timeRemaining": "Time Remaining",
       "roiEarned": "ROI Earned",
-      "investmentCompleted": "Investment completed!"
+      "investmentCompleted": "Investment completed!",
+      "completedDescription": "{{plan}}: ${{amount}} -> +${{roi}}"
+    },
+    "overview": {
+      "unknownPlan": "Unknown Plan",
+      "pendingDeposit_one": "{{count}} deposit pending approval",
+      "pendingDeposit_other": "{{count}} deposits pending approval",
+      "daysLeft_one": "{{count}}d left",
+      "daysLeft_other": "{{count}}d left",
+      "browsePlans": "Browse Plans",
+      "investedSuffix": "invested",
+      "quickActionInvestDesc": "Browse plans and grow your portfolio",
+      "referFriends": "Refer Friends",
+      "quickActionReferDesc": "Share your link and earn rewards",
+      "manageProfile": "Manage Profile",
+      "quickActionProfileDesc": "Update your account details"
+    },
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "transactionTypes": {
+      "deposit": "Deposit",
+      "withdrawal": "Withdrawal",
+      "investment": "Investment",
+      "roi": "ROI",
+      "bonus": "Bonus",
+      "principal_return": "Principal Return"
     },
     "alerts": {
       "title": "Price Alerts",
-      "description": "Set price thresholds for BTC, ETH, and BNB. You'll receive in-app notifications when prices cross your targets."
+      "description": "Set price thresholds for BTC, ETH, and BNB. You'll receive in-app notifications when prices cross your targets.",
+      "coin": "Coin",
+      "direction": "Direction",
+      "above": "Above",
+      "below": "Below",
+      "targetPrice": "Target Price ($)",
+      "targetPricePlaceholder": "e.g. 70000",
+      "add": "Add",
+      "currentPrice": "Current {{coin}}",
+      "triggered": "Triggered",
+      "watching": "Watching...",
+      "noAlerts": "No alerts set",
+      "createHint": "Create one above to get notified",
+      "invalidPrice": "Invalid price",
+      "alertCreated": "Price alert created!",
+      "alertRemoved": "Alert removed"
     }
   },
   "cryptoTicker": {

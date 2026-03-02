@@ -45,7 +45,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <h3 className="font-display font-semibold mb-1">{t("contact.email")}</h3>
-                  <p className="text-section-dark-foreground/60 text-sm">support@coinstamp.org</p>
+                  <p className="text-section-dark-foreground/60 text-sm">support@harborforge.org</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">

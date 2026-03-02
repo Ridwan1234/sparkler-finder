@@ -58,7 +58,7 @@ export default function Transactions() {
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline" className={typeColor[tx.type] ?? ""}>
-                      {tx.type}
+                      {t(`dashboard.transactionTypes.${tx.type}` as const, { defaultValue: tx.type })}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-muted-foreground">{tx.description ?? "—"}</TableCell>
