@@ -6,8 +6,10 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const ResetPassword = () => {
+  const { t } = useTranslation();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -16,10 +18,8 @@ const ResetPassword = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check for recovery token in URL hash
     const hash = window.location.hash;
     if (!hash.includes("type=recovery")) {
-      // No recovery token, redirect
       navigate("/login");
     }
   }, [navigate]);
@@ -27,11 +27,11 @@ const ResetPassword = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      toast({ title: "Error", description: "Passwords do not match", variant: "destructive" });
+      toast({ title: t("auth.error"), description: t("auth.passwordsNoMatch"), variant: "destructive" });
       return;
     }
     if (password.length < 6) {
-      toast({ title: "Error", description: "Password must be at least 6 characters", variant: "destructive" });
+      toast({ title: t("auth.error"), description: t("auth.passwordMinLength"), variant: "destructive" });
       return;
     }
 
@@ -40,9 +40,9 @@ const ResetPassword = () => {
     setLoading(false);
 
     if (error) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast({ title: t("auth.error"), description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "Password updated", description: "Your password has been reset successfully." });
+      toast({ title: t("auth.passwordUpdated"), description: t("auth.passwordUpdatedDesc") });
       navigate("/login");
     }
   };
@@ -51,19 +51,19 @@ const ResetPassword = () => {
     <div className="min-h-screen section-dark flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="bg-card/5 border border-border/10 rounded-2xl p-8">
-          <h1 className="font-display text-2xl font-bold text-section-dark-foreground mb-1">Set new password</h1>
-          <p className="text-muted-foreground text-sm mb-8">Enter your new password below</p>
+          <h1 className="font-display text-2xl font-bold text-section-dark-foreground mb-1">{t("auth.setNewPassword")}</h1>
+          <p className="text-muted-foreground text-sm mb-8">{t("auth.newPasswordDesc")}</p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-section-dark-foreground/80">New Password</Label>
+              <Label htmlFor="password" className="text-section-dark-foreground/80">{t("auth.newPassword")}</Label>
               <div className="relative">
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter new password"
+                  placeholder={t("auth.newPasswordPlaceholder")}
                   required
                   className="bg-section-dark border-border/20 text-section-dark-foreground placeholder:text-muted-foreground/50 pr-10"
                 />
@@ -78,25 +78,25 @@ const ResetPassword = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword" className="text-section-dark-foreground/80">Confirm Password</Label>
+              <Label htmlFor="confirmPassword" className="text-section-dark-foreground/80">{t("auth.confirmNewPassword")}</Label>
               <Input
                 id="confirmPassword"
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Confirm new password"
+                placeholder={t("auth.confirmNewPlaceholder")}
                 required
                 className="bg-section-dark border-border/20 text-section-dark-foreground placeholder:text-muted-foreground/50"
               />
             </div>
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Updating..." : "Update Password"}
+              {loading ? t("auth.updating") : t("auth.updatePassword")}
             </Button>
           </form>
 
           <p className="text-center text-sm text-muted-foreground mt-6">
-            <Link to="/login" className="text-primary hover:underline font-medium">Back to Login</Link>
+            <Link to="/login" className="text-primary hover:underline font-medium">{t("auth.backToLogin")}</Link>
           </p>
         </div>
       </div>

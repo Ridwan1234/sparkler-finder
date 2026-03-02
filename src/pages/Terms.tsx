@@ -4,6 +4,7 @@ import Footer from "@/components/landing/Footer";
 import { motion } from "framer-motion";
 import { Shield, FileText, Lock, AlertTriangle, Scale, Eye } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { useTranslation } from "react-i18next";
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 24 },
@@ -68,80 +69,84 @@ const sections = [
   },
 ];
 
-const Terms = () => (
-  <div className="min-h-screen">
-    <Header />
-    <div className="pt-20" />
-    <PageHero
-      label="Legal"
-      title="Rules &"
-      highlight="Agreement"
-      description="Please read these terms carefully before using our platform. By using CoinStamp, you agree to comply with and be bound by the following terms and conditions."
-    />
+const Terms = () => {
+  const { t } = useTranslation();
 
-    <section className="py-16 md:py-24 bg-background">
-      <div className="container max-w-4xl">
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="text-muted-foreground text-sm mb-10"
-        >
-          Last updated: {new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
-        </motion.p>
+  return (
+    <div className="min-h-screen">
+      <Header />
+      <div className="pt-20" />
+      <PageHero
+        label={t("terms.label")}
+        title={t("terms.title")}
+        highlight={t("terms.highlight")}
+        description={t("terms.description")}
+      />
 
-        <div className="space-y-10">
-          {sections.map((section, i) => (
-            <motion.div
-              key={section.title}
-              variants={sectionVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ delay: i * 0.05 }}
-              className="rounded-xl border border-border bg-card p-6 md:p-8"
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                  <section.icon className="w-5 h-5 text-primary" />
+      <section className="py-16 md:py-24 bg-background">
+        <div className="container max-w-4xl">
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-muted-foreground text-sm mb-10"
+          >
+            {t("terms.lastUpdated")}: {new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+          </motion.p>
+
+          <div className="space-y-10">
+            {sections.map((section, i) => (
+              <motion.div
+                key={section.title}
+                variants={sectionVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ delay: i * 0.05 }}
+                className="rounded-xl border border-border bg-card p-6 md:p-8"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                    <section.icon className="w-5 h-5 text-primary" />
+                  </div>
+                  <h2 className="font-display text-lg md:text-xl font-semibold text-card-foreground">
+                    {section.title}
+                  </h2>
                 </div>
-                <h2 className="font-display text-lg md:text-xl font-semibold text-card-foreground">
-                  {section.title}
-                </h2>
-              </div>
-              <Separator className="mb-4" />
-              <div className="space-y-3">
-                {section.content.map((paragraph, j) => (
-                  <p key={j} className="text-muted-foreground text-sm leading-relaxed">
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-            </motion.div>
-          ))}
+                <Separator className="mb-4" />
+                <div className="space-y-3">
+                  {section.content.map((paragraph, j) => (
+                    <p key={j} className="text-muted-foreground text-sm leading-relaxed">
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-12 rounded-xl border border-primary/20 bg-primary/5 p-6 md:p-8 text-center"
+          >
+            <h3 className="font-display text-lg font-semibold text-foreground mb-2">
+              {t("terms.questionsTitle")}
+            </h3>
+            <p className="text-muted-foreground text-sm">
+              {t("terms.questionsDesc")}{" "}
+              <a href="mailto:support@coinstamp.org" className="text-primary hover:underline">
+                support@coinstamp.org
+              </a>
+            </p>
+          </motion.div>
         </div>
+      </section>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-12 rounded-xl border border-primary/20 bg-primary/5 p-6 md:p-8 text-center"
-        >
-          <h3 className="font-display text-lg font-semibold text-foreground mb-2">
-            Questions About Our Terms?
-          </h3>
-          <p className="text-muted-foreground text-sm">
-            If you have any questions about these Terms of Service or our Privacy Policy, please contact us at{" "}
-            <a href="mailto:support@coinstamp.org" className="text-primary hover:underline">
-              support@coinstamp.org
-            </a>
-          </p>
-        </motion.div>
-      </div>
-    </section>
-
-    <Footer />
-  </div>
-);
+      <Footer />
+    </div>
+  );
+};
 
 export default Terms;

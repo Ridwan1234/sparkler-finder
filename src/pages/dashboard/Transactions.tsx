@@ -1,12 +1,14 @@
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 export default function Transactions() {
+  const { t } = useTranslation();
   const { user } = useAuth();
 
   const { data: transactions } = useQuery({
@@ -32,7 +34,7 @@ export default function Transactions() {
   return (
     <div>
       <h1 className="font-display text-2xl font-bold text-section-dark-foreground mb-6">
-        Transaction History
+        {t("dashboard.transactions.title")}
       </h1>
 
       <Card className="bg-card/5 border-border/10">
@@ -40,35 +42,35 @@ export default function Transactions() {
           <Table>
             <TableHeader>
               <TableRow className="border-border/10">
-                <TableHead className="text-muted-foreground">Date</TableHead>
-                <TableHead className="text-muted-foreground">Type</TableHead>
-                <TableHead className="text-muted-foreground">Description</TableHead>
-                <TableHead className="text-muted-foreground text-right">Amount</TableHead>
+                <TableHead className="text-muted-foreground">{t("dashboard.transactions.date")}</TableHead>
+                <TableHead className="text-muted-foreground">{t("dashboard.transactions.type")}</TableHead>
+                <TableHead className="text-muted-foreground">{t("dashboard.transactions.description")}</TableHead>
+                <TableHead className="text-muted-foreground text-right">{t("dashboard.transactions.amount")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {transactions?.map((t) => (
-                <TableRow key={t.id} className="border-border/10">
+              {transactions?.map((tx) => (
+                <TableRow key={tx.id} className="border-border/10">
                   <TableCell className="text-section-dark-foreground">
-                    {t.created_at && !isNaN(new Date(t.created_at).getTime())
-                      ? format(new Date(t.created_at), "MMM d, yyyy")
+                    {tx.created_at && !isNaN(new Date(tx.created_at).getTime())
+                      ? format(new Date(tx.created_at), "MMM d, yyyy")
                       : "—"}
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline" className={typeColor[t.type] ?? ""}>
-                      {t.type}
+                    <Badge variant="outline" className={typeColor[tx.type] ?? ""}>
+                      {tx.type}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-muted-foreground">{t.description ?? "—"}</TableCell>
+                  <TableCell className="text-muted-foreground">{tx.description ?? "—"}</TableCell>
                   <TableCell className="text-right text-section-dark-foreground font-medium">
-                    ${Number(t.amount).toLocaleString()}
+                    ${Number(tx.amount).toLocaleString()}
                   </TableCell>
                 </TableRow>
               ))}
               {!transactions?.length && (
                 <TableRow>
                   <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
-                    No transactions yet
+                    {t("dashboard.transactions.noTransactions")}
                   </TableCell>
                 </TableRow>
               )}

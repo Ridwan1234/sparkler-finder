@@ -10,8 +10,10 @@ import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 export default function Withdrawals() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [amount, setAmount] = useState("");
@@ -68,7 +70,7 @@ export default function Withdrawals() {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("Withdrawal request submitted!");
+      toast.success(t("dashboard.withdrawals.withdrawalSubmitted"));
       queryClient.invalidateQueries({ queryKey: ["withdrawals"] });
       setAmount("");
       setWallet("");
@@ -84,53 +86,53 @@ export default function Withdrawals() {
 
   return (
     <div className="space-y-6">
-      <h1 className="font-display text-2xl font-bold text-section-dark-foreground">Withdrawals</h1>
+      <h1 className="font-display text-2xl font-bold text-section-dark-foreground">{t("dashboard.withdrawals.title")}</h1>
 
       <Card className="bg-card/5 border-border/10">
         <CardHeader>
-          <CardTitle className="text-section-dark-foreground text-lg">New Withdrawal</CardTitle>
+          <CardTitle className="text-section-dark-foreground text-lg">{t("dashboard.withdrawals.newWithdrawal")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <p className="text-sm text-muted-foreground">
-            Available balance: <span className="font-semibold text-section-dark-foreground">${balance.toLocaleString()}</span>
-            {minWithdrawal > 0 && <> · Min withdrawal: <span className="font-semibold">${minWithdrawal.toLocaleString()}</span></>}
+            {t("dashboard.withdrawals.availableBalance")}: <span className="font-semibold text-section-dark-foreground">${balance.toLocaleString()}</span>
+            {minWithdrawal > 0 && <> · {t("dashboard.withdrawals.minWithdrawal")}: <span className="font-semibold">${minWithdrawal.toLocaleString()}</span></>}
           </p>
           {!hasInvestment && (
-            <p className="text-sm text-destructive">You need at least one investment before you can withdraw.</p>
+            <p className="text-sm text-destructive">{t("dashboard.withdrawals.needInvestment")}</p>
           )}
           <Input
             type="number"
-            placeholder="Amount (USD)"
+            placeholder={t("dashboard.withdrawals.amountPlaceholder")}
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             className="bg-background/10 border-border/20 text-section-dark-foreground"
             disabled={!hasInvestment}
           />
           <Input
-            placeholder="Crypto wallet address"
+            placeholder={t("dashboard.withdrawals.walletPlaceholder")}
             value={wallet}
             onChange={(e) => setWallet(e.target.value)}
             className="bg-background/10 border-border/20 text-section-dark-foreground"
             disabled={!hasInvestment}
           />
           <Button onClick={() => create.mutate()} disabled={create.isPending || !hasInvestment}>
-            Submit Withdrawal
+            {t("dashboard.withdrawals.submitWithdrawal")}
           </Button>
         </CardContent>
       </Card>
 
       <Card className="bg-card/5 border-border/10">
         <CardHeader>
-          <CardTitle className="text-section-dark-foreground text-lg">Withdrawal History</CardTitle>
+          <CardTitle className="text-section-dark-foreground text-lg">{t("dashboard.withdrawals.withdrawalHistory")}</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow className="border-border/10">
-                <TableHead className="text-muted-foreground">Date</TableHead>
-                <TableHead className="text-muted-foreground">Amount</TableHead>
-                <TableHead className="text-muted-foreground">Wallet</TableHead>
-                <TableHead className="text-muted-foreground">Status</TableHead>
+                <TableHead className="text-muted-foreground">{t("dashboard.withdrawals.date")}</TableHead>
+                <TableHead className="text-muted-foreground">{t("dashboard.withdrawals.amount")}</TableHead>
+                <TableHead className="text-muted-foreground">{t("dashboard.withdrawals.wallet")}</TableHead>
+                <TableHead className="text-muted-foreground">{t("dashboard.withdrawals.status")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -157,7 +159,7 @@ export default function Withdrawals() {
               {!withdrawals?.length && (
                 <TableRow>
                   <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
-                    No withdrawals yet
+                    {t("dashboard.withdrawals.noWithdrawals")}
                   </TableCell>
                 </TableRow>
               )}

@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -22,6 +23,7 @@ const itemVariants = {
 };
 
 const Login = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -37,7 +39,7 @@ const Login = () => {
     setLoading(false);
 
     if (error) {
-      toast({ title: "Login failed", description: error.message, variant: "destructive" });
+      toast({ title: t("auth.loginFailed"), description: error.message, variant: "destructive" });
     } else {
       navigate("/dashboard");
     }
@@ -67,7 +69,7 @@ const Login = () => {
       >
         <motion.div variants={itemVariants}>
           <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary mb-8 transition-colors">
-            <ArrowLeft size={16} /> Back to Home
+            <ArrowLeft size={16} /> {t("auth.backToHome")}
           </Link>
         </motion.div>
 
@@ -89,21 +91,21 @@ const Login = () => {
           </motion.div>
 
           <motion.h1 variants={itemVariants} className="font-display text-2xl font-bold text-section-dark-foreground mt-6 mb-1">
-            Welcome back
+            {t("auth.welcomeBack")}
           </motion.h1>
           <motion.p variants={itemVariants} className="text-muted-foreground text-sm mb-8">
-            Sign in to your account to continue
+            {t("auth.signInDesc")}
           </motion.p>
 
           <motion.form variants={containerVariants} onSubmit={handleSubmit} className="space-y-5">
             <motion.div variants={itemVariants} className="space-y-2">
-              <Label htmlFor="email" className="text-section-dark-foreground/80">Email</Label>
+              <Label htmlFor="email" className="text-section-dark-foreground/80">{t("auth.email")}</Label>
               <Input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
+                placeholder={t("auth.emailPlaceholder")}
                 required
                 className="bg-section-dark border-border/20 text-section-dark-foreground placeholder:text-muted-foreground/50 transition-all focus:border-primary/40 focus:shadow-[0_0_15px_hsl(152,87%,30%,0.1)]"
               />
@@ -111,8 +113,8 @@ const Login = () => {
 
             <motion.div variants={itemVariants} className="space-y-2">
               <div className="flex justify-between items-center">
-                <Label htmlFor="password" className="text-section-dark-foreground/80">Password</Label>
-                <Link to="/forgot-password" className="text-xs text-primary hover:underline">Forgot password?</Link>
+                <Label htmlFor="password" className="text-section-dark-foreground/80">{t("auth.password")}</Label>
+                <Link to="/forgot-password" className="text-xs text-primary hover:underline">{t("auth.forgotPassword")}</Link>
               </div>
               <div className="relative">
                 <Input
@@ -120,7 +122,7 @@ const Login = () => {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
+                  placeholder={t("auth.passwordPlaceholder")}
                   required
                   className="bg-section-dark border-border/20 text-section-dark-foreground placeholder:text-muted-foreground/50 pr-10 transition-all focus:border-primary/40 focus:shadow-[0_0_15px_hsl(152,87%,30%,0.1)]"
                 />
@@ -136,7 +138,7 @@ const Login = () => {
 
             <motion.div variants={itemVariants}>
               <Button type="submit" className="w-full relative overflow-hidden group" disabled={loading}>
-                <span className="relative z-10">{loading ? "Signing in..." : "Sign In"}</span>
+                <span className="relative z-10">{loading ? t("auth.signingIn") : t("auth.signIn")}</span>
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-primary opacity-0 group-hover:opacity-100 transition-opacity"
                 />
@@ -145,8 +147,8 @@ const Login = () => {
           </motion.form>
 
           <motion.p variants={itemVariants} className="text-center text-sm text-muted-foreground mt-6">
-            Don't have an account?{" "}
-            <Link to="/signup" className="text-primary hover:underline font-medium">Sign up</Link>
+            {t("auth.noAccount")}{" "}
+            <Link to="/signup" className="text-primary hover:underline font-medium">{t("auth.signUp")}</Link>
           </motion.p>
         </motion.div>
       </motion.div>

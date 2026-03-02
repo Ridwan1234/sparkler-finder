@@ -2,20 +2,24 @@ import Header from "@/components/landing/Header";
 import PageHero from "@/components/landing/PageHero";
 import ServicesSection from "@/components/landing/ServicesSection";
 import Footer from "@/components/landing/Footer";
+import { useTranslation } from "react-i18next";
 
-const Services = () => (
-  <div className="min-h-screen">
-    <Header />
-    <div className="pt-20" />
-    <PageHero
-      label="Our Services"
-      title="Comprehensive"
-      highlight="Investment Solutions"
-      description="From cryptocurrency and forex to real estate and stocks, we offer a full spectrum of investment services designed to help you grow and protect your wealth."
-    />
-    <ServicesSection />
-    <Footer />
-  </div>
-);
+const Services = () => {
+  const { t } = useTranslation();
+  return (
+    <div className="min-h-screen">
+      <Header />
+      <div className="pt-20" />
+      <PageHero
+        label={t("services.pageLabel")}
+        title={t("services.pageTitle")}
+        highlight={t("services.pageHighlight")}
+        description={t("services.pageDescription")}
+      />
+      <ServicesSection />
+      <Footer />
+    </div>
+  );
+};
 
 export default Services;
