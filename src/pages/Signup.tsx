@@ -32,8 +32,9 @@ const Signup = () => {
   const [referralCode, setReferralCode] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
-  const { signUp } = useAuth();
+  const { signUp, signInWithGoogle } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -60,6 +61,15 @@ const Signup = () => {
         description: t("auth.checkEmailDesc"),
       });
       navigate("/login");
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
+    const { error } = await signInWithGoogle();
+    if (error) {
+      toast({ title: t("auth.signupFailed"), description: t("auth.googleSignInFailed"), variant: "destructive" });
+      setGoogleLoading(false);
     }
   };
 
@@ -165,6 +175,30 @@ const Signup = () => {
               <Button type="submit" className="w-full relative overflow-hidden group" disabled={loading || !agreedToTerms}>
                 <span className="relative z-10">{loading ? t("auth.creatingAccount") : t("auth.createAccountBtn")}</span>
                 <motion.div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+              </Button>
+            </motion.div>
+
+            <motion.div variants={itemVariants} className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-border/20" />
+              </div>
+              <span className="relative block mx-auto w-fit px-2 text-xs text-muted-foreground bg-section-dark">
+                {t("auth.orContinueWith")}
+              </span>
+            </motion.div>
+
+            <motion.div variants={itemVariants}>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full border-border/20 text-section-dark-foreground"
+                onClick={handleGoogleSignIn}
+                disabled={loading || googleLoading || !agreedToTerms}
+              >
+                <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="#EA4335" d="M12 10.2v3.9h5.5c-.2 1.3-1.5 3.9-5.5 3.9-3.3 0-6-2.8-6-6.2s2.7-6.2 6-6.2c1.9 0 3.1.8 3.8 1.5l2.6-2.5C16.7 3 14.5 2 12 2 6.9 2 2.8 6.5 2.8 12S6.9 22 12 22c6.9 0 9.2-4.9 9.2-7.4 0-.5 0-.8-.1-1.2H12z" />
+                </svg>
+                {googleLoading ? t("auth.signingIn") : t("auth.continueWithGoogle")}
               </Button>
             </motion.div>
           </motion.form>
