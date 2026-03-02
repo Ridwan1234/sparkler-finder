@@ -9,8 +9,10 @@ import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { toast } from "sonner";
 import { TrendingUp, Gift } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function Plans() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
@@ -86,7 +88,7 @@ export default function Plans() {
       if (txError) throw txError;
     },
     onSuccess: () => {
-      toast.success("Investment created successfully!");
+      toast.success(t("dashboard.plans.investmentCreated"));
       queryClient.invalidateQueries({ queryKey: ["investments"] });
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
       setSelectedPlan(null);
@@ -102,18 +104,18 @@ export default function Plans() {
     Diamond: "border-primary/50",
   };
 
-  if (isLoading) return <div className="text-section-dark-foreground">Loading plans...</div>;
+  if (isLoading) return <div className="text-section-dark-foreground">{t("dashboard.plans.loadingPlans")}</div>;
 
   return (
     <div>
       <h1 className="font-display text-2xl font-bold text-section-dark-foreground mb-6">
-        Investment Plans
+        {t("dashboard.plans.title")}
       </h1>
 
       {showBonus && (
         <div className="mb-6 flex items-center gap-2 bg-gold/10 border border-gold/30 text-gold px-5 py-3 rounded-xl text-sm font-semibold">
           <Gift size={18} />
-          🎉 You're eligible for a {bonusPercent}% first deposit bonus! Make your first deposit to claim it.
+          🎉 {t("dashboard.plans.eligibleBonus")} {bonusPercent}% {t("dashboard.plans.bonusClaim")}
         </div>
       )}
 
@@ -128,7 +130,7 @@ export default function Plans() {
             >
               {isPopular && (
                 <Badge className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-gold text-accent-foreground border-0">
-                  POPULAR
+                  {t("plans.popular")}
                 </Badge>
               )}
               <CardHeader className="text-center">
@@ -136,10 +138,10 @@ export default function Plans() {
                 <CardTitle className="text-section-dark-foreground">{plan.name}</CardTitle>
               </CardHeader>
               <CardContent className="text-center space-y-3">
-                <p className="text-3xl font-bold text-gold">{Number(plan.roi_percentage)}% ROI</p>
-                <p className="text-sm text-muted-foreground">{plan.duration_days} days</p>
+                <p className="text-3xl font-bold text-gold">{Number(plan.roi_percentage)}% {t("dashboard.plans.roi")}</p>
+                <p className="text-sm text-muted-foreground">{plan.duration_days} {t("dashboard.plans.duration")}</p>
                 <p className="text-xs text-muted-foreground">
-                  Payouts: {(plan as any).roi_frequency_days === 7 ? "Weekly" : (plan as any).roi_frequency_days === 1 || !(plan as any).roi_frequency_days ? "Daily" : `Every ${(plan as any).roi_frequency_days} days`}
+                  {t("plans.payouts")}: {(plan as any).roi_frequency_days === 7 ? t("plans.weekly") : (plan as any).roi_frequency_days === 1 || !(plan as any).roi_frequency_days ? t("plans.daily") : `${t("plans.every")} ${(plan as any).roi_frequency_days} ${t("plans.days")}`}
                 </p>
                 <p className="text-sm text-muted-foreground">
                   ${Number(plan.min_amount).toLocaleString()} – ${Number(plan.max_amount).toLocaleString()}
@@ -148,7 +150,7 @@ export default function Plans() {
                   <div className="space-y-2">
                     <Input
                       type="number"
-                      placeholder="Enter amount"
+                      placeholder={t("dashboard.plans.enterAmount")}
                       value={amount}
                       onChange={(e) => setAmount(e.target.value)}
                       className="bg-background/10 border-border/20 text-section-dark-foreground"
@@ -160,7 +162,7 @@ export default function Plans() {
                         disabled={invest.isPending}
                         onClick={() => invest.mutate({ planId: plan.id, amount: Number(amount) })}
                       >
-                        Confirm
+                        {t("dashboard.plans.confirm")}
                       </Button>
                       <Button
                         size="sm"
@@ -168,13 +170,13 @@ export default function Plans() {
                         className="border-border/20 text-section-dark-foreground"
                         onClick={() => setSelectedPlan(null)}
                       >
-                        Cancel
+                        {t("dashboard.plans.cancel")}
                       </Button>
                     </div>
                   </div>
                 ) : (
                   <Button className="w-full" onClick={() => setSelectedPlan(plan.id)}>
-                    Invest Now
+                    {t("dashboard.plans.investNow")}
                   </Button>
                 )}
               </CardContent>

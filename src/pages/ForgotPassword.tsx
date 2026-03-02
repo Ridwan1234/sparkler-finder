@@ -6,8 +6,10 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Mail } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const ForgotPassword = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -21,7 +23,7 @@ const ForgotPassword = () => {
     setLoading(false);
 
     if (error) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast({ title: t("auth.error"), description: error.message, variant: "destructive" });
     } else {
       setSent(true);
     }
@@ -31,7 +33,7 @@ const ForgotPassword = () => {
     <div className="min-h-screen section-dark flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <Link to="/login" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary mb-8 transition-colors">
-          <ArrowLeft size={16} /> Back to Login
+          <ArrowLeft size={16} /> {t("auth.backToLogin")}
         </Link>
 
         <div className="bg-card/5 border border-border/10 rounded-2xl p-8">
@@ -40,34 +42,34 @@ const ForgotPassword = () => {
               <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                 <Mail className="text-primary" size={28} />
               </div>
-              <h2 className="font-display text-2xl font-bold text-section-dark-foreground mb-2">Check your email</h2>
+              <h2 className="font-display text-2xl font-bold text-section-dark-foreground mb-2">{t("auth.checkYourEmail")}</h2>
               <p className="text-muted-foreground text-sm mb-6">
-                We've sent a password reset link to <span className="text-section-dark-foreground">{email}</span>
+                {t("auth.resetLinkSent")} <span className="text-section-dark-foreground">{email}</span>
               </p>
               <Link to="/login">
-                <Button variant="outline" className="border-primary/30 text-primary">Back to Login</Button>
+                <Button variant="outline" className="border-primary/30 text-primary">{t("auth.backToLogin")}</Button>
               </Link>
             </div>
           ) : (
             <>
-              <h1 className="font-display text-2xl font-bold text-section-dark-foreground mb-1">Reset password</h1>
-              <p className="text-muted-foreground text-sm mb-8">Enter your email and we'll send you a reset link</p>
+              <h1 className="font-display text-2xl font-bold text-section-dark-foreground mb-1">{t("auth.resetPassword")}</h1>
+              <p className="text-muted-foreground text-sm mb-8">{t("auth.resetDesc")}</p>
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-section-dark-foreground/80">Email</Label>
+                  <Label htmlFor="email" className="text-section-dark-foreground/80">{t("auth.email")}</Label>
                   <Input
                     id="email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
+                    placeholder={t("auth.emailPlaceholder")}
                     required
                     className="bg-section-dark border-border/20 text-section-dark-foreground placeholder:text-muted-foreground/50"
                   />
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Sending..." : "Send Reset Link"}
+                  {loading ? t("auth.sending") : t("auth.sendResetLink")}
                 </Button>
               </form>
             </>

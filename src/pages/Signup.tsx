@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -23,6 +24,7 @@ const itemVariants = {
 };
 
 const Signup = () => {
+  const { t } = useTranslation();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -38,11 +40,11 @@ const Signup = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      toast({ title: "Error", description: "Passwords do not match", variant: "destructive" });
+      toast({ title: t("auth.error"), description: t("auth.passwordsNoMatch"), variant: "destructive" });
       return;
     }
     if (password.length < 6) {
-      toast({ title: "Error", description: "Password must be at least 6 characters", variant: "destructive" });
+      toast({ title: t("auth.error"), description: t("auth.passwordMinLength"), variant: "destructive" });
       return;
     }
 
@@ -51,11 +53,11 @@ const Signup = () => {
     setLoading(false);
 
     if (error) {
-      toast({ title: "Signup failed", description: error.message, variant: "destructive" });
+      toast({ title: t("auth.signupFailed"), description: error.message, variant: "destructive" });
     } else {
       toast({
-        title: "Check your email",
-        description: "We've sent you a confirmation link. Please verify your email to continue.",
+        title: t("auth.checkEmail"),
+        description: t("auth.checkEmailDesc"),
       });
       navigate("/login");
     }
@@ -87,7 +89,7 @@ const Signup = () => {
       >
         <motion.div variants={itemVariants}>
           <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary mb-8 transition-colors">
-            <ArrowLeft size={16} /> Back to Home
+            <ArrowLeft size={16} /> {t("auth.backToHome")}
           </Link>
         </motion.div>
 
@@ -109,27 +111,27 @@ const Signup = () => {
           </motion.div>
 
           <motion.h1 variants={itemVariants} className="font-display text-2xl font-bold text-section-dark-foreground mt-6 mb-1">
-            Create an account
+            {t("auth.createAccount")}
           </motion.h1>
           <motion.p variants={itemVariants} className="text-muted-foreground text-sm mb-8">
-            Start your investment journey today
+            {t("auth.startJourney")}
           </motion.p>
 
           <motion.form variants={containerVariants} onSubmit={handleSubmit} className="space-y-4">
             <motion.div variants={itemVariants} className="space-y-2">
-              <Label htmlFor="fullName" className="text-section-dark-foreground/80">Full Name</Label>
-              <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Enter your full name" required className={inputClass} />
+              <Label htmlFor="fullName" className="text-section-dark-foreground/80">{t("auth.fullName")}</Label>
+              <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder={t("auth.fullNamePlaceholder")} required className={inputClass} />
             </motion.div>
 
             <motion.div variants={itemVariants} className="space-y-2">
-              <Label htmlFor="email" className="text-section-dark-foreground/80">Email</Label>
-              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter your email" required className={inputClass} />
+              <Label htmlFor="email" className="text-section-dark-foreground/80">{t("auth.email")}</Label>
+              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t("auth.emailPlaceholder")} required className={inputClass} />
             </motion.div>
 
             <motion.div variants={itemVariants} className="space-y-2">
-              <Label htmlFor="password" className="text-section-dark-foreground/80">Password</Label>
+              <Label htmlFor="password" className="text-section-dark-foreground/80">{t("auth.password")}</Label>
               <div className="relative">
-                <Input id="password" type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Create a password" required className={`${inputClass} pr-10`} />
+                <Input id="password" type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder={t("auth.createPassword")} required className={`${inputClass} pr-10`} />
                 <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-section-dark-foreground transition-colors">
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -137,13 +139,13 @@ const Signup = () => {
             </motion.div>
 
             <motion.div variants={itemVariants} className="space-y-2">
-              <Label htmlFor="confirmPassword" className="text-section-dark-foreground/80">Confirm Password</Label>
-              <Input id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirm your password" required className={inputClass} />
+              <Label htmlFor="confirmPassword" className="text-section-dark-foreground/80">{t("auth.confirmPassword")}</Label>
+              <Input id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder={t("auth.confirmPasswordPlaceholder")} required className={inputClass} />
             </motion.div>
 
             <motion.div variants={itemVariants} className="space-y-2">
-              <Label htmlFor="referral" className="text-section-dark-foreground/80">Referral Code (optional)</Label>
-              <Input id="referral" value={referralCode} onChange={(e) => setReferralCode(e.target.value)} placeholder="Enter referral code" className={inputClass} />
+              <Label htmlFor="referral" className="text-section-dark-foreground/80">{t("auth.referralCode")}</Label>
+              <Input id="referral" value={referralCode} onChange={(e) => setReferralCode(e.target.value)} placeholder={t("auth.referralPlaceholder")} className={inputClass} />
             </motion.div>
 
             <motion.div variants={itemVariants} className="flex items-start gap-2">
@@ -154,22 +156,22 @@ const Signup = () => {
                 className="mt-0.5"
               />
               <Label htmlFor="terms" className="text-sm text-muted-foreground font-normal leading-snug cursor-pointer">
-                I agree to the{" "}
-                <Link to="/terms" target="_blank" className="text-primary hover:underline">Terms & Agreement</Link>
+                {t("auth.agreeTerms")}{" "}
+                <Link to="/terms" target="_blank" className="text-primary hover:underline">{t("auth.termsLink")}</Link>
               </Label>
             </motion.div>
 
             <motion.div variants={itemVariants}>
               <Button type="submit" className="w-full relative overflow-hidden group" disabled={loading || !agreedToTerms}>
-                <span className="relative z-10">{loading ? "Creating account..." : "Create Account"}</span>
+                <span className="relative z-10">{loading ? t("auth.creatingAccount") : t("auth.createAccountBtn")}</span>
                 <motion.div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-primary opacity-0 group-hover:opacity-100 transition-opacity" />
               </Button>
             </motion.div>
           </motion.form>
 
           <motion.p variants={itemVariants} className="text-center text-sm text-muted-foreground mt-6">
-            Already have an account?{" "}
-            <Link to="/login" className="text-primary hover:underline font-medium">Sign in</Link>
+            {t("auth.haveAccount")}{" "}
+            <Link to="/login" className="text-primary hover:underline font-medium">{t("auth.signInLink")}</Link>
           </motion.p>
         </motion.div>
       </motion.div>

@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Copy, Users } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 export default function Referrals() {
+  const { t } = useTranslation();
   const { user } = useAuth();
 
   const { data: profile } = useQuery({
@@ -29,25 +31,25 @@ export default function Referrals() {
 
   const copy = () => {
     navigator.clipboard.writeText(referralLink);
-    toast.success("Referral link copied!");
+    toast.success(t("dashboard.referrals.linkCopied"));
   };
 
   return (
     <div>
       <h1 className="font-display text-2xl font-bold text-section-dark-foreground mb-6">
-        Referral Program
+        {t("dashboard.referrals.title")}
       </h1>
 
       <div className="grid gap-6 max-w-lg">
         <Card className="bg-card/5 border-border/10">
           <CardHeader>
             <CardTitle className="text-section-dark-foreground text-lg flex items-center gap-2">
-              <Users className="h-5 w-5 text-primary" /> Your Referral Link
+              <Users className="h-5 w-5 text-primary" /> {t("dashboard.referrals.yourLink")}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <p className="text-sm text-muted-foreground">
-              Share your unique link and earn rewards when friends sign up and invest.
+              {t("dashboard.referrals.shareDesc")}
             </p>
             <div className="flex gap-2">
               <Input
@@ -60,7 +62,7 @@ export default function Referrals() {
               </Button>
             </div>
             <p className="text-xs text-muted-foreground">
-              Your code: <span className="text-primary font-mono font-semibold">{profile?.referral_code}</span>
+              {t("dashboard.referrals.yourCode")}: <span className="text-primary font-mono font-semibold">{profile?.referral_code}</span>
             </p>
           </CardContent>
         </Card>
