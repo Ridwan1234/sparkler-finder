@@ -44,6 +44,7 @@ export type Database = {
       investment_plans: {
         Row: {
           created_at: string
+          details: string | null
           duration_days: number
           features: string[]
           id: string
@@ -56,6 +57,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          details?: string | null
           duration_days: number
           features?: string[]
           id?: string
@@ -68,6 +70,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          details?: string | null
           duration_days?: number
           features?: string[]
           id?: string

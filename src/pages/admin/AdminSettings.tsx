@@ -38,6 +38,7 @@ type Plan = {
   roi_frequency_days: number;
   features: string[];
   is_popular: boolean;
+  details: string;
 };
 
 type PlanForm = Omit<Plan, "id"> & { id?: string };
@@ -51,6 +52,7 @@ const emptyPlan: PlanForm = {
   roi_frequency_days: 1,
   features: [],
   is_popular: false,
+  details: "",
 };
 
 export default function AdminSettings() {
@@ -118,6 +120,7 @@ export default function AdminSettings() {
         roi_frequency_days: plan.roi_frequency_days,
         features: plan.features,
         is_popular: plan.is_popular,
+        details: plan.details,
       };
       if (plan.id) {
         const { error } = await supabase.from("investment_plans").update(payload).eq("id", plan.id);
@@ -312,6 +315,7 @@ export default function AdminSettings() {
                 <CardContent className="space-y-2 text-sm text-muted-foreground">
                   <p>ROI: {plan.roi_percentage}% &middot; {plan.duration_days} days &middot; Every {plan.roi_frequency_days}d</p>
                   <p>${plan.min_amount.toLocaleString()} – ${plan.max_amount.toLocaleString()}</p>
+                  {plan.details && <p className="text-xs italic text-muted-foreground/80">{plan.details}</p>}
                   <ul className="list-disc list-inside text-xs">
                     {plan.features.map((f, i) => <li key={i}>{f}</li>)}
                   </ul>
@@ -380,6 +384,18 @@ export default function AdminSettings() {
                   onChange={(e) => setEditingPlan({ ...editingPlan, name: e.target.value })}
                   placeholder="e.g. Premium Plan"
                   className="bg-background/5 border-border/20"
+                />
+              </div>
+
+              {/* Details */}
+              <div className="space-y-1.5">
+                <Label className="text-sm font-medium text-muted-foreground">Details</Label>
+                <textarea
+                  value={editingPlan.details}
+                  onChange={(e) => setEditingPlan({ ...editingPlan, details: e.target.value })}
+                  placeholder="Brief description of this plan shown to users"
+                  rows={3}
+                  className="flex w-full rounded-md border border-border/20 bg-background/5 px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 />
               </div>
 
