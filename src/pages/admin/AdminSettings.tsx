@@ -315,6 +315,7 @@ export default function AdminSettings() {
                 <CardContent className="space-y-2 text-sm text-muted-foreground">
                   <p>ROI: {plan.roi_percentage}% &middot; {plan.duration_days} days &middot; Every {plan.roi_frequency_days}d</p>
                   <p>${plan.min_amount.toLocaleString()} – ${plan.max_amount.toLocaleString()}</p>
+                  {plan.details && <p className="text-xs italic text-muted-foreground/80">{plan.details}</p>}
                   <ul className="list-disc list-inside text-xs">
                     {plan.features.map((f, i) => <li key={i}>{f}</li>)}
                   </ul>
