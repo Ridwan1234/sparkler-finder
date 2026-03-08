@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { toast } from "sonner";
-import { TrendingUp, Gift } from "lucide-react";
+import { TrendingUp, Gift, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 export default function Plans() {
