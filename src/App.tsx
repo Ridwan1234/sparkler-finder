@@ -94,6 +94,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <WhatsAppButton />
+        <TawkTo />
         <ScrollToTop />
         <BrowserRouter>
           <AuthProvider>
