@@ -38,6 +38,7 @@ type Plan = {
   roi_frequency_days: number;
   features: string[];
   is_popular: boolean;
+  details: string;
 };
 
 type PlanForm = Omit<Plan, "id"> & { id?: string };
