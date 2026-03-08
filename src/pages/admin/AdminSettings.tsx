@@ -120,6 +120,7 @@ export default function AdminSettings() {
         roi_frequency_days: plan.roi_frequency_days,
         features: plan.features,
         is_popular: plan.is_popular,
+        details: plan.details,
       };
       if (plan.id) {
         const { error } = await supabase.from("investment_plans").update(payload).eq("id", plan.id);
