@@ -110,6 +110,9 @@ const PlansSection = () => {
                     </motion.div>
                   )}
                   <h3 className="font-display font-bold text-xl mb-1">{plan.name}</h3>
+                  {(plan as any).details && (
+                    <p className="text-xs text-section-dark-foreground/50 mb-3">{(plan as any).details}</p>
+                  )}
                   <div className="flex items-baseline gap-1 mb-4">
                     <span className="text-4xl font-display font-bold text-primary">
                       {Number(plan.roi_percentage)}%

@@ -136,6 +136,9 @@ export default function Plans() {
               <CardHeader className="text-center">
                 <TrendingUp className="mx-auto h-8 w-8 text-primary mb-2" />
                 <CardTitle className="text-section-dark-foreground">{plan.name}</CardTitle>
+                {(plan as any).details && (
+                  <p className="text-xs text-muted-foreground/70 mt-1">{(plan as any).details}</p>
+                )}
               </CardHeader>
               <CardContent className="text-center space-y-3">
                 <p className="text-3xl font-bold text-gold">{Number(plan.roi_percentage)}% {t("dashboard.plans.roi")}</p>
