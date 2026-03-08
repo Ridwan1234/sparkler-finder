@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { User, MapPin, Phone, Calendar, Globe, FileText } from "lucide-react";
+import { User, MapPin, Calendar, Globe, FileText } from "lucide-react";
 
 export default function Profile() {
   const { t } = useTranslation();
@@ -122,7 +122,7 @@ export default function Profile() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="text-sm text-muted-foreground mb-1 block flex items-center gap-1.5">
-                  <Calendar size={14} /> Date of Birth
+                  <Calendar size={14} /> {t("dashboard.profile.dateOfBirth")}
                 </label>
                 <Input
                   type="date"
@@ -132,16 +132,16 @@ export default function Profile() {
                 />
               </div>
               <div>
-                <label className="text-sm text-muted-foreground mb-1 block">Gender</label>
+                <label className="text-sm text-muted-foreground mb-1 block">{t("dashboard.profile.gender")}</label>
                 <Select value={gender} onValueChange={setGender}>
                   <SelectTrigger className="bg-background/10 border-border/20 text-section-dark-foreground">
-                    <SelectValue placeholder="Select gender" />
+                    <SelectValue placeholder={t("dashboard.profile.selectGender")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="male">Male</SelectItem>
-                    <SelectItem value="female">Female</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                    <SelectItem value="prefer_not_to_say">Prefer not to say</SelectItem>
+                    <SelectItem value="male">{t("dashboard.profile.genderMale")}</SelectItem>
+                    <SelectItem value="female">{t("dashboard.profile.genderFemale")}</SelectItem>
+                    <SelectItem value="other">{t("dashboard.profile.genderOther")}</SelectItem>
+                    <SelectItem value="prefer_not_to_say">{t("dashboard.profile.genderPreferNot")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -154,14 +154,14 @@ export default function Profile() {
           <CardHeader>
             <CardTitle className="text-section-dark-foreground text-lg flex items-center gap-2">
               <MapPin size={18} className="text-primary" />
-              Location
+              {t("dashboard.profile.location")}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="text-sm text-muted-foreground mb-1 block flex items-center gap-1.5">
-                  <Globe size={14} /> Country
+                  <Globe size={14} /> {t("dashboard.profile.country")}
                 </label>
                 <Input
                   value={country}
@@ -171,7 +171,7 @@ export default function Profile() {
                 />
               </div>
               <div>
-                <label className="text-sm text-muted-foreground mb-1 block">City</label>
+                <label className="text-sm text-muted-foreground mb-1 block">{t("dashboard.profile.city")}</label>
                 <Input
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
@@ -181,7 +181,7 @@ export default function Profile() {
               </div>
             </div>
             <div>
-              <label className="text-sm text-muted-foreground mb-1 block">Address</label>
+              <label className="text-sm text-muted-foreground mb-1 block">{t("dashboard.profile.address")}</label>
               <Input
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
@@ -197,14 +197,14 @@ export default function Profile() {
           <CardHeader>
             <CardTitle className="text-section-dark-foreground text-lg flex items-center gap-2">
               <FileText size={18} className="text-primary" />
-              About You
+              {t("dashboard.profile.aboutYou")}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <Textarea
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              placeholder="Tell us a little about yourself..."
+              placeholder={t("dashboard.profile.bioPlaceholder")}
               rows={4}
               className="bg-background/10 border-border/20 text-section-dark-foreground"
             />
