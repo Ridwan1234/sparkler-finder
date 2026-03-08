@@ -1,0 +1,1 @@
+ALTER TABLE public.investment_plans ADD COLUMN details text DEFAULT '';
