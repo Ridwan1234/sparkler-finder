@@ -387,6 +387,18 @@ export default function AdminSettings() {
                 />
               </div>
 
+              {/* Details */}
+              <div className="space-y-1.5">
+                <Label className="text-sm font-medium text-muted-foreground">Details</Label>
+                <textarea
+                  value={editingPlan.details}
+                  onChange={(e) => setEditingPlan({ ...editingPlan, details: e.target.value })}
+                  placeholder="Brief description of this plan shown to users"
+                  rows={3}
+                  className="flex w-full rounded-md border border-border/20 bg-background/5 px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                />
+              </div>
+
               {/* Amount Range */}
               <div>
                 <Label className="text-sm font-medium text-muted-foreground mb-2 block">Investment Range ($)</Label>
