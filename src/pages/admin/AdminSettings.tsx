@@ -52,6 +52,7 @@ const emptyPlan: PlanForm = {
   roi_frequency_days: 1,
   features: [],
   is_popular: false,
+  details: "",
 };
 
 export default function AdminSettings() {
