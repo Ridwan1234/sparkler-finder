@@ -40,6 +40,7 @@ import FAQPage from "./pages/FAQ";
 import ContactPage from "./pages/Contact";
 import TermsPage from "./pages/Terms";
 import WhatsAppButton from "./components/WhatsAppButton";
+import TawkTo from "./components/TawkTo";
 
 const queryClient = new QueryClient();
 
