@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { toast } from "sonner";
-import { TrendingUp, Gift } from "lucide-react";
+import { TrendingUp, Gift, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 export default function Plans() {
@@ -149,6 +149,15 @@ export default function Plans() {
                 <p className="text-sm text-muted-foreground">
                   ${Number(plan.min_amount).toLocaleString()} – ${Number(plan.max_amount).toLocaleString()}
                 </p>
+                {((plan as any).features ?? []).length > 0 && (
+                  <ul className="text-left space-y-1.5 pt-2">
+                    {((plan as any).features as string[]).map((f, i) => (
+                      <li key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <Check size={12} className="text-primary flex-shrink-0" /> {f}
+                      </li>
+                    ))}
+                  </ul>
+                )}
                 {selectedPlan === plan.id ? (
                   <div className="space-y-2">
                     <Input
