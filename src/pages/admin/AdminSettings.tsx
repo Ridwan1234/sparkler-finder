@@ -501,7 +501,21 @@ export default function AdminSettings() {
             </div>
             <div className="space-y-1.5">
               <Label className="text-sm font-medium text-muted-foreground">Network</Label>
-              <Input value={editingWallet.network} onChange={(e) => setEditingWallet({ ...editingWallet, network: e.target.value })} placeholder="e.g. BTC, ETH, USDT-TRC20" className="bg-background/5 border-border/20" />
+              <Select value={editingWallet.network} onValueChange={(v) => setEditingWallet({ ...editingWallet, network: v })}>
+                <SelectTrigger className="bg-background/5 border-border/20">
+                  <SelectValue placeholder="Select network" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CRYPTO_NETWORKS.map((n) => (
+                    <SelectItem key={n.value} value={n.value}>
+                      <span className="flex items-center gap-2">
+                        <img src={n.logo} alt={n.label} className="h-4 w-4 rounded-full" />
+                        {n.label}
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-1.5">
               <Label className="text-sm font-medium text-muted-foreground">Wallet Address</Label>
