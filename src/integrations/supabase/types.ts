@@ -301,6 +301,39 @@ export type Database = {
         }
         Relationships: []
       }
+      testimonials: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          rating: number
+          role: string
+          sort_order: number
+          text: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          rating?: number
+          role: string
+          sort_order?: number
+          text: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          rating?: number
+          role?: string
+          sort_order?: number
+          text?: string
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
           amount: number
