@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { Copy, Check, Wallet } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { getNetworkByValue } from "@/lib/cryptoNetworks";
 
 export default function Deposits() {
   const { t } = useTranslation();
