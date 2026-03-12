@@ -10,6 +10,8 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { Pencil, Plus, Save, Trash2, X, AlertTriangle, Wallet, Copy } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { CRYPTO_NETWORKS, getNetworkByValue } from "@/lib/cryptoNetworks";
 import {
   Dialog,
   DialogContent,
@@ -267,10 +269,14 @@ export default function AdminSettings() {
               <CardContent className="pt-4 space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Wallet className="h-4 w-4 text-primary" />
+                    {getNetworkByValue(w.network)?.logo ? (
+                      <img src={getNetworkByValue(w.network)!.logo} alt={w.network} className="h-5 w-5 rounded-full" />
+                    ) : (
+                      <Wallet className="h-4 w-4 text-primary" />
+                    )}
                     <span className="font-medium text-section-dark-foreground">{w.label}</span>
                   </div>
-                  <Badge variant="outline" className="text-xs">{w.network}</Badge>
+                  <Badge variant="outline" className="text-xs">{getNetworkByValue(w.network)?.label || w.network}</Badge>
                 </div>
                 <p className="text-xs font-mono text-muted-foreground break-all">{w.address}</p>
                 {!w.is_active && <Badge variant="secondary" className="text-xs">Inactive</Badge>}
@@ -495,7 +501,21 @@ export default function AdminSettings() {
             </div>
             <div className="space-y-1.5">
               <Label className="text-sm font-medium text-muted-foreground">Network</Label>
-              <Input value={editingWallet.network} onChange={(e) => setEditingWallet({ ...editingWallet, network: e.target.value })} placeholder="e.g. BTC, ETH, USDT-TRC20" className="bg-background/5 border-border/20" />
+              <Select value={editingWallet.network} onValueChange={(v) => setEditingWallet({ ...editingWallet, network: v })}>
+                <SelectTrigger className="bg-background/5 border-border/20">
+                  <SelectValue placeholder="Select network" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CRYPTO_NETWORKS.map((n) => (
+                    <SelectItem key={n.value} value={n.value}>
+                      <span className="flex items-center gap-2">
+                        <img src={n.logo} alt={n.label} className="h-4 w-4 rounded-full" />
+                        {n.label}
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-1.5">
               <Label className="text-sm font-medium text-muted-foreground">Wallet Address</Label>

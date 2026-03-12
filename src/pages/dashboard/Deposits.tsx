@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { Copy, Check, Wallet } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { getNetworkByValue } from "@/lib/cryptoNetworks";
 
 export default function Deposits() {
   const { t } = useTranslation();
@@ -126,10 +127,14 @@ export default function Deposits() {
                   >
                     <div className="flex items-center justify-between mb-1">
                       <span className="flex items-center gap-1.5 text-sm font-medium text-section-dark-foreground">
-                        <Wallet className="h-3.5 w-3.5 text-primary" />
+                        {getNetworkByValue(w.network)?.logo ? (
+                          <img src={getNetworkByValue(w.network)!.logo} alt={w.network} className="h-5 w-5 rounded-full" />
+                        ) : (
+                          <Wallet className="h-3.5 w-3.5 text-primary" />
+                        )}
                         {w.label}
                       </span>
-                      <Badge variant="outline" className="text-[10px]">{w.network}</Badge>
+                      <Badge variant="outline" className="text-[10px]">{getNetworkByValue(w.network)?.label || w.network}</Badge>
                     </div>
                     <div className="flex items-center gap-1">
                       <p className="text-xs font-mono text-muted-foreground truncate flex-1">{w.address}</p>
