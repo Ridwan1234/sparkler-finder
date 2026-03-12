@@ -9,7 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { Pencil, Plus, Save, Trash2, X, AlertTriangle, Wallet, Copy } from "lucide-react";
+import { Pencil, Plus, Save, Trash2, X, AlertTriangle, Wallet, Copy, MessageSquareQuote, Star } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CRYPTO_NETWORKS, getNetworkByValue } from "@/lib/cryptoNetworks";
 import {
@@ -45,6 +45,18 @@ type Plan = {
 
 type PlanForm = Omit<Plan, "id"> & { id?: string };
 
+type Testimonial = {
+  id: string;
+  name: string;
+  role: string;
+  text: string;
+  rating: number;
+  is_active: boolean;
+  sort_order: number;
+};
+
+type TestimonialForm = Omit<Testimonial, "id"> & { id?: string };
+
 const emptyPlan: PlanForm = {
   name: "",
   min_amount: 0,
@@ -66,6 +78,11 @@ export default function AdminSettings() {
   const [walletDialogOpen, setWalletDialogOpen] = useState(false);
   const [editingWallet, setEditingWallet] = useState<{ id?: string; label: string; address: string; network: string; is_active: boolean }>({ label: "", address: "", network: "BTC", is_active: true });
   const [deleteWalletConfirm, setDeleteWalletConfirm] = useState<{ id: string; label: string } | null>(null);
+
+  // Testimonials state
+  const [testimonialDialogOpen, setTestimonialDialogOpen] = useState(false);
+  const [editingTestimonial, setEditingTestimonial] = useState<TestimonialForm>({ name: "", role: "", text: "", rating: 5, is_active: true, sort_order: 0 });
+  const [deleteTestimonialConfirm, setDeleteTestimonialConfirm] = useState<{ id: string; name: string } | null>(null);
 
   // Fetch site settings
   const { data: settings } = useQuery({
@@ -194,6 +211,50 @@ export default function AdminSettings() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["wallet_addresses"] });
       toast({ title: "Wallet deleted" });
+    },
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+  });
+
+  // Fetch testimonials
+  const { data: testimonials } = useQuery({
+    queryKey: ["admin_testimonials"],
+    queryFn: async () => {
+      const { data } = await supabase.from("testimonials").select("*").order("sort_order", { ascending: true });
+      return (data ?? []) as Testimonial[];
+    },
+  });
+
+  // Save testimonial
+  const saveTestimonial = useMutation({
+    mutationFn: async (t: TestimonialForm) => {
+      const payload = { name: t.name, role: t.role, text: t.text, rating: t.rating, is_active: t.is_active, sort_order: t.sort_order };
+      if (t.id) {
+        const { error } = await supabase.from("testimonials").update(payload).eq("id", t.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("testimonials").insert(payload);
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin_testimonials"] });
+      queryClient.invalidateQueries({ queryKey: ["testimonials"] });
+      setTestimonialDialogOpen(false);
+      toast({ title: "Testimonial saved" });
+    },
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+  });
+
+  // Delete testimonial
+  const deleteTestimonial = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("testimonials").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin_testimonials"] });
+      queryClient.invalidateQueries({ queryKey: ["testimonials"] });
+      toast({ title: "Testimonial deleted" });
     },
     onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
   });
@@ -345,7 +406,61 @@ export default function AdminSettings() {
         )}
       </div>
 
-      {/* Delete Confirmation */}
+      <Separator className="border-border/10" />
+
+      {/* Testimonials */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="font-display text-xl font-bold text-section-dark-foreground flex items-center gap-2">
+            <MessageSquareQuote className="h-5 w-5 text-primary" /> Testimonials
+          </h2>
+          <Button size="sm" onClick={() => { setEditingTestimonial({ name: "", role: "", text: "", rating: 5, is_active: true, sort_order: (testimonials?.length ?? 0) + 1 }); setTestimonialDialogOpen(true); }}>
+            <Plus className="h-4 w-4 mr-1" /> Add Testimonial
+          </Button>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {testimonials?.map((t) => (
+            <Card key={t.id} className={`bg-card/5 border-border/10 relative ${!t.is_active ? 'opacity-50' : ''}`}>
+              <CardContent className="pt-4 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <span className="text-primary font-bold text-xs">{t.name[0]}</span>
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm text-section-dark-foreground">{t.name}</p>
+                      <p className="text-xs text-muted-foreground">{t.role}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-0.5">
+                    {Array.from({ length: t.rating }).map((_, j) => (
+                      <Star key={j} size={12} className="fill-gold text-gold" />
+                    ))}
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground line-clamp-3">"{t.text}"</p>
+                <div className="flex items-center justify-between pt-1">
+                  <div className="flex gap-1">
+                    {!t.is_active && <Badge variant="secondary" className="text-xs">Inactive</Badge>}
+                    <Badge variant="outline" className="text-xs">Order: {t.sort_order}</Badge>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => { setEditingTestimonial({ ...t }); setTestimonialDialogOpen(true); }}>
+                      <Pencil className="h-3 w-3" />
+                    </Button>
+                    <Button variant="destructive" size="sm" onClick={() => setDeleteTestimonialConfirm({ id: t.id, name: t.name })}>
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+          {!testimonials?.length && <p className="text-muted-foreground text-sm">No testimonials yet.</p>}
+        </div>
+      </div>
+
       <AlertDialog open={!!deleteConfirm} onOpenChange={(open) => !open && setDeleteConfirm(null)}>
         <AlertDialogContent className="bg-card border-border/20">
           <AlertDialogHeader>
@@ -558,6 +673,89 @@ export default function AdminSettings() {
                 if (deleteWalletConfirm) {
                   deleteWallet.mutate(deleteWalletConfirm.id);
                   setDeleteWalletConfirm(null);
+                }
+              }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Testimonial Dialog */}
+      <Dialog open={testimonialDialogOpen} onOpenChange={setTestimonialDialogOpen}>
+        <DialogContent className="bg-card border-border/20 text-section-dark-foreground sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{editingTestimonial.id ? "Edit Testimonial" : "New Testimonial"}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label className="text-sm font-medium text-muted-foreground">Name</Label>
+                <Input value={editingTestimonial.name} onChange={(e) => setEditingTestimonial({ ...editingTestimonial, name: e.target.value })} placeholder="John D." className="bg-background/5 border-border/20" />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-sm font-medium text-muted-foreground">Role</Label>
+                <Input value={editingTestimonial.role} onChange={(e) => setEditingTestimonial({ ...editingTestimonial, role: e.target.value })} placeholder="Investor" className="bg-background/5 border-border/20" />
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-sm font-medium text-muted-foreground">Testimonial Text</Label>
+              <textarea
+                value={editingTestimonial.text}
+                onChange={(e) => setEditingTestimonial({ ...editingTestimonial, text: e.target.value })}
+                placeholder="What the investor said..."
+                rows={3}
+                className="flex w-full rounded-md border border-border/20 bg-background/5 px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label className="text-sm font-medium text-muted-foreground">Rating (1-5)</Label>
+                <Input type="number" min={1} max={5} value={editingTestimonial.rating} onChange={(e) => setEditingTestimonial({ ...editingTestimonial, rating: Math.min(5, Math.max(1, +e.target.value)) })} className="bg-background/5 border-border/20" />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-sm font-medium text-muted-foreground">Sort Order</Label>
+                <Input type="number" min={0} value={editingTestimonial.sort_order} onChange={(e) => setEditingTestimonial({ ...editingTestimonial, sort_order: +e.target.value })} className="bg-background/5 border-border/20" />
+              </div>
+            </div>
+            <div className="flex items-center justify-between rounded-lg border border-border/10 p-3">
+              <div>
+                <Label className="text-sm font-medium">Active</Label>
+                <p className="text-xs text-muted-foreground">Only active testimonials are shown on the site</p>
+              </div>
+              <Switch checked={editingTestimonial.is_active} onCheckedChange={(v) => setEditingTestimonial({ ...editingTestimonial, is_active: v })} />
+            </div>
+          </div>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setTestimonialDialogOpen(false)}>Cancel</Button>
+            <Button onClick={() => saveTestimonial.mutate(editingTestimonial)} disabled={saveTestimonial.isPending}>
+              {saveTestimonial.isPending ? "Saving..." : "Save Testimonial"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Testimonial Confirmation */}
+      <AlertDialog open={!!deleteTestimonialConfirm} onOpenChange={(open) => !open && setDeleteTestimonialConfirm(null)}>
+        <AlertDialogContent className="bg-card border-border/20">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-section-dark-foreground">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              Delete Testimonial
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete the testimonial from <strong>{deleteTestimonialConfirm?.name}</strong>?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => {
+                if (deleteTestimonialConfirm) {
+                  deleteTestimonial.mutate(deleteTestimonialConfirm.id);
+                  setDeleteTestimonialConfirm(null);
                 }
               }}
             >
