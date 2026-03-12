@@ -45,6 +45,18 @@ type Plan = {
 
 type PlanForm = Omit<Plan, "id"> & { id?: string };
 
+type Testimonial = {
+  id: string;
+  name: string;
+  role: string;
+  text: string;
+  rating: number;
+  is_active: boolean;
+  sort_order: number;
+};
+
+type TestimonialForm = Omit<Testimonial, "id"> & { id?: string };
+
 const emptyPlan: PlanForm = {
   name: "",
   min_amount: 0,
