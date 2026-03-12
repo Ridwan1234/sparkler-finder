@@ -406,7 +406,61 @@ export default function AdminSettings() {
         )}
       </div>
 
-      {/* Delete Confirmation */}
+      <Separator className="border-border/10" />
+
+      {/* Testimonials */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="font-display text-xl font-bold text-section-dark-foreground flex items-center gap-2">
+            <MessageSquareQuote className="h-5 w-5 text-primary" /> Testimonials
+          </h2>
+          <Button size="sm" onClick={() => { setEditingTestimonial({ name: "", role: "", text: "", rating: 5, is_active: true, sort_order: (testimonials?.length ?? 0) + 1 }); setTestimonialDialogOpen(true); }}>
+            <Plus className="h-4 w-4 mr-1" /> Add Testimonial
+          </Button>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {testimonials?.map((t) => (
+            <Card key={t.id} className={`bg-card/5 border-border/10 relative ${!t.is_active ? 'opacity-50' : ''}`}>
+              <CardContent className="pt-4 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <span className="text-primary font-bold text-xs">{t.name[0]}</span>
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm text-section-dark-foreground">{t.name}</p>
+                      <p className="text-xs text-muted-foreground">{t.role}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-0.5">
+                    {Array.from({ length: t.rating }).map((_, j) => (
+                      <Star key={j} size={12} className="fill-gold text-gold" />
+                    ))}
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground line-clamp-3">"{t.text}"</p>
+                <div className="flex items-center justify-between pt-1">
+                  <div className="flex gap-1">
+                    {!t.is_active && <Badge variant="secondary" className="text-xs">Inactive</Badge>}
+                    <Badge variant="outline" className="text-xs">Order: {t.sort_order}</Badge>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => { setEditingTestimonial({ ...t }); setTestimonialDialogOpen(true); }}>
+                      <Pencil className="h-3 w-3" />
+                    </Button>
+                    <Button variant="destructive" size="sm" onClick={() => setDeleteTestimonialConfirm({ id: t.id, name: t.name })}>
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+          {!testimonials?.length && <p className="text-muted-foreground text-sm">No testimonials yet.</p>}
+        </div>
+      </div>
+
       <AlertDialog open={!!deleteConfirm} onOpenChange={(open) => !open && setDeleteConfirm(null)}>
         <AlertDialogContent className="bg-card border-border/20">
           <AlertDialogHeader>
