@@ -215,8 +215,6 @@ export default function AdminSettings() {
     onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
   });
 
-  const openCreate = () => {
-
   // Fetch testimonials
   const { data: testimonials } = useQuery({
     queryKey: ["admin_testimonials"],
@@ -260,6 +258,8 @@ export default function AdminSettings() {
     },
     onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
   });
+
+  const openCreate = () => {
     setEditingPlan({ ...emptyPlan });
     setFeatureInput("");
     setDialogOpen(true);
