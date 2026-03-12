@@ -269,10 +269,14 @@ export default function AdminSettings() {
               <CardContent className="pt-4 space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Wallet className="h-4 w-4 text-primary" />
+                    {getNetworkByValue(w.network)?.logo ? (
+                      <img src={getNetworkByValue(w.network)!.logo} alt={w.network} className="h-5 w-5 rounded-full" />
+                    ) : (
+                      <Wallet className="h-4 w-4 text-primary" />
+                    )}
                     <span className="font-medium text-section-dark-foreground">{w.label}</span>
                   </div>
-                  <Badge variant="outline" className="text-xs">{w.network}</Badge>
+                  <Badge variant="outline" className="text-xs">{getNetworkByValue(w.network)?.label || w.network}</Badge>
                 </div>
                 <p className="text-xs font-mono text-muted-foreground break-all">{w.address}</p>
                 {!w.is_active && <Badge variant="secondary" className="text-xs">Inactive</Badge>}
