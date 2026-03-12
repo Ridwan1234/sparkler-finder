@@ -79,6 +79,11 @@ export default function AdminSettings() {
   const [editingWallet, setEditingWallet] = useState<{ id?: string; label: string; address: string; network: string; is_active: boolean }>({ label: "", address: "", network: "BTC", is_active: true });
   const [deleteWalletConfirm, setDeleteWalletConfirm] = useState<{ id: string; label: string } | null>(null);
 
+  // Testimonials state
+  const [testimonialDialogOpen, setTestimonialDialogOpen] = useState(false);
+  const [editingTestimonial, setEditingTestimonial] = useState<TestimonialForm>({ name: "", role: "", text: "", rating: 5, is_active: true, sort_order: 0 });
+  const [deleteTestimonialConfirm, setDeleteTestimonialConfirm] = useState<{ id: string; name: string } | null>(null);
+
   // Fetch site settings
   const { data: settings } = useQuery({
     queryKey: ["site_settings"],
