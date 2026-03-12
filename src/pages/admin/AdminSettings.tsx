@@ -216,6 +216,50 @@ export default function AdminSettings() {
   });
 
   const openCreate = () => {
+
+  // Fetch testimonials
+  const { data: testimonials } = useQuery({
+    queryKey: ["admin_testimonials"],
+    queryFn: async () => {
+      const { data } = await supabase.from("testimonials").select("*").order("sort_order", { ascending: true });
+      return (data ?? []) as Testimonial[];
+    },
+  });
+
+  // Save testimonial
+  const saveTestimonial = useMutation({
+    mutationFn: async (t: TestimonialForm) => {
+      const payload = { name: t.name, role: t.role, text: t.text, rating: t.rating, is_active: t.is_active, sort_order: t.sort_order };
+      if (t.id) {
+        const { error } = await supabase.from("testimonials").update(payload).eq("id", t.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("testimonials").insert(payload);
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin_testimonials"] });
+      queryClient.invalidateQueries({ queryKey: ["testimonials"] });
+      setTestimonialDialogOpen(false);
+      toast({ title: "Testimonial saved" });
+    },
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+  });
+
+  // Delete testimonial
+  const deleteTestimonial = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("testimonials").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin_testimonials"] });
+      queryClient.invalidateQueries({ queryKey: ["testimonials"] });
+      toast({ title: "Testimonial deleted" });
+    },
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+  });
     setEditingPlan({ ...emptyPlan });
     setFeatureInput("");
     setDialogOpen(true);
