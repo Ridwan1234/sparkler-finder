@@ -681,6 +681,89 @@ export default function AdminSettings() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Testimonial Dialog */}
+      <Dialog open={testimonialDialogOpen} onOpenChange={setTestimonialDialogOpen}>
+        <DialogContent className="bg-card border-border/20 text-section-dark-foreground sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{editingTestimonial.id ? "Edit Testimonial" : "New Testimonial"}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label className="text-sm font-medium text-muted-foreground">Name</Label>
+                <Input value={editingTestimonial.name} onChange={(e) => setEditingTestimonial({ ...editingTestimonial, name: e.target.value })} placeholder="John D." className="bg-background/5 border-border/20" />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-sm font-medium text-muted-foreground">Role</Label>
+                <Input value={editingTestimonial.role} onChange={(e) => setEditingTestimonial({ ...editingTestimonial, role: e.target.value })} placeholder="Investor" className="bg-background/5 border-border/20" />
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-sm font-medium text-muted-foreground">Testimonial Text</Label>
+              <textarea
+                value={editingTestimonial.text}
+                onChange={(e) => setEditingTestimonial({ ...editingTestimonial, text: e.target.value })}
+                placeholder="What the investor said..."
+                rows={3}
+                className="flex w-full rounded-md border border-border/20 bg-background/5 px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label className="text-sm font-medium text-muted-foreground">Rating (1-5)</Label>
+                <Input type="number" min={1} max={5} value={editingTestimonial.rating} onChange={(e) => setEditingTestimonial({ ...editingTestimonial, rating: Math.min(5, Math.max(1, +e.target.value)) })} className="bg-background/5 border-border/20" />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-sm font-medium text-muted-foreground">Sort Order</Label>
+                <Input type="number" min={0} value={editingTestimonial.sort_order} onChange={(e) => setEditingTestimonial({ ...editingTestimonial, sort_order: +e.target.value })} className="bg-background/5 border-border/20" />
+              </div>
+            </div>
+            <div className="flex items-center justify-between rounded-lg border border-border/10 p-3">
+              <div>
+                <Label className="text-sm font-medium">Active</Label>
+                <p className="text-xs text-muted-foreground">Only active testimonials are shown on the site</p>
+              </div>
+              <Switch checked={editingTestimonial.is_active} onCheckedChange={(v) => setEditingTestimonial({ ...editingTestimonial, is_active: v })} />
+            </div>
+          </div>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setTestimonialDialogOpen(false)}>Cancel</Button>
+            <Button onClick={() => saveTestimonial.mutate(editingTestimonial)} disabled={saveTestimonial.isPending}>
+              {saveTestimonial.isPending ? "Saving..." : "Save Testimonial"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Testimonial Confirmation */}
+      <AlertDialog open={!!deleteTestimonialConfirm} onOpenChange={(open) => !open && setDeleteTestimonialConfirm(null)}>
+        <AlertDialogContent className="bg-card border-border/20">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-section-dark-foreground">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              Delete Testimonial
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete the testimonial from <strong>{deleteTestimonialConfirm?.name}</strong>?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => {
+                if (deleteTestimonialConfirm) {
+                  deleteTestimonial.mutate(deleteTestimonialConfirm.id);
+                  setDeleteTestimonialConfirm(null);
+                }
+              }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
