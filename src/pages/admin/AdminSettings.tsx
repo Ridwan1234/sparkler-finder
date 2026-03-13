@@ -9,7 +9,8 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { Pencil, Plus, Save, Trash2, X, AlertTriangle, Wallet, Copy, MessageSquareQuote, Star } from "lucide-react";
+import { Pencil, Plus, Save, Trash2, X, AlertTriangle, Wallet, Copy, MessageSquareQuote, Star, Upload, ImageIcon } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CRYPTO_NETWORKS, getNetworkByValue } from "@/lib/cryptoNetworks";
 import {
