@@ -87,13 +87,13 @@ const TestimonialsSection = () => {
         </motion.div>
 
         {isLoading ? (
-          <div className="grid md:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (
               <Skeleton key={i} className="h-[220px] rounded-xl" />
             ))}
           </div>
         ) : !shouldScroll ? (
-          <div className="grid md:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map((tItem, i) => (
               <TestimonialCard key={tItem.id} tItem={tItem} i={i} />
             ))}
