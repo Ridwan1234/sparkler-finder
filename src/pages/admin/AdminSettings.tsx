@@ -448,9 +448,10 @@ export default function AdminSettings() {
               <CardContent className="pt-4 space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                      <span className="text-primary font-bold text-xs">{t.name[0]}</span>
-                    </div>
+                    <Avatar className="h-8 w-8">
+                      {t.avatar_url ? <AvatarImage src={t.avatar_url} alt={t.name} /> : null}
+                      <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">{t.name[0]}</AvatarFallback>
+                    </Avatar>
                     <div>
                       <p className="font-medium text-sm text-section-dark-foreground">{t.name}</p>
                       <p className="text-xs text-muted-foreground">{t.role}</p>
