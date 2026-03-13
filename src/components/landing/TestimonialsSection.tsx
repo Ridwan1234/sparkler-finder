@@ -21,7 +21,7 @@ const TestimonialCard = ({ tItem, i }: { tItem: Testimonial; i: number }) => (
     whileInView={{ opacity: 1, y: 0, rotateY: 0 }}
     viewport={{ once: true }}
     transition={{ delay: i * 0.15, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-    className="bg-card border border-border rounded-xl p-8 relative group hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20 transition-all cursor-default min-w-[320px] md:min-w-[380px] flex-shrink-0"
+    className="bg-card border border-border rounded-xl p-6 relative group hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20 transition-all cursor-default w-[280px] md:w-[300px] flex-shrink-0"
   >
     <div className="absolute top-4 right-4 opacity-[0.08]">
       <Quote size={48} className="text-primary" />
