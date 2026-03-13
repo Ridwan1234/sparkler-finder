@@ -9,7 +9,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 const cardVariants = {
   hidden: { opacity: 0, y: 40, scale: 0.95 } as const,
   visible: (i: number) => ({
-    opacity: 1, y: 0, scale: 1,
+    opacity: 1,
+    y: 0,
+    scale: 1,
     transition: { delay: i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
   }),
 };
@@ -18,10 +20,7 @@ const PlansSection = () => {
   const { data: plans, isLoading } = useQuery({
     queryKey: ["investment_plans"],
     queryFn: async () => {
-      const { data } = await supabase
-        .from("investment_plans")
-        .select("*")
-        .order("min_amount", { ascending: true });
+      const { data } = await supabase.from("investment_plans").select("*").order("min_amount", { ascending: true });
       return data ?? [];
     },
   });
@@ -50,9 +49,7 @@ const PlansSection = () => {
           className="text-center mb-16"
         >
           <span className="text-primary font-medium text-sm uppercase tracking-wider">Investment Plans</span>
-          <h2 className="text-3xl md:text-4xl font-display font-bold mt-3 mb-4">
-            Choose Your Investment Plan
-          </h2>
+          <h2 className="text-3xl md:text-4xl font-display font-bold mt-3 mb-4">Choose Your Investment Plan</h2>
           <p className="text-section-dark-foreground/60 max-w-2xl mx-auto">
             Flexible plans designed to suit every investor, from beginners to high-net-worth individuals.
           </p>
@@ -63,7 +60,10 @@ const PlansSection = () => {
               viewport={{ once: true }}
               className="mt-6 inline-flex items-center gap-2 bg-gold/10 border border-gold/30 text-gold px-5 py-2.5 rounded-full text-sm font-semibold"
             >
-              <motion.div animate={{ rotate: [0, 15, -15, 0] }} transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 3 }}>
+              <motion.div
+                animate={{ rotate: [0, 15, -15, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 3 }}
+              >
                 <Gift size={16} />
               </motion.div>
               {bonusPercent}% First Deposit Bonus for New Investors!
@@ -114,16 +114,35 @@ const PlansSection = () => {
                     <p className="text-xs text-section-dark-foreground/50 mb-3">{(plan as any).details}</p>
                   )}
                   <div className="flex items-baseline gap-1 mb-4">
-                    <span className="text-4xl font-display font-bold text-primary">
-                      {Number(plan.roi_percentage)}%
-                    </span>
-                    <span className="text-section-dark-foreground/50 text-sm">/ {plan.roi_frequency_days === 7 ? "Week" : plan.roi_frequency_days === 1 || !plan.roi_frequency_days ? "Day" : `${plan.roi_frequency_days} Days`}</span>
+                    <span className="text-4xl font-display font-bold text-primary">{Number(plan.roi_percentage)}%</span>
                   </div>
                   <div className="space-y-2 text-sm text-section-dark-foreground/60 mb-6">
-                    <p>Min: <span className="text-section-dark-foreground font-medium">${Number(plan.min_amount).toLocaleString()}</span></p>
-                    <p>Max: <span className="text-section-dark-foreground font-medium">${Number(plan.max_amount).toLocaleString()}</span></p>
-                    <p>Duration: <span className="text-section-dark-foreground font-medium">{plan.duration_days} Days</span></p>
-                    <p>Payouts: <span className="text-section-dark-foreground font-medium">{plan.roi_frequency_days === 7 ? "Weekly" : plan.roi_frequency_days === 1 || !plan.roi_frequency_days ? "Daily" : `Every ${plan.roi_frequency_days} days`}</span></p>
+                    <p>
+                      Min:{" "}
+                      <span className="text-section-dark-foreground font-medium">
+                        ${Number(plan.min_amount).toLocaleString()}
+                      </span>
+                    </p>
+                    <p>
+                      Max:{" "}
+                      <span className="text-section-dark-foreground font-medium">
+                        ${Number(plan.max_amount).toLocaleString()}
+                      </span>
+                    </p>
+                    <p>
+                      Duration:{" "}
+                      <span className="text-section-dark-foreground font-medium">{plan.duration_days} Days</span>
+                    </p>
+                    <p>
+                      Payouts:{" "}
+                      <span className="text-section-dark-foreground font-medium">
+                        {plan.roi_frequency_days === 7
+                          ? "Weekly"
+                          : plan.roi_frequency_days === 1 || !plan.roi_frequency_days
+                            ? "Daily"
+                            : `Every ${plan.roi_frequency_days} days`}
+                      </span>
+                    </p>
                   </div>
                   <ul className="space-y-2 mb-6">
                     {features.map((f) => (
@@ -136,7 +155,9 @@ const PlansSection = () => {
                     <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                       <Button
                         className={`w-full ${
-                          isPopular ? "bg-primary hover:bg-primary/90" : "bg-section-dark-foreground/10 hover:bg-primary/20 text-section-dark-foreground"
+                          isPopular
+                            ? "bg-primary hover:bg-primary/90"
+                            : "bg-section-dark-foreground/10 hover:bg-primary/20 text-section-dark-foreground"
                         }`}
                       >
                         Invest Now
