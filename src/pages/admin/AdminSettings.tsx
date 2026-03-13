@@ -713,6 +713,31 @@ export default function AdminSettings() {
             <DialogTitle>{editingTestimonial.id ? "Edit Testimonial" : "New Testimonial"}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
+            {/* Avatar Upload */}
+            <div className="space-y-1.5">
+              <Label className="text-sm font-medium text-muted-foreground">Avatar Photo</Label>
+              <div className="flex items-center gap-4">
+                <Avatar className="h-16 w-16">
+                  {editingTestimonial.avatar_url ? <AvatarImage src={editingTestimonial.avatar_url} alt="Avatar" /> : null}
+                  <AvatarFallback className="bg-primary/10 text-primary text-lg font-bold">
+                    {editingTestimonial.name ? editingTestimonial.name[0] : <ImageIcon className="h-6 w-6" />}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col gap-2">
+                  <label className="cursor-pointer">
+                    <input type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} disabled={avatarUploading} />
+                    <span className="inline-flex items-center gap-1.5 rounded-md border border-border/20 bg-background/5 px-3 py-1.5 text-xs font-medium hover:bg-muted transition-colors">
+                      <Upload className="h-3 w-3" /> {avatarUploading ? "Uploading..." : "Upload Photo"}
+                    </span>
+                  </label>
+                  {editingTestimonial.avatar_url && (
+                    <button type="button" className="text-xs text-destructive hover:underline text-left" onClick={() => setEditingTestimonial({ ...editingTestimonial, avatar_url: null })}>
+                      Remove photo
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label className="text-sm font-medium text-muted-foreground">Name</Label>

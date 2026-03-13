@@ -33,8 +33,12 @@ const TestimonialCard = ({ tItem, i }: { tItem: Testimonial; i: number }) => (
     </div>
     <p className="text-muted-foreground mb-6 text-sm leading-relaxed relative z-10">"{tItem.text}"</p>
     <div className="flex items-center gap-3">
-      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-        <span className="text-primary font-bold text-sm">{tItem.name[0]}</span>
+      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
+        {tItem.avatar_url ? (
+          <img src={tItem.avatar_url} alt={tItem.name} className="w-full h-full object-cover" />
+        ) : (
+          <span className="text-primary font-bold text-sm">{tItem.name[0]}</span>
+        )}
       </div>
       <div>
         <p className="font-semibold text-sm">{tItem.name}</p>
