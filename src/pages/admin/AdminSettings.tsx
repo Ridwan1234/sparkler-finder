@@ -227,10 +227,30 @@ export default function AdminSettings() {
     },
   });
 
+  // Upload testimonial avatar
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAvatarUploading(true);
+    try {
+      const ext = file.name.split(".").pop();
+      const fileName = `${Date.now()}.${ext}`;
+      const { error: uploadError } = await supabase.storage.from("testimonial-avatars").upload(fileName, file, { upsert: true });
+      if (uploadError) throw uploadError;
+      const { data: { publicUrl } } = supabase.storage.from("testimonial-avatars").getPublicUrl(fileName);
+      setEditingTestimonial((prev) => ({ ...prev, avatar_url: publicUrl }));
+      toast({ title: "Avatar uploaded" });
+    } catch (err: any) {
+      toast({ title: "Upload failed", description: err.message, variant: "destructive" });
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
+
   // Save testimonial
   const saveTestimonial = useMutation({
     mutationFn: async (t: TestimonialForm) => {
-      const payload = { name: t.name, role: t.role, text: t.text, rating: t.rating, is_active: t.is_active, sort_order: t.sort_order };
+      const payload = { name: t.name, role: t.role, text: t.text, rating: t.rating, is_active: t.is_active, sort_order: t.sort_order, avatar_url: t.avatar_url };
       if (t.id) {
         const { error } = await supabase.from("testimonials").update(payload).eq("id", t.id);
         if (error) throw error;
