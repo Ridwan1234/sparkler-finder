@@ -83,8 +83,9 @@ export default function AdminSettings() {
 
   // Testimonials state
   const [testimonialDialogOpen, setTestimonialDialogOpen] = useState(false);
-  const [editingTestimonial, setEditingTestimonial] = useState<TestimonialForm>({ name: "", role: "", text: "", rating: 5, is_active: true, sort_order: 0 });
+  const [editingTestimonial, setEditingTestimonial] = useState<TestimonialForm>({ name: "", role: "", text: "", rating: 5, is_active: true, sort_order: 0, avatar_url: null });
   const [deleteTestimonialConfirm, setDeleteTestimonialConfirm] = useState<{ id: string; name: string } | null>(null);
+  const [avatarUploading, setAvatarUploading] = useState(false);
 
   // Fetch site settings
   const { data: settings } = useQuery({
