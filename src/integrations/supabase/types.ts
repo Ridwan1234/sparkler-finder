@@ -303,6 +303,7 @@ export type Database = {
       }
       testimonials: {
         Row: {
+          avatar_url: string | null
           created_at: string
           id: string
           is_active: boolean
@@ -313,6 +314,7 @@ export type Database = {
           text: string
         }
         Insert: {
+          avatar_url?: string | null
           created_at?: string
           id?: string
           is_active?: boolean
@@ -323,6 +325,7 @@ export type Database = {
           text: string
         }
         Update: {
+          avatar_url?: string | null
           created_at?: string
           id?: string
           is_active?: boolean

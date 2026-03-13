@@ -12,6 +12,7 @@ interface Testimonial {
   role: string;
   text: string;
   rating: number;
+  avatar_url: string | null;
 }
 
 const TestimonialCard = ({ tItem, i }: { tItem: Testimonial; i: number }) => (
@@ -20,7 +21,7 @@ const TestimonialCard = ({ tItem, i }: { tItem: Testimonial; i: number }) => (
     whileInView={{ opacity: 1, y: 0, rotateY: 0 }}
     viewport={{ once: true }}
     transition={{ delay: i * 0.15, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-    className="bg-card border border-border rounded-xl p-8 relative group hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20 transition-all cursor-default min-w-[320px] md:min-w-[380px] flex-shrink-0"
+    className="bg-card border border-border rounded-xl p-6 relative group hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20 transition-all cursor-default w-[280px] md:w-[300px] flex-shrink-0"
   >
     <div className="absolute top-4 right-4 opacity-[0.08]">
       <Quote size={48} className="text-primary" />
@@ -32,8 +33,12 @@ const TestimonialCard = ({ tItem, i }: { tItem: Testimonial; i: number }) => (
     </div>
     <p className="text-muted-foreground mb-6 text-sm leading-relaxed relative z-10">"{tItem.text}"</p>
     <div className="flex items-center gap-3">
-      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-        <span className="text-primary font-bold text-sm">{tItem.name[0]}</span>
+      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
+        {tItem.avatar_url ? (
+          <img src={tItem.avatar_url} alt={tItem.name} className="w-full h-full object-cover" />
+        ) : (
+          <span className="text-primary font-bold text-sm">{tItem.name[0]}</span>
+        )}
       </div>
       <div>
         <p className="font-semibold text-sm">{tItem.name}</p>

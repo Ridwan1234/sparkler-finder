@@ -9,7 +9,8 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { Pencil, Plus, Save, Trash2, X, AlertTriangle, Wallet, Copy, MessageSquareQuote, Star } from "lucide-react";
+import { Pencil, Plus, Save, Trash2, X, AlertTriangle, Wallet, Copy, MessageSquareQuote, Star, Upload, ImageIcon } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CRYPTO_NETWORKS, getNetworkByValue } from "@/lib/cryptoNetworks";
 import {
@@ -53,6 +54,7 @@ type Testimonial = {
   rating: number;
   is_active: boolean;
   sort_order: number;
+  avatar_url: string | null;
 };
 
 type TestimonialForm = Omit<Testimonial, "id"> & { id?: string };
@@ -81,8 +83,9 @@ export default function AdminSettings() {
 
   // Testimonials state
   const [testimonialDialogOpen, setTestimonialDialogOpen] = useState(false);
-  const [editingTestimonial, setEditingTestimonial] = useState<TestimonialForm>({ name: "", role: "", text: "", rating: 5, is_active: true, sort_order: 0 });
+  const [editingTestimonial, setEditingTestimonial] = useState<TestimonialForm>({ name: "", role: "", text: "", rating: 5, is_active: true, sort_order: 0, avatar_url: null });
   const [deleteTestimonialConfirm, setDeleteTestimonialConfirm] = useState<{ id: string; name: string } | null>(null);
+  const [avatarUploading, setAvatarUploading] = useState(false);
 
   // Fetch site settings
   const { data: settings } = useQuery({
@@ -224,10 +227,30 @@ export default function AdminSettings() {
     },
   });
 
+  // Upload testimonial avatar
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAvatarUploading(true);
+    try {
+      const ext = file.name.split(".").pop();
+      const fileName = `${Date.now()}.${ext}`;
+      const { error: uploadError } = await supabase.storage.from("testimonial-avatars").upload(fileName, file, { upsert: true });
+      if (uploadError) throw uploadError;
+      const { data: { publicUrl } } = supabase.storage.from("testimonial-avatars").getPublicUrl(fileName);
+      setEditingTestimonial((prev) => ({ ...prev, avatar_url: publicUrl }));
+      toast({ title: "Avatar uploaded" });
+    } catch (err: any) {
+      toast({ title: "Upload failed", description: err.message, variant: "destructive" });
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
+
   // Save testimonial
   const saveTestimonial = useMutation({
     mutationFn: async (t: TestimonialForm) => {
-      const payload = { name: t.name, role: t.role, text: t.text, rating: t.rating, is_active: t.is_active, sort_order: t.sort_order };
+      const payload = { name: t.name, role: t.role, text: t.text, rating: t.rating, is_active: t.is_active, sort_order: t.sort_order, avatar_url: t.avatar_url };
       if (t.id) {
         const { error } = await supabase.from("testimonials").update(payload).eq("id", t.id);
         if (error) throw error;
@@ -414,7 +437,7 @@ export default function AdminSettings() {
           <h2 className="font-display text-xl font-bold text-section-dark-foreground flex items-center gap-2">
             <MessageSquareQuote className="h-5 w-5 text-primary" /> Testimonials
           </h2>
-          <Button size="sm" onClick={() => { setEditingTestimonial({ name: "", role: "", text: "", rating: 5, is_active: true, sort_order: (testimonials?.length ?? 0) + 1 }); setTestimonialDialogOpen(true); }}>
+          <Button size="sm" onClick={() => { setEditingTestimonial({ name: "", role: "", text: "", rating: 5, is_active: true, sort_order: (testimonials?.length ?? 0) + 1, avatar_url: null }); setTestimonialDialogOpen(true); }}>
             <Plus className="h-4 w-4 mr-1" /> Add Testimonial
           </Button>
         </div>
@@ -425,9 +448,10 @@ export default function AdminSettings() {
               <CardContent className="pt-4 space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                      <span className="text-primary font-bold text-xs">{t.name[0]}</span>
-                    </div>
+                    <Avatar className="h-8 w-8">
+                      {t.avatar_url ? <AvatarImage src={t.avatar_url} alt={t.name} /> : null}
+                      <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">{t.name[0]}</AvatarFallback>
+                    </Avatar>
                     <div>
                       <p className="font-medium text-sm text-section-dark-foreground">{t.name}</p>
                       <p className="text-xs text-muted-foreground">{t.role}</p>
@@ -689,6 +713,31 @@ export default function AdminSettings() {
             <DialogTitle>{editingTestimonial.id ? "Edit Testimonial" : "New Testimonial"}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
+            {/* Avatar Upload */}
+            <div className="space-y-1.5">
+              <Label className="text-sm font-medium text-muted-foreground">Avatar Photo</Label>
+              <div className="flex items-center gap-4">
+                <Avatar className="h-16 w-16">
+                  {editingTestimonial.avatar_url ? <AvatarImage src={editingTestimonial.avatar_url} alt="Avatar" /> : null}
+                  <AvatarFallback className="bg-primary/10 text-primary text-lg font-bold">
+                    {editingTestimonial.name ? editingTestimonial.name[0] : <ImageIcon className="h-6 w-6" />}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col gap-2">
+                  <label className="cursor-pointer">
+                    <input type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} disabled={avatarUploading} />
+                    <span className="inline-flex items-center gap-1.5 rounded-md border border-border/20 bg-background/5 px-3 py-1.5 text-xs font-medium hover:bg-muted transition-colors">
+                      <Upload className="h-3 w-3" /> {avatarUploading ? "Uploading..." : "Upload Photo"}
+                    </span>
+                  </label>
+                  {editingTestimonial.avatar_url && (
+                    <button type="button" className="text-xs text-destructive hover:underline text-left" onClick={() => setEditingTestimonial({ ...editingTestimonial, avatar_url: null })}>
+                      Remove photo
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label className="text-sm font-medium text-muted-foreground">Name</Label>
