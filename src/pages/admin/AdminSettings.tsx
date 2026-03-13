@@ -437,7 +437,7 @@ export default function AdminSettings() {
           <h2 className="font-display text-xl font-bold text-section-dark-foreground flex items-center gap-2">
             <MessageSquareQuote className="h-5 w-5 text-primary" /> Testimonials
           </h2>
-          <Button size="sm" onClick={() => { setEditingTestimonial({ name: "", role: "", text: "", rating: 5, is_active: true, sort_order: (testimonials?.length ?? 0) + 1 }); setTestimonialDialogOpen(true); }}>
+          <Button size="sm" onClick={() => { setEditingTestimonial({ name: "", role: "", text: "", rating: 5, is_active: true, sort_order: (testimonials?.length ?? 0) + 1, avatar_url: null }); setTestimonialDialogOpen(true); }}>
             <Plus className="h-4 w-4 mr-1" /> Add Testimonial
           </Button>
         </div>
