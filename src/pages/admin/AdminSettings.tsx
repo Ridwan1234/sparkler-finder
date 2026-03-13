@@ -54,6 +54,7 @@ type Testimonial = {
   rating: number;
   is_active: boolean;
   sort_order: number;
+  avatar_url: string | null;
 };
 
 type TestimonialForm = Omit<Testimonial, "id"> & { id?: string };
