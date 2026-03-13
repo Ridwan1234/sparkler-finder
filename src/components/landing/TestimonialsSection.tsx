@@ -12,6 +12,7 @@ interface Testimonial {
   role: string;
   text: string;
   rating: number;
+  avatar_url: string | null;
 }
 
 const TestimonialCard = ({ tItem, i }: { tItem: Testimonial; i: number }) => (
