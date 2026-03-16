@@ -438,7 +438,8 @@
     "spot": {
       "title": "Spot Market",
       "buySuccess": "Buy order executed",
-      "sellSuccess": "Sell order executed"
+      "sellSuccess": "Sell order executed",
+      "spot": "Spot"
     },
     "alerts": {
       "title": "Price Alerts",

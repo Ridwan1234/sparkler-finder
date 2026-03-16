@@ -353,7 +353,7 @@ export default function SpotMarket() {
           <Table>
             <TableHeader>
               <TableRow className="border-border/10">
-                <TableHead>{t("dashboard.spot", { defaultValue: "Spot" })}</TableHead>
+                <TableHead>{t("dashboard.spot.spot", { defaultValue: "Spot" })}</TableHead>
                 <TableHead>{t("dashboard.spot.quantity", { defaultValue: "Quantity" })}</TableHead>
                 <TableHead>{t("dashboard.spot.avgPrice", { defaultValue: "Avg Buy Price" })}</TableHead>
                 <TableHead>{t("dashboard.spot.currentValue", { defaultValue: "Current Value" })}</TableHead>
