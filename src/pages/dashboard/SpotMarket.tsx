@@ -69,7 +69,8 @@ export default function SpotMarket() {
 
   const portfolio = useMemo(() => {
     const totalCost = positions?.reduce((sum, p) => sum + Number(p.invested_usd), 0) ?? 0;
-    const totalValue = positions?.reduce((sum, p) => sum + Number(p.quantity) * (coinPrice[p.coin_symbol] ?? 0), 0) ?? 0;
+    const totalValue =
+      positions?.reduce((sum, p) => sum + Number(p.quantity) * (coinPrice[p.coin_symbol] ?? 0), 0) ?? 0;
     return { totalCost, totalValue, pnl: totalValue - totalCost };
   }, [positions, coinPrice]);
 
@@ -77,9 +78,14 @@ export default function SpotMarket() {
     mutationFn: async () => {
       const usd = Number(buyUsd);
       const price = coinPrice[buyCoin];
-      if (!usd || usd <= 0) throw new Error(t("dashboard.spot.errors.validAmount", { defaultValue: "Enter a valid USD amount" }));
-      if (!price || price <= 0) throw new Error(t("dashboard.spot.errors.priceUnavailable", { defaultValue: "Live price is unavailable right now" }));
-      if (usd > balance) throw new Error(t("dashboard.spot.errors.insufficientBalance", { defaultValue: "Insufficient balance" }));
+      if (!usd || usd <= 0)
+        throw new Error(t("dashboard.spot.errors.validAmount", { defaultValue: "Enter a valid USD amount" }));
+      if (!price || price <= 0)
+        throw new Error(
+          t("dashboard.spot.errors.priceUnavailable", { defaultValue: "Live price is unavailable right now" }),
+        );
+      if (usd > balance)
+        throw new Error(t("dashboard.spot.errors.insufficientBalance", { defaultValue: "Insufficient balance" }));
 
       const qty = Number((usd / price).toFixed(8));
       const existing = positions?.find((p) => p.coin_symbol === buyCoin);
@@ -143,10 +149,18 @@ export default function SpotMarket() {
       const position = positions?.find((p) => p.coin_symbol === sellCoin);
       const price = coinPrice[sellCoin];
 
-      if (!position) throw new Error(t("dashboard.spot.errors.noHolding", { defaultValue: "No holding found for this coin" }));
-      if (!qty || qty <= 0) throw new Error(t("dashboard.spot.errors.validQuantity", { defaultValue: "Enter a valid quantity" }));
-      if (qty > Number(position.quantity)) throw new Error(t("dashboard.spot.errors.exceedsHolding", { defaultValue: "Sell quantity exceeds your holding" }));
-      if (!price || price <= 0) throw new Error(t("dashboard.spot.errors.priceUnavailable", { defaultValue: "Live price is unavailable right now" }));
+      if (!position)
+        throw new Error(t("dashboard.spot.errors.noHolding", { defaultValue: "No holding found for this coin" }));
+      if (!qty || qty <= 0)
+        throw new Error(t("dashboard.spot.errors.validQuantity", { defaultValue: "Enter a valid quantity" }));
+      if (qty > Number(position.quantity))
+        throw new Error(
+          t("dashboard.spot.errors.exceedsHolding", { defaultValue: "Sell quantity exceeds your holding" }),
+        );
+      if (!price || price <= 0)
+        throw new Error(
+          t("dashboard.spot.errors.priceUnavailable", { defaultValue: "Live price is unavailable right now" }),
+        );
 
       const proceeds = Number((qty * price).toFixed(2));
       const costBasis = Number((qty * Number(position.avg_buy_price)).toFixed(2));
@@ -209,7 +223,9 @@ export default function SpotMarket() {
       <div className="grid gap-4 sm:grid-cols-3">
         <Card className="bg-card/5 border-border/10">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">{t("dashboard.spot.cashBalance", { defaultValue: "Cash Balance" })}</CardTitle>
+            <CardTitle className="text-sm text-muted-foreground">
+              {t("dashboard.spot.cashBalance", { defaultValue: "Cash Balance" })}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-xl font-semibold text-section-dark-foreground">${balance.toLocaleString()}</p>
@@ -217,15 +233,21 @@ export default function SpotMarket() {
         </Card>
         <Card className="bg-card/5 border-border/10">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">{t("dashboard.spot.holdingsValue", { defaultValue: "Holdings Value" })}</CardTitle>
+            <CardTitle className="text-sm text-muted-foreground">
+              {t("dashboard.spot.holdingsValue", { defaultValue: "Holdings Value" })}
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-xl font-semibold text-section-dark-foreground">${portfolio.totalValue.toLocaleString()}</p>
+            <p className="text-xl font-semibold text-section-dark-foreground">
+              ${portfolio.totalValue.toLocaleString()}
+            </p>
           </CardContent>
         </Card>
         <Card className="bg-card/5 border-border/10">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">{t("dashboard.spot.unrealizedPnl", { defaultValue: "Unrealized P/L" })}</CardTitle>
+            <CardTitle className="text-sm text-muted-foreground">
+              {t("dashboard.spot.unrealizedPnl", { defaultValue: "Unrealized P/L" })}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className={`text-xl font-semibold ${portfolio.pnl >= 0 ? "text-primary" : "text-destructive"}`}>
@@ -238,7 +260,9 @@ export default function SpotMarket() {
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="bg-card/5 border-border/10">
           <CardHeader>
-            <CardTitle className="text-section-dark-foreground">{t("dashboard.spot.buy", { defaultValue: "Buy Coin" })}</CardTitle>
+            <CardTitle className="text-section-dark-foreground">
+              {t("dashboard.spot.buy", { defaultValue: "Buy" })}
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <Select value={buyCoin} onValueChange={(v) => setBuyCoin(v as Coin)}>
@@ -247,12 +271,15 @@ export default function SpotMarket() {
               </SelectTrigger>
               <SelectContent>
                 {SUPPORTED_COINS.map((coin) => (
-                  <SelectItem key={coin} value={coin}>{coin}</SelectItem>
+                  <SelectItem key={coin} value={coin}>
+                    {coin}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <p className="text-xs text-muted-foreground">
-              {t("dashboard.spot.currentPrice", { defaultValue: "Current Price" })}: ${coinPrice[buyCoin]?.toLocaleString() ?? "—"}
+              {t("dashboard.spot.currentPrice", { defaultValue: "Current Price" })}: $
+              {coinPrice[buyCoin]?.toLocaleString() ?? "—"}
             </p>
             <Input
               type="number"
@@ -269,7 +296,9 @@ export default function SpotMarket() {
 
         <Card className="bg-card/5 border-border/10">
           <CardHeader>
-            <CardTitle className="text-section-dark-foreground">{t("dashboard.spot.sell", { defaultValue: "Sell Coin" })}</CardTitle>
+            <CardTitle className="text-section-dark-foreground">
+              {t("dashboard.spot.sell", { defaultValue: "Sell" })}
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <Select value={sellCoin} onValueChange={(v) => setSellCoin(v as Coin)}>
@@ -278,12 +307,15 @@ export default function SpotMarket() {
               </SelectTrigger>
               <SelectContent>
                 {SUPPORTED_COINS.map((coin) => (
-                  <SelectItem key={coin} value={coin}>{coin}</SelectItem>
+                  <SelectItem key={coin} value={coin}>
+                    {coin}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <p className="text-xs text-muted-foreground">
-              {t("dashboard.spot.availableQty", { defaultValue: "Available Qty" })}: {Number(selectedSellPosition?.quantity ?? 0).toLocaleString()}
+              {t("dashboard.spot.availableQty", { defaultValue: "Available Qty" })}:{" "}
+              {Number(selectedSellPosition?.quantity ?? 0).toLocaleString()}
             </p>
             <Input
               type="number"
@@ -302,7 +334,9 @@ export default function SpotMarket() {
                 {t("dashboard.spot.max", { defaultValue: "Max" })}
               </Button>
               <Button onClick={() => sellMutation.mutate()} disabled={sellMutation.isPending}>
-                {sellMutation.isPending ? t("common.loading") : t("dashboard.spot.sellNow", { defaultValue: "Sell Now" })}
+                {sellMutation.isPending
+                  ? t("common.loading")
+                  : t("dashboard.spot.sellNow", { defaultValue: "Sell Now" })}
               </Button>
             </div>
           </CardContent>
@@ -311,7 +345,9 @@ export default function SpotMarket() {
 
       <Card className="bg-card/5 border-border/10">
         <CardHeader>
-          <CardTitle className="text-section-dark-foreground">{t("dashboard.spot.holdings", { defaultValue: "Your Holdings" })}</CardTitle>
+          <CardTitle className="text-section-dark-foreground">
+            {t("dashboard.spot.holdings", { defaultValue: "Your Holdings" })}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
@@ -354,7 +390,9 @@ export default function SpotMarket() {
 
       <Card className="bg-card/5 border-border/10">
         <CardHeader>
-          <CardTitle className="text-section-dark-foreground">{t("dashboard.spot.orders", { defaultValue: "Recent Spot Orders" })}</CardTitle>
+          <CardTitle className="text-section-dark-foreground">
+            {t("dashboard.spot.orders", { defaultValue: "Recent Spot Orders" })}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
@@ -374,7 +412,14 @@ export default function SpotMarket() {
                   <TableCell>{format(new Date(o.created_at), "MMM d, yyyy")}</TableCell>
                   <TableCell>{o.coin_symbol}</TableCell>
                   <TableCell>
-                    <Badge variant="outline" className={o.order_type === "buy" ? "text-primary border-primary/30" : "text-destructive border-destructive/30"}>
+                    <Badge
+                      variant="outline"
+                      className={
+                        o.order_type === "buy"
+                          ? "text-primary border-primary/30"
+                          : "text-destructive border-destructive/30"
+                      }
+                    >
                       {o.order_type.toUpperCase()}
                     </Badge>
                   </TableCell>
