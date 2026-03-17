@@ -1,15 +1,16 @@
 import { motion } from "framer-motion";
-import { BarChart2, Headphones, ShieldCheck, Percent } from "lucide-react";
+import { ClipboardList, TrendingUp, Shield, Layers, PieChart } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const WhyChooseUs = () => {
   const { t } = useTranslation();
 
   const features = [
-    { icon: BarChart2, title: t("whyChooseUs.realTimeData"), desc: t("whyChooseUs.realTimeDesc") },
-    { icon: Headphones, title: t("whyChooseUs.support247"), desc: t("whyChooseUs.supportDesc") },
-    { icon: ShieldCheck, title: t("whyChooseUs.higherSecurity"), desc: t("whyChooseUs.securityDesc") },
-    { icon: Percent, title: t("whyChooseUs.lowerCommissions"), desc: t("whyChooseUs.commissionsDesc") },
+    { icon: ClipboardList, title: t("aboutPage.whyStructuredTitle"), desc: t("aboutPage.whyStructuredDesc") },
+    { icon: TrendingUp, title: t("aboutPage.whyMarketTitle"), desc: t("aboutPage.whyMarketDesc") },
+    { icon: Shield, title: t("aboutPage.whySecureTitle"), desc: t("aboutPage.whySecureDesc") },
+    { icon: Layers, title: t("aboutPage.whySimpleTitle"), desc: t("aboutPage.whySimpleDesc") },
+    { icon: PieChart, title: t("aboutPage.whyDiversificationTitle"), desc: t("aboutPage.whyDiversificationDesc") },
   ];
 
   return (
@@ -21,11 +22,11 @@ const WhyChooseUs = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="text-primary font-medium text-sm uppercase tracking-wider">{t("whyChooseUs.label")}</span>
-          <h2 className="text-3xl md:text-4xl font-display font-bold mt-3 mb-4">{t("whyChooseUs.title")}</h2>
+          <span className="text-primary font-medium text-sm uppercase tracking-wider">{t("aboutPage.whyLabel")}</span>
+          <h2 className="text-3xl md:text-4xl font-display font-bold mt-3 mb-4">{t("aboutPage.whyTitle")}</h2>
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((f, i) => (
             <motion.div
               key={i}
