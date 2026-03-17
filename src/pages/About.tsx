@@ -2,22 +2,25 @@ import Header from "@/components/landing/Header";
 import TestimonialsSection from "@/components/landing/TestimonialsSection";
 import Footer from "@/components/landing/Footer";
 import { motion } from "framer-motion";
-import { BarChart3, Shield, Smartphone, Layers, UserPlus, ClipboardList, Rocket, TrendingUp, Target, Heart } from "lucide-react";
+import { BarChart3, Shield, Smartphone, Layers, ClipboardList, UserPlus, Rocket, TrendingUp, Target } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const About = () => {
+  const { t } = useTranslation();
+
   const whyChoose = [
-    { icon: ClipboardList, title: "Structured Investment Plans", desc: "Choose from multiple investment packages designed to suit different capital levels and investment goals." },
-    { icon: BarChart3, title: "Market Trend Strategy", desc: "Our system follows market movements across crypto and stocks to guide investment positioning." },
-    { icon: Shield, title: "Secure Platform", desc: "Your account and investment activity are protected with secure systems and account management tools." },
-    { icon: Smartphone, title: "Simple and Accessible", desc: "Our platform is designed to make investing straightforward, allowing anyone to participate in modern financial markets." },
-    { icon: Layers, title: "Portfolio Diversification", desc: "Gain exposure to both cryptocurrency and stock market opportunities through one platform." },
+    { icon: ClipboardList, title: t("aboutPage.whyStructuredTitle"), desc: t("aboutPage.whyStructuredDesc") },
+    { icon: BarChart3, title: t("aboutPage.whyMarketTitle"), desc: t("aboutPage.whyMarketDesc") },
+    { icon: Shield, title: t("aboutPage.whySecureTitle"), desc: t("aboutPage.whySecureDesc") },
+    { icon: Smartphone, title: t("aboutPage.whySimpleTitle"), desc: t("aboutPage.whySimpleDesc") },
+    { icon: Layers, title: t("aboutPage.whyDiversifyTitle"), desc: t("aboutPage.whyDiversifyDesc") },
   ];
 
   const steps = [
-    { icon: UserPlus, step: "1", title: "Create Your Account", desc: "Sign up on HarborForge and set up your secure investor account." },
-    { icon: ClipboardList, step: "2", title: "Choose an Investment Plan", desc: "Select the investment package that best fits your financial goals." },
-    { icon: Rocket, step: "3", title: "Start Investing", desc: "Fund your account and activate your investment plan." },
-    { icon: TrendingUp, step: "4", title: "Earn Returns", desc: "Track your investment growth and returns directly from your dashboard." },
+    { icon: UserPlus, step: "1", title: t("aboutPage.step1Title"), desc: t("aboutPage.step1Desc") },
+    { icon: ClipboardList, step: "2", title: t("aboutPage.step2Title"), desc: t("aboutPage.step2Desc") },
+    { icon: Rocket, step: "3", title: t("aboutPage.step3Title"), desc: t("aboutPage.step3Desc") },
+    { icon: TrendingUp, step: "4", title: t("aboutPage.step4Title"), desc: t("aboutPage.step4Desc") },
   ];
 
   return (
@@ -29,12 +32,12 @@ const About = () => {
       <section className="py-16 lg:py-24 bg-gradient-to-b from-primary/5 to-background">
         <div className="container text-center">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <span className="text-primary font-medium text-sm uppercase tracking-wider">About Us</span>
+            <span className="text-primary font-medium text-sm uppercase tracking-wider">{t("aboutPage.label")}</span>
             <h1 className="text-4xl md:text-5xl font-display font-bold mt-3 mb-6">
-              About <span className="text-primary">HarborForge</span>
+              {t("aboutPage.title")} <span className="text-primary">{t("aboutPage.titleHighlight")}</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto font-medium mb-4">
-              A Modern Platform for Smarter Investing
+              {t("aboutPage.subtitle")}
             </p>
           </motion.div>
         </div>
@@ -44,18 +47,10 @@ const About = () => {
       <section className="py-20 lg:py-28 bg-background">
         <div className="container max-w-4xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="space-y-6 text-muted-foreground leading-relaxed text-lg">
-            <p>
-              HarborForge is an innovative investment platform designed to give individuals access to opportunities within the global cryptocurrency and stock markets.
-            </p>
-            <p>
-              Our platform follows market trends across major assets such as Bitcoin and leading stocks, allowing investors to participate in the growth of these markets through structured investment packages.
-            </p>
-            <p>
-              By combining market analysis, strategic allocation, and structured plans, HarborForge provides investors with a simple way to participate in markets that traditionally require significant expertise.
-            </p>
-            <p>
-              Whether you are new to investing or an experienced investor, HarborForge offers flexible plans that can align with your financial goals.
-            </p>
+            <p>{t("aboutPage.desc1")}</p>
+            <p>{t("aboutPage.desc2")}</p>
+            <p>{t("aboutPage.desc3")}</p>
+            <p>{t("aboutPage.desc4")}</p>
           </motion.div>
         </div>
       </section>
@@ -64,8 +59,8 @@ const About = () => {
       <section className="py-20 lg:py-28 bg-muted/30">
         <div className="container">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
-            <span className="text-primary font-medium text-sm uppercase tracking-wider">Our Advantages</span>
-            <h2 className="text-3xl md:text-4xl font-display font-bold mt-3 mb-4">Why Choose HarborForge</h2>
+            <span className="text-primary font-medium text-sm uppercase tracking-wider">{t("aboutPage.whyLabel")}</span>
+            <h2 className="text-3xl md:text-4xl font-display font-bold mt-3 mb-4">{t("aboutPage.whyTitle")}</h2>
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -93,8 +88,8 @@ const About = () => {
       <section className="py-20 lg:py-28 bg-background">
         <div className="container">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
-            <span className="text-primary font-medium text-sm uppercase tracking-wider">Getting Started</span>
-            <h2 className="text-3xl md:text-4xl font-display font-bold mt-3 mb-4">How It Works</h2>
+            <span className="text-primary font-medium text-sm uppercase tracking-wider">{t("aboutPage.howLabel")}</span>
+            <h2 className="text-3xl md:text-4xl font-display font-bold mt-3 mb-4">{t("aboutPage.howTitle")}</h2>
           </motion.div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
@@ -128,14 +123,10 @@ const About = () => {
             <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6">
               <Target size={32} className="text-primary" />
             </div>
-            <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">Our Mission</h2>
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">{t("aboutPage.missionTitle")}</h2>
             <div className="space-y-4 text-muted-foreground text-lg leading-relaxed">
-              <p>
-                Our mission is to make modern investing more accessible by providing individuals with a structured platform to participate in high-growth financial markets.
-              </p>
-              <p>
-                HarborForge aims to empower investors with opportunities to grow their capital while maintaining a simple and transparent investment experience.
-              </p>
+              <p>{t("aboutPage.missionP1")}</p>
+              <p>{t("aboutPage.missionP2")}</p>
             </div>
           </motion.div>
         </div>
