@@ -473,7 +473,7 @@
     "alerts": {
       "title": "Preisalarme",
       "description": "Setzen Sie Preisschwellen für BTC, ETH und BNB. Sie erhalten In-App-Benachrichtigungen, wenn Preise Ihre Ziele erreichen.",
-      "coin": "Coin",
+      "coin": "Spot",
       "direction": "Richtung",
       "above": "Über",
       "below": "Unter",

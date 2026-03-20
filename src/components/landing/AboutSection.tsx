@@ -19,8 +19,8 @@ const AboutSection = () => {
             {t("aboutPage.title")} <span className="text-primary">{t("aboutPage.titleHighlight")}</span>
           </h2>
           <div className="max-w-3xl mx-auto space-y-4">
-            <p className="text-muted-foreground">{t("aboutPage.description")}</p>
-            <p className="text-muted-foreground">{t("aboutPage.description2")}</p>
+            <p className="text-muted-foreground">{t("aboutPage.desc1")}</p>
+            <p className="text-muted-foreground">{t("aboutPage.desc2")}</p>
           </div>
         </motion.div>
       </div>
