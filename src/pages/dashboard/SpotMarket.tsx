@@ -150,7 +150,7 @@ export default function SpotMarket() {
       const price = coinPrice[sellCoin];
 
       if (!position)
-        throw new Error(t("dashboard.spot.errors.noHolding", { defaultValue: "No holding found for this coin" }));
+        throw new Error(t("dashboard.spot.errors.noHolding", { defaultValue: "No holding found for this spot" }));
       if (!qty || qty <= 0)
         throw new Error(t("dashboard.spot.errors.validQuantity", { defaultValue: "Enter a valid quantity" }));
       if (qty > Number(position.quantity))
@@ -321,7 +321,7 @@ export default function SpotMarket() {
               type="number"
               value={sellQty}
               onChange={(e) => setSellQty(e.target.value)}
-              placeholder={t("dashboard.spot.quantity", { defaultValue: "Coin quantity" })}
+              placeholder={t("dashboard.spot.quantity", { defaultValue: "Spot quantity" })}
               className="bg-background/10 border-border/20 text-section-dark-foreground"
             />
             <div className="flex gap-2">

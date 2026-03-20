@@ -473,7 +473,7 @@
     "alerts": {
       "title": "价格预警",
       "description": "为BTC、ETH和BNB设置价格阈值。当价格达到您的目标时，您将收到应用内通知。",
-      "coin": "币种",
+      "coin": "现货",
       "direction": "方向",
       "above": "高于",
       "below": "低于",

@@ -479,7 +479,7 @@
     "alerts": {
       "title": "Price Alerts",
       "description": "Set price thresholds for BTC, ETH, and BNB. You'll receive in-app notifications when prices cross your targets.",
-      "coin": "Coin",
+      "coin": "Spot",
       "direction": "Direction",
       "above": "Above",
       "below": "Below",

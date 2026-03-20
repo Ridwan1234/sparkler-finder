@@ -473,7 +473,7 @@
     "alerts": {
       "title": "Alertes de prix",
       "description": "Définissez des seuils de prix pour BTC, ETH et BNB. Vous recevrez des notifications in-app lorsque les prix atteignent vos objectifs.",
-      "coin": "Coin",
+      "coin": "Spot",
       "direction": "Direction",
       "above": "Au-dessus",
       "below": "En dessous",

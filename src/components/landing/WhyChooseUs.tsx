@@ -10,7 +10,7 @@ const WhyChooseUs = () => {
     { icon: TrendingUp, title: t("aboutPage.whyMarketTitle"), desc: t("aboutPage.whyMarketDesc") },
     { icon: Shield, title: t("aboutPage.whySecureTitle"), desc: t("aboutPage.whySecureDesc") },
     { icon: Layers, title: t("aboutPage.whySimpleTitle"), desc: t("aboutPage.whySimpleDesc") },
-    { icon: PieChart, title: t("aboutPage.whyDiversificationTitle"), desc: t("aboutPage.whyDiversificationDesc") },
+    { icon: PieChart, title: t("aboutPage.whyDiversifyTitle"), desc: t("aboutPage.whyDiversifyDesc") },
   ];
 
   return (
