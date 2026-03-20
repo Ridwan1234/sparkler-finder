@@ -35,7 +35,7 @@ export function useBalance(userId: string | undefined): BalanceResult {
   });
 
   const { data: withdrawals, isLoading: l2 } = useQuery({
-    queryKey: ["withdrawals", userId],
+    queryKey: ["withdrawals_balance", userId],
     queryFn: async () => {
       const { data } = await supabase
         .from("withdrawals")
