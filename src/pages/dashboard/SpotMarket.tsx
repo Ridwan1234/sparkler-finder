@@ -321,7 +321,7 @@ export default function SpotMarket() {
               type="number"
               value={sellQty}
               onChange={(e) => setSellQty(e.target.value)}
-              placeholder={t("dashboard.spot.quantity", { defaultValue: "Coin quantity" })}
+              placeholder={t("dashboard.spot.quantity", { defaultValue: "Spot quantity" })}
               className="bg-background/10 border-border/20 text-section-dark-foreground"
             />
             <div className="flex gap-2">
