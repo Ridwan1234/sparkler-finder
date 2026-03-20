@@ -150,7 +150,7 @@ export default function SpotMarket() {
       const price = coinPrice[sellCoin];
 
       if (!position)
-        throw new Error(t("dashboard.spot.errors.noHolding", { defaultValue: "No holding found for this coin" }));
+        throw new Error(t("dashboard.spot.errors.noHolding", { defaultValue: "No holding found for this spot" }));
       if (!qty || qty <= 0)
         throw new Error(t("dashboard.spot.errors.validQuantity", { defaultValue: "Enter a valid quantity" }));
       if (qty > Number(position.quantity))
