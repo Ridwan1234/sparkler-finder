@@ -399,7 +399,7 @@ export default function SpotMarket() {
             <TableHeader>
               <TableRow className="border-border/10">
                 <TableHead>{t("dashboard.deposits.date")}</TableHead>
-                <TableHead>{t("dashboard.spot.coin", { defaultValue: "Coin" })}</TableHead>
+                <TableHead>{t("dashboard.spot.spot", { defaultValue: "Spot" })}</TableHead>
                 <TableHead>{t("dashboard.spot.side", { defaultValue: "Side" })}</TableHead>
                 <TableHead>{t("dashboard.spot.quantity", { defaultValue: "Quantity" })}</TableHead>
                 <TableHead>{t("dashboard.spot.price", { defaultValue: "Price" })}</TableHead>
