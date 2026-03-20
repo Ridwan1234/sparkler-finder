@@ -335,6 +335,25 @@ export default function AdminSettings() {
               <Save className="h-4 w-4 mr-1" /> Save
             </Button>
           </div>
+          <div className="flex items-end gap-4">
+            <div className="flex-1 space-y-2">
+              <Label className="text-muted-foreground">Referral Bonus (%)</Label>
+              <p className="text-xs text-muted-foreground">Percentage of the referred user's first deposit credited to the referrer.</p>
+              <Input
+                type="number"
+                value={displayReferralBonus}
+                onChange={(e) => setReferralBonusValue(e.target.value)}
+                className="max-w-xs bg-background/5 border-border/20 text-section-dark-foreground"
+              />
+            </div>
+            <Button
+              size="sm"
+              onClick={() => updateSetting.mutate({ key: "referral_bonus_percent", value: referralBonusValue || displayReferralBonus })}
+              disabled={updateSetting.isPending}
+            >
+              <Save className="h-4 w-4 mr-1" /> Save
+            </Button>
+          </div>
         </CardContent>
       </Card>
 
