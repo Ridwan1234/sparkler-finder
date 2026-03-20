@@ -98,9 +98,11 @@ export default function AdminSettings() {
 
   const bonusSetting = settings?.find((s) => s.key === "first_deposit_bonus_percent");
   const [bonusValue, setBonusValue] = useState<string>("");
-
-  // Sync bonus value when data loads
   const displayBonus = bonusValue || bonusSetting?.value || "";
+
+  const referralBonusSetting = settings?.find((s) => s.key === "referral_bonus_percent");
+  const [referralBonusValue, setReferralBonusValue] = useState<string>("");
+  const displayReferralBonus = referralBonusValue || referralBonusSetting?.value || "";
 
   // Fetch plans
   const { data: plans, isLoading } = useQuery({
@@ -328,6 +330,25 @@ export default function AdminSettings() {
             <Button
               size="sm"
               onClick={() => updateSetting.mutate({ key: "first_deposit_bonus_percent", value: bonusValue || displayBonus })}
+              disabled={updateSetting.isPending}
+            >
+              <Save className="h-4 w-4 mr-1" /> Save
+            </Button>
+          </div>
+          <div className="flex items-end gap-4">
+            <div className="flex-1 space-y-2">
+              <Label className="text-muted-foreground">Referral Bonus (%)</Label>
+              <p className="text-xs text-muted-foreground">Percentage of the referred user's first deposit credited to the referrer.</p>
+              <Input
+                type="number"
+                value={displayReferralBonus}
+                onChange={(e) => setReferralBonusValue(e.target.value)}
+                className="max-w-xs bg-background/5 border-border/20 text-section-dark-foreground"
+              />
+            </div>
+            <Button
+              size="sm"
+              onClick={() => updateSetting.mutate({ key: "referral_bonus_percent", value: referralBonusValue || displayReferralBonus })}
               disabled={updateSetting.isPending}
             >
               <Save className="h-4 w-4 mr-1" /> Save

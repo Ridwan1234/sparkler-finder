@@ -74,6 +74,7 @@ export function useBalance(userId: string | undefined): BalanceResult {
   const totalWithdrawals = withdrawals?.filter(w => w.status === "approved").reduce((s, w) => s + Number(w.amount), 0) ?? 0;
   const pendingWithdrawals = withdrawals?.filter(w => w.status === "pending").reduce((s, w) => s + Number(w.amount), 0) ?? 0;
   const totalBonuses = transactions?.filter(t => t.type === "bonus").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
+  const totalReferralBonuses = transactions?.filter(t => t.type === "referral_bonus").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
   const totalROI = transactions?.filter(t => t.type === "roi").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
   const totalPrincipalReturns = transactions?.filter(t => t.type === "principal_return").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
   const totalInvested = transactions?.filter(t => t.type === "investment").reduce((s, t) => s + Number(t.amount), 0) ?? 0;
@@ -84,6 +85,7 @@ export function useBalance(userId: string | undefined): BalanceResult {
   const balance =
     totalDeposits +
     totalBonuses +
+    totalReferralBonuses +
     totalROI +
     totalPrincipalReturns +
     totalSpotSells -
