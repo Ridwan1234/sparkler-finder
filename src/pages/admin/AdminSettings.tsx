@@ -98,9 +98,11 @@ export default function AdminSettings() {
 
   const bonusSetting = settings?.find((s) => s.key === "first_deposit_bonus_percent");
   const [bonusValue, setBonusValue] = useState<string>("");
-
-  // Sync bonus value when data loads
   const displayBonus = bonusValue || bonusSetting?.value || "";
+
+  const referralBonusSetting = settings?.find((s) => s.key === "referral_bonus_percent");
+  const [referralBonusValue, setReferralBonusValue] = useState<string>("");
+  const displayReferralBonus = referralBonusValue || referralBonusSetting?.value || "";
 
   // Fetch plans
   const { data: plans, isLoading } = useQuery({
