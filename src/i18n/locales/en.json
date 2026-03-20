@@ -351,7 +351,7 @@
       "minWithdrawal": "Min withdrawal",
       "needInvestment": "You need at least one investment before you can withdraw.",
       "amountPlaceholder": "Amount (USD)",
-      "walletPlaceholder": "Crypto wallet address",
+      "walletPlaceholder": "wallet address",
       "submitWithdrawal": "Submit Withdrawal",
       "withdrawalHistory": "Withdrawal History",
       "date": "Date",
