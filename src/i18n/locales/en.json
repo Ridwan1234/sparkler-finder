@@ -413,9 +413,13 @@
     "referrals": {
       "title": "Referral Program",
       "yourLink": "Your Referral Link",
-      "shareDesc": "Share your unique link and earn rewards when friends sign up and invest.",
+      "shareDesc": "Share your unique link and earn {{percent}}% of your friend's first deposit when they sign up and invest.",
       "yourCode": "Your code",
-      "linkCopied": "Referral link copied!"
+      "linkCopied": "Referral link copied!",
+      "totalEarned": "Total Earned",
+      "referredUsers": "Referred Users",
+      "bonusRate": "Bonus Rate",
+      "bonusHistory": "Bonus History"
     },
     "transactions": {
       "title": "Transaction History",
