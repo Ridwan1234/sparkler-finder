@@ -413,9 +413,13 @@
     "referrals": {
       "title": "Empfehlungsprogramm",
       "yourLink": "Ihr Empfehlungslink",
-      "shareDesc": "Teilen Sie Ihren einzigartigen Link und verdienen Sie Belohnungen, wenn Freunde sich anmelden und investieren.",
+      "shareDesc": "Teilen Sie Ihren einzigartigen Link und verdienen Sie {{percent}}% der ersten Einzahlung Ihres Freundes.",
       "yourCode": "Ihr Code",
-      "linkCopied": "Empfehlungslink kopiert!"
+      "linkCopied": "Empfehlungslink kopiert!",
+      "totalEarned": "Gesamt verdient",
+      "referredUsers": "Geworbene Nutzer",
+      "bonusRate": "Bonusrate",
+      "bonusHistory": "Bonusverlauf"
     },
     "transactions": {
       "title": "Transaktionshistorie",

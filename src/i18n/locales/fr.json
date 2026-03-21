@@ -413,9 +413,13 @@
     "referrals": {
       "title": "Programme de parrainage",
       "yourLink": "Votre lien de parrainage",
-      "shareDesc": "Partagez votre lien unique et gagnez des récompenses lorsque vos amis s'inscrivent et investissent.",
+      "shareDesc": "Partagez votre lien unique et gagnez {{percent}}% du premier dépôt de votre ami lorsqu'il s'inscrit et investit.",
       "yourCode": "Votre code",
-      "linkCopied": "Lien de parrainage copié !"
+      "linkCopied": "Lien de parrainage copié !",
+      "totalEarned": "Total gagné",
+      "referredUsers": "Utilisateurs parrainés",
+      "bonusRate": "Taux de bonus",
+      "bonusHistory": "Historique des bonus"
     },
     "transactions": {
       "title": "Historique des transactions",
