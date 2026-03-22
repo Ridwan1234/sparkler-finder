@@ -139,6 +139,7 @@ export default function Withdrawals() {
             <TableBody>
               {withdrawals?.map((w) => (
                 <TableRow key={w.id} className="border-border/10">
+                  <TableCell className="text-xs font-mono text-primary">{(w as any).reference_number ?? "—"}</TableCell>
                   <TableCell className="text-section-dark-foreground">
                     {w.created_at && !isNaN(new Date(w.created_at).getTime())
                       ? format(new Date(w.created_at), "MMM d, yyyy")
