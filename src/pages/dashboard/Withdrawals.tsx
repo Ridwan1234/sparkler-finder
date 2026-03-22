@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { Copy, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 export default function Withdrawals() {
