@@ -95,7 +95,7 @@ const Header = () => {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="md:hidden bg-section-dark border-t border-border/10 overflow-hidden"
+            className="lg:hidden bg-section-dark border-t border-border/10 overflow-hidden"
           >
             <div className="p-4 space-y-3">
               {navLinks.map((link, i) => (
