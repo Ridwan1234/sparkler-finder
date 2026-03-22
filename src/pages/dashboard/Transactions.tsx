@@ -73,7 +73,7 @@ export default function Transactions() {
               ))}
               {!transactions?.length && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
+                  <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
                     {t("dashboard.transactions.noTransactions")}
                   </TableCell>
                 </TableRow>
