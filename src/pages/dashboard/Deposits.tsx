@@ -168,6 +168,7 @@ export default function Deposits() {
           <Table>
             <TableHeader>
               <TableRow className="border-border/10">
+                <TableHead className="text-muted-foreground">{t("dashboard.reference", "Reference")}</TableHead>
                 <TableHead className="text-muted-foreground">{t("dashboard.deposits.date")}</TableHead>
                 <TableHead className="text-muted-foreground">{t("dashboard.deposits.amount")}</TableHead>
                 <TableHead className="text-muted-foreground">{t("dashboard.deposits.wallet")}</TableHead>
