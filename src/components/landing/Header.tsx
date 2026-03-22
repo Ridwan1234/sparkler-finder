@@ -81,7 +81,7 @@ const Header = () => {
         </div>
 
         <button
-          className="md:hidden text-section-dark-foreground"
+          className="lg:hidden text-section-dark-foreground"
           onClick={() => setMobileOpen(!mobileOpen)}
         >
           {mobileOpen ? <X size={24} /> : <Menu size={24} />}
