@@ -129,6 +129,7 @@ export default function Withdrawals() {
           <Table>
             <TableHeader>
               <TableRow className="border-border/10">
+                <TableHead className="text-muted-foreground">{t("dashboard.reference", "Reference")}</TableHead>
                 <TableHead className="text-muted-foreground">{t("dashboard.withdrawals.date")}</TableHead>
                 <TableHead className="text-muted-foreground">{t("dashboard.withdrawals.amount")}</TableHead>
                 <TableHead className="text-muted-foreground">{t("dashboard.withdrawals.wallet")}</TableHead>
@@ -138,6 +139,7 @@ export default function Withdrawals() {
             <TableBody>
               {withdrawals?.map((w) => (
                 <TableRow key={w.id} className="border-border/10">
+                  <TableCell className="text-xs font-mono text-primary">{(w as any).reference_number ?? "—"}</TableCell>
                   <TableCell className="text-section-dark-foreground">
                     {w.created_at && !isNaN(new Date(w.created_at).getTime())
                       ? format(new Date(w.created_at), "MMM d, yyyy")
@@ -158,7 +160,7 @@ export default function Withdrawals() {
               ))}
               {!withdrawals?.length && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
+                  <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
                     {t("dashboard.withdrawals.noWithdrawals")}
                   </TableCell>
                 </TableRow>

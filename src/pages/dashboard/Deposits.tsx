@@ -168,6 +168,7 @@ export default function Deposits() {
           <Table>
             <TableHeader>
               <TableRow className="border-border/10">
+                <TableHead className="text-muted-foreground">{t("dashboard.reference", "Reference")}</TableHead>
                 <TableHead className="text-muted-foreground">{t("dashboard.deposits.date")}</TableHead>
                 <TableHead className="text-muted-foreground">{t("dashboard.deposits.amount")}</TableHead>
                 <TableHead className="text-muted-foreground">{t("dashboard.deposits.wallet")}</TableHead>
@@ -177,6 +178,7 @@ export default function Deposits() {
             <TableBody>
               {deposits?.map((d) => (
                 <TableRow key={d.id} className="border-border/10">
+                  <TableCell className="text-xs font-mono text-primary">{(d as any).reference_number ?? "—"}</TableCell>
                   <TableCell className="text-section-dark-foreground">
                     {d.created_at && !isNaN(new Date(d.created_at).getTime())
                       ? format(new Date(d.created_at), "MMM d, yyyy")
@@ -197,7 +199,7 @@ export default function Deposits() {
               ))}
               {!deposits?.length && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
+                  <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
                     {t("dashboard.deposits.noDeposits")}
                   </TableCell>
                 </TableRow>

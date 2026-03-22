@@ -44,6 +44,7 @@ export default function Transactions() {
           <Table>
             <TableHeader>
               <TableRow className="border-border/10">
+                <TableHead className="text-muted-foreground">{t("dashboard.reference", "Reference")}</TableHead>
                 <TableHead className="text-muted-foreground">{t("dashboard.transactions.date")}</TableHead>
                 <TableHead className="text-muted-foreground">{t("dashboard.transactions.type")}</TableHead>
                 <TableHead className="text-muted-foreground">{t("dashboard.transactions.description")}</TableHead>
@@ -53,6 +54,7 @@ export default function Transactions() {
             <TableBody>
               {transactions?.map((tx) => (
                 <TableRow key={tx.id} className="border-border/10">
+                  <TableCell className="text-xs font-mono text-primary">{(tx as any).reference_number ?? "—"}</TableCell>
                   <TableCell className="text-section-dark-foreground">
                     {tx.created_at && !isNaN(new Date(tx.created_at).getTime())
                       ? format(new Date(tx.created_at), "MMM d, yyyy")
@@ -71,7 +73,7 @@ export default function Transactions() {
               ))}
               {!transactions?.length && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
+                  <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
                     {t("dashboard.transactions.noTransactions")}
                   </TableCell>
                 </TableRow>
