@@ -178,7 +178,20 @@ export default function Deposits() {
             <TableBody>
               {deposits?.map((d) => (
                 <TableRow key={d.id} className="border-border/10">
-                  <TableCell className="text-xs font-mono text-primary">{(d as any).reference_number ?? "—"}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-mono text-primary">{(d as any).reference_number ?? "—"}</span>
+                      {(d as any).reference_number && (
+                        <button
+                          type="button"
+                          onClick={() => { navigator.clipboard.writeText((d as any).reference_number); setCopied((d as any).reference_number); toast.success(t("dashboard.refCopied", "Reference copied!")); setTimeout(() => setCopied(null), 2000); }}
+                          className="text-muted-foreground hover:text-primary transition-colors"
+                        >
+                          {copied === (d as any).reference_number ? <Check className="h-3.5 w-3.5 text-primary" /> : <Copy className="h-3.5 w-3.5" />}
+                        </button>
+                      )}
+                    </div>
+                  </TableCell>
                   <TableCell className="text-section-dark-foreground">
                     {d.created_at && !isNaN(new Date(d.created_at).getTime())
                       ? format(new Date(d.created_at), "MMM d, yyyy")

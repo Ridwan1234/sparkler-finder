@@ -139,7 +139,20 @@ export default function Withdrawals() {
             <TableBody>
               {withdrawals?.map((w) => (
                 <TableRow key={w.id} className="border-border/10">
-                  <TableCell className="text-xs font-mono text-primary">{(w as any).reference_number ?? "—"}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-mono text-primary">{(w as any).reference_number ?? "—"}</span>
+                      {(w as any).reference_number && (
+                        <button
+                          type="button"
+                          onClick={() => { navigator.clipboard.writeText((w as any).reference_number); copyRef((w as any).reference_number); }}
+                          className="text-muted-foreground hover:text-primary transition-colors"
+                        >
+                          {copiedRef === (w as any).reference_number ? <Check className="h-3.5 w-3.5 text-primary" /> : <Copy className="h-3.5 w-3.5" />}
+                        </button>
+                      )}
+                    </div>
+                  </TableCell>
                   <TableCell className="text-section-dark-foreground">
                     {w.created_at && !isNaN(new Date(w.created_at).getTime())
                       ? format(new Date(w.created_at), "MMM d, yyyy")
