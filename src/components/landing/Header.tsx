@@ -39,7 +39,7 @@ const Header = () => {
           <span className="font-display font-bold text-xl text-section-dark-foreground">HarborForge</span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden lg:flex items-center gap-8">
           {navLinks.map((link, i) => (
             <motion.div
               key={link.href}
@@ -57,7 +57,7 @@ const Header = () => {
           ))}
         </nav>
 
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden lg:flex items-center gap-3">
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}>
             <LanguageSwitcher />
           </motion.div>
@@ -81,7 +81,7 @@ const Header = () => {
         </div>
 
         <button
-          className="md:hidden text-section-dark-foreground"
+          className="lg:hidden text-section-dark-foreground"
           onClick={() => setMobileOpen(!mobileOpen)}
         >
           {mobileOpen ? <X size={24} /> : <Menu size={24} />}
@@ -95,7 +95,7 @@ const Header = () => {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="md:hidden bg-section-dark border-t border-border/10 overflow-hidden"
+            className="lg:hidden bg-section-dark border-t border-border/10 overflow-hidden"
           >
             <div className="p-4 space-y-3">
               {navLinks.map((link, i) => (
