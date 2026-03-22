@@ -19,6 +19,7 @@ export type Database = {
           amount: number
           created_at: string
           id: string
+          reference_number: string | null
           status: string
           user_id: string
           wallet_address: string
@@ -27,6 +28,7 @@ export type Database = {
           amount: number
           created_at?: string
           id?: string
+          reference_number?: string | null
           status?: string
           user_id: string
           wallet_address: string
@@ -35,6 +37,7 @@ export type Database = {
           amount?: number
           created_at?: string
           id?: string
+          reference_number?: string | null
           status?: string
           user_id?: string
           wallet_address?: string
@@ -344,6 +347,7 @@ export type Database = {
           description: string | null
           id: string
           reference_id: string | null
+          reference_number: string | null
           type: string
           user_id: string
         }
@@ -353,6 +357,7 @@ export type Database = {
           description?: string | null
           id?: string
           reference_id?: string | null
+          reference_number?: string | null
           type: string
           user_id: string
         }
@@ -362,6 +367,7 @@ export type Database = {
           description?: string | null
           id?: string
           reference_id?: string | null
+          reference_number?: string | null
           type?: string
           user_id?: string
         }
@@ -417,6 +423,7 @@ export type Database = {
           amount: number
           created_at: string
           id: string
+          reference_number: string | null
           status: string
           user_id: string
           wallet_address: string
@@ -425,6 +432,7 @@ export type Database = {
           amount: number
           created_at?: string
           id?: string
+          reference_number?: string | null
           status?: string
           user_id: string
           wallet_address: string
@@ -433,6 +441,7 @@ export type Database = {
           amount?: number
           created_at?: string
           id?: string
+          reference_number?: string | null
           status?: string
           user_id?: string
           wallet_address?: string
