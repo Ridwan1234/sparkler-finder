@@ -39,7 +39,7 @@ const Header = () => {
           <span className="font-display font-bold text-xl text-section-dark-foreground">HarborForge</span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden lg:flex items-center gap-8">
           {navLinks.map((link, i) => (
             <motion.div
               key={link.href}
