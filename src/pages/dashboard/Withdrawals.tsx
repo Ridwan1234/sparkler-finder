@@ -154,7 +154,7 @@ export default function Withdrawals() {
                       {(w as any).reference_number && (
                         <button
                           type="button"
-                          onClick={() => { navigator.clipboard.writeText((w as any).reference_number); copyRef((w as any).reference_number); }}
+                          onClick={() => copyRef((w as any).reference_number)}
                           className="text-muted-foreground hover:text-primary transition-colors"
                         >
                           {copiedRef === (w as any).reference_number ? <Check className="h-3.5 w-3.5 text-primary" /> : <Copy className="h-3.5 w-3.5" />}
