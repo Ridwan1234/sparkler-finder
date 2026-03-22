@@ -129,6 +129,7 @@ export default function Withdrawals() {
           <Table>
             <TableHeader>
               <TableRow className="border-border/10">
+                <TableHead className="text-muted-foreground">{t("dashboard.reference", "Reference")}</TableHead>
                 <TableHead className="text-muted-foreground">{t("dashboard.withdrawals.date")}</TableHead>
                 <TableHead className="text-muted-foreground">{t("dashboard.withdrawals.amount")}</TableHead>
                 <TableHead className="text-muted-foreground">{t("dashboard.withdrawals.wallet")}</TableHead>
