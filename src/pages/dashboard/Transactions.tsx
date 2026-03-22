@@ -44,6 +44,7 @@ export default function Transactions() {
           <Table>
             <TableHeader>
               <TableRow className="border-border/10">
+                <TableHead className="text-muted-foreground">{t("dashboard.reference", "Reference")}</TableHead>
                 <TableHead className="text-muted-foreground">{t("dashboard.transactions.date")}</TableHead>
                 <TableHead className="text-muted-foreground">{t("dashboard.transactions.type")}</TableHead>
                 <TableHead className="text-muted-foreground">{t("dashboard.transactions.description")}</TableHead>
