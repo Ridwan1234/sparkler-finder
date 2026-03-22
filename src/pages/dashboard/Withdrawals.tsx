@@ -19,6 +19,14 @@ export default function Withdrawals() {
   const queryClient = useQueryClient();
   const [amount, setAmount] = useState("");
   const [wallet, setWallet] = useState("");
+  const [copiedRef, setCopiedRef] = useState<string | null>(null);
+
+  const copyRef = (ref: string) => {
+    navigator.clipboard.writeText(ref);
+    setCopiedRef(ref);
+    toast.success(t("dashboard.refCopied", "Reference copied!"));
+    setTimeout(() => setCopiedRef(null), 2000);
+  };
 
   const { balance } = useBalance(user?.id);
 
