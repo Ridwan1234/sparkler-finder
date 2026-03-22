@@ -54,6 +54,7 @@ export default function Transactions() {
             <TableBody>
               {transactions?.map((tx) => (
                 <TableRow key={tx.id} className="border-border/10">
+                  <TableCell className="text-xs font-mono text-primary">{(tx as any).reference_number ?? "—"}</TableCell>
                   <TableCell className="text-section-dark-foreground">
                     {tx.created_at && !isNaN(new Date(tx.created_at).getTime())
                       ? format(new Date(tx.created_at), "MMM d, yyyy")
