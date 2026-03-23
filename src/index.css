@@ -97,12 +97,18 @@
   }
 
   html {
+    overflow-x: hidden;
     transition: color 0.3s ease, background-color 0.3s ease;
   }
 
   body {
     @apply bg-background text-foreground font-sans;
+    overflow-x: hidden;
     transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  #root {
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {
