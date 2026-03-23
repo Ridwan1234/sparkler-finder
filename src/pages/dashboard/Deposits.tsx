@@ -165,6 +165,7 @@ export default function Deposits() {
           <CardTitle className="text-section-dark-foreground text-lg">{t("dashboard.deposits.depositHistory")}</CardTitle>
         </CardHeader>
         <CardContent>
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="border-border/10">
