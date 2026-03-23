@@ -88,7 +88,7 @@ export default function Deposits() {
   const newBalance = balance + (Number(amount) || 0);
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-6">
       <h1 className="font-display text-2xl font-bold text-section-dark-foreground">{t("dashboard.deposits.title")}</h1>
 
       <Card className="bg-card/5 border-border/10">
@@ -96,7 +96,7 @@ export default function Deposits() {
           <CardTitle className="text-section-dark-foreground text-lg">{t("dashboard.deposits.newDeposit")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">
+          <p className="break-words text-sm text-muted-foreground">
             {t("dashboard.deposits.currentBalance")}: <span className="font-semibold text-section-dark-foreground">${balance.toLocaleString()}</span>
             {Number(amount) > 0 && (
               <> · {t("dashboard.deposits.afterDeposit")}: <span className="font-semibold text-primary">${newBalance.toLocaleString()}</span></>
@@ -166,7 +166,7 @@ export default function Deposits() {
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
-          <Table>
+          <Table className="min-w-[720px]">
             <TableHeader>
               <TableRow className="border-border/10">
                 <TableHead className="text-muted-foreground">{t("dashboard.reference", "Reference")}</TableHead>
@@ -180,8 +180,8 @@ export default function Deposits() {
               {deposits?.map((d) => (
                 <TableRow key={d.id} className="border-border/10">
                   <TableCell>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-xs font-mono text-primary">{(d as any).reference_number ?? "—"}</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="block max-w-[120px] truncate text-xs font-mono text-primary sm:max-w-none">{(d as any).reference_number ?? "—"}</span>
                       {(d as any).reference_number && (
                         <button
                           type="button"
