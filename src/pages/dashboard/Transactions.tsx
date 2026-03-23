@@ -87,6 +87,7 @@ export default function Transactions() {
             />
           </div>
 
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="border-border/10">
