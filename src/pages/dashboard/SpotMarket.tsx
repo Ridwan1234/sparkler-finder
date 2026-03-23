@@ -440,6 +440,7 @@ export default function SpotMarket() {
               )}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
     </div>
