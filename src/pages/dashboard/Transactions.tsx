@@ -143,6 +143,7 @@ export default function Transactions() {
               )}
             </TableBody>
           </Table>
+          </div>
 
           {/* Pagination */}
           {totalPages > 1 && (

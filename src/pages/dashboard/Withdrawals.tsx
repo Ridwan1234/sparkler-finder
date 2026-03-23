@@ -190,6 +190,7 @@ export default function Withdrawals() {
               )}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
     </div>

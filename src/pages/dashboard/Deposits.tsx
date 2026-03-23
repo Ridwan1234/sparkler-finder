@@ -220,6 +220,7 @@ export default function Deposits() {
               )}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
     </div>

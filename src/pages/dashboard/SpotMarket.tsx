@@ -397,6 +397,7 @@ export default function SpotMarket() {
           </CardTitle>
         </CardHeader>
         <CardContent>
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="border-border/10">

@@ -16,7 +16,7 @@ export default function DashboardLayout() {
             <SidebarTrigger className="text-section-dark-foreground" />
             <ThemeToggle />
           </header>
-          <main className="flex-1 p-6 overflow-auto">
+          <main className="flex-1 p-4 sm:p-6 overflow-auto min-w-0">
             <Outlet />
           </main>
         </div>
