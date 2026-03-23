@@ -69,7 +69,7 @@ export default function Transactions() {
   };
 
   return (
-    <div>
+    <div className="min-w-0">
       <h1 className="font-display text-2xl font-bold text-section-dark-foreground mb-6">
         {t("dashboard.transactions.title")}
       </h1>
@@ -77,7 +77,7 @@ export default function Transactions() {
       <Card className="bg-card/5 border-border/10">
         <CardContent className="pt-6 space-y-4">
           {/* Search */}
-          <div className="relative max-w-sm">
+          <div className="relative w-full max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder={t("dashboard.searchReference", "Search by reference, type or description...")}
@@ -88,7 +88,7 @@ export default function Transactions() {
           </div>
 
           <div className="overflow-x-auto">
-          <Table>
+          <Table className="min-w-[760px]">
             <TableHeader>
               <TableRow className="border-border/10">
                 <TableHead className="text-muted-foreground">{t("dashboard.reference", "Reference")}</TableHead>
@@ -105,7 +105,7 @@ export default function Transactions() {
                   <TableRow key={tx.id} className="border-border/10">
                     <TableCell>
                       <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-mono text-primary">{ref || "—"}</span>
+                        <span className="block max-w-[120px] truncate text-xs font-mono text-primary sm:max-w-none">{ref || "—"}</span>
                         {ref && (
                           <button
                             type="button"
@@ -127,7 +127,7 @@ export default function Transactions() {
                         {t(`dashboard.transactionTypes.${tx.type}` as const, { defaultValue: tx.type })}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-muted-foreground">{tx.description ?? "—"}</TableCell>
+                    <TableCell className="max-w-[220px] whitespace-normal break-words text-muted-foreground">{tx.description ?? "—"}</TableCell>
                     <TableCell className="text-right text-section-dark-foreground font-medium">
                       ${Number(tx.amount).toLocaleString()}
                     </TableCell>
@@ -147,7 +147,7 @@ export default function Transactions() {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-muted-foreground">
                 {t("dashboard.pagination", "Page {{page}} of {{total}}", { page: safeCurrentPage, total: totalPages })}
               </p>

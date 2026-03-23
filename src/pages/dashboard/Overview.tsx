@@ -139,7 +139,7 @@ export default function Overview() {
   const now = Date.now();
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-6">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -150,7 +150,7 @@ export default function Overview() {
         <h1 className="font-display text-2xl font-bold text-section-dark-foreground">
           {t("dashboard.welcomeBack")} {user?.user_metadata?.full_name || user?.email?.split("@")[0]}
         </h1>
-        <div className="flex gap-2">
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
           <Button size="sm" onClick={() => navigate("/dashboard/deposits")} className="gap-1.5">
             <ArrowDownToLine className="h-3.5 w-3.5" /> {t("dashboard.deposit")}
           </Button>
@@ -247,18 +247,18 @@ export default function Overview() {
                 )}
               </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex w-full min-w-0 flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
               <Tabs value={chartCoin} onValueChange={(v) => setChartCoin(v as "BTC" | "ETH" | "BNB")}>
-                <TabsList className="h-8 bg-background/10">
+                <TabsList className="grid h-auto w-full grid-cols-3 bg-background/10 sm:h-8 sm:w-auto">
                   {(["BTC", "ETH", "BNB"] as const).map((c) => (
-                    <TabsTrigger key={c} value={c} className="text-xs px-2.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{c}</TabsTrigger>
+                    <TabsTrigger key={c} value={c} className="px-2 py-1 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{c}</TabsTrigger>
                   ))}
                 </TabsList>
               </Tabs>
               <Tabs value={String(chartDays)} onValueChange={(v) => setChartDays(Number(v))}>
-                <TabsList className="h-8 bg-background/10">
+                <TabsList className="grid h-auto w-full grid-cols-3 bg-background/10 sm:h-8 sm:w-auto">
                   {[{ v: "7", l: "7D" }, { v: "30", l: "30D" }, { v: "90", l: "90D" }].map((p) => (
-                    <TabsTrigger key={p.v} value={p.v} className="text-xs px-2.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{p.l}</TabsTrigger>
+                    <TabsTrigger key={p.v} value={p.v} className="px-2 py-1 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{p.l}</TabsTrigger>
                   ))}
                 </TabsList>
               </Tabs>
@@ -396,16 +396,16 @@ export default function Overview() {
                   return (
                     <motion.div
                       key={inv.id}
-                      className="bg-background/5 border border-border/10 rounded-lg p-4 space-y-3 hover:border-primary/20 transition-all duration-200"
+                      className="space-y-3 rounded-lg border border-border/10 bg-background/5 p-4 transition-all duration-200 hover:border-primary/20"
                       whileHover={{ x: 4 }}
                       transition={{ type: "spring", stiffness: 300 }}
                     >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-semibold text-section-dark-foreground text-sm">{plan?.name ?? t("dashboard.overview.unknownPlan")}</p>
+                      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="min-w-0">
+                          <p className="truncate font-semibold text-section-dark-foreground text-sm">{plan?.name ?? t("dashboard.overview.unknownPlan")}</p>
                           <p className="text-xs text-muted-foreground">${Number(inv.amount).toLocaleString()} {t("dashboard.overview.investedSuffix")}</p>
                         </div>
-                        <div className="text-right">
+                        <div className="sm:text-right">
                           <p className="text-sm font-bold text-gold">{Number(plan?.roi_percentage ?? 0)}% {t("dashboard.plans.roi")}</p>
                           <p className="text-xs text-muted-foreground">{t("dashboard.overview.daysLeft", { count: daysLeft })}</p>
                         </div>
@@ -444,17 +444,17 @@ export default function Overview() {
                   {recentTx.map((tx, i) => (
                     <motion.div
                       key={tx.id}
-                      className="flex items-center justify-between py-2 border-b border-border/5 last:border-0 hover:bg-primary/5 rounded px-2 -mx-2 transition-colors"
+                      className="flex flex-col gap-2 rounded border-b border-border/5 px-2 py-2 transition-colors last:border-0 hover:bg-primary/5 -mx-2 sm:flex-row sm:items-center sm:justify-between"
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.4 + i * 0.05 }}
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex min-w-0 items-start gap-3">
                         <Badge variant="outline" className={`text-[10px] ${typeColor[tx.type] ?? ""}`}>
                           {t(`dashboard.transactionTypes.${tx.type}` as const, { defaultValue: tx.type })}
                         </Badge>
-                        <div>
-                          <p className="text-sm text-section-dark-foreground">{tx.description ?? tx.type}</p>
+                        <div className="min-w-0">
+                          <p className="break-words text-sm text-section-dark-foreground">{tx.description ?? tx.type}</p>
                           <p className="text-xs text-muted-foreground">
                             {tx.created_at && !isNaN(new Date(tx.created_at).getTime())
                               ? format(new Date(tx.created_at), "MMM d, yyyy")
@@ -462,7 +462,7 @@ export default function Overview() {
                           </p>
                         </div>
                       </div>
-                      <p className={`text-sm font-semibold ${
+                      <p className={`shrink-0 text-sm font-semibold ${
                         ["roi", "bonus", "principal_return"].includes(tx.type)
                           ? "text-primary"
                           : tx.type === "investment" ? "text-gold" : "text-section-dark-foreground"

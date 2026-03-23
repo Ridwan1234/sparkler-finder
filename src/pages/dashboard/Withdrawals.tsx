@@ -94,7 +94,7 @@ export default function Withdrawals() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-6">
       <h1 className="font-display text-2xl font-bold text-section-dark-foreground">{t("dashboard.withdrawals.title")}</h1>
 
       <Card className="bg-card/5 border-border/10">
@@ -102,7 +102,7 @@ export default function Withdrawals() {
           <CardTitle className="text-section-dark-foreground text-lg">{t("dashboard.withdrawals.newWithdrawal")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          <p className="text-sm text-muted-foreground">
+          <p className="break-words text-sm text-muted-foreground">
             {t("dashboard.withdrawals.availableBalance")}: <span className="font-semibold text-section-dark-foreground">${balance.toLocaleString()}</span>
             {minWithdrawal > 0 && <> · {t("dashboard.withdrawals.minWithdrawal")}: <span className="font-semibold">${minWithdrawal.toLocaleString()}</span></>}
           </p>
@@ -136,7 +136,7 @@ export default function Withdrawals() {
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
-          <Table>
+          <Table className="min-w-[720px]">
             <TableHeader>
               <TableRow className="border-border/10">
                 <TableHead className="text-muted-foreground">{t("dashboard.reference", "Reference")}</TableHead>
@@ -150,8 +150,8 @@ export default function Withdrawals() {
               {withdrawals?.map((w) => (
                 <TableRow key={w.id} className="border-border/10">
                   <TableCell>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-xs font-mono text-primary">{(w as any).reference_number ?? "—"}</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="block max-w-[120px] truncate text-xs font-mono text-primary sm:max-w-none">{(w as any).reference_number ?? "—"}</span>
                       {(w as any).reference_number && (
                         <button
                           type="button"

@@ -215,7 +215,7 @@ export default function SpotMarket() {
   const selectedSellPosition = positions?.find((p) => p.coin_symbol === sellCoin);
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-6">
       <h1 className="font-display text-2xl font-bold text-section-dark-foreground">
         {t("dashboard.spot.title", { defaultValue: "Spot Market" })}
       </h1>
@@ -324,7 +324,7 @@ export default function SpotMarket() {
               placeholder={t("dashboard.spot.quantity", { defaultValue: "Spot quantity" })}
               className="bg-background/10 border-border/20 text-section-dark-foreground"
             />
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row">
               <Button
                 type="button"
                 variant="outline"
@@ -351,7 +351,7 @@ export default function SpotMarket() {
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
-          <Table>
+          <Table className="min-w-[620px]">
             <TableHeader>
               <TableRow className="border-border/10">
                 <TableHead>{t("dashboard.spot.spot", { defaultValue: "Spot" })}</TableHead>
@@ -398,7 +398,7 @@ export default function SpotMarket() {
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
-          <Table>
+          <Table className="min-w-[720px]">
             <TableHeader>
               <TableRow className="border-border/10">
                 <TableHead>{t("dashboard.deposits.date")}</TableHead>
