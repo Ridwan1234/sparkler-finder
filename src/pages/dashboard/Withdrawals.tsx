@@ -135,6 +135,7 @@ export default function Withdrawals() {
           <CardTitle className="text-section-dark-foreground text-lg">{t("dashboard.withdrawals.withdrawalHistory")}</CardTitle>
         </CardHeader>
         <CardContent>
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="border-border/10">
@@ -189,6 +190,7 @@ export default function Withdrawals() {
               )}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
     </div>

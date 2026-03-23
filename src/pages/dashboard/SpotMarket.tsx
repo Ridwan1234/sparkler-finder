@@ -350,6 +350,7 @@ export default function SpotMarket() {
           </CardTitle>
         </CardHeader>
         <CardContent>
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="border-border/10">
@@ -385,6 +386,7 @@ export default function SpotMarket() {
               )}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
 
@@ -395,6 +397,7 @@ export default function SpotMarket() {
           </CardTitle>
         </CardHeader>
         <CardContent>
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="border-border/10">
@@ -437,6 +440,7 @@ export default function SpotMarket() {
               )}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
     </div>
