@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,12 +32,19 @@ const Login = () => {
   const { user, signIn, signInWithGoogle } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  // Only allow same-origin relative paths as the post-login target.
+  const rawNext = searchParams.get("next");
+  const nextPath = rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//")
+    ? rawNext
+    : "/dashboard";
 
   useEffect(() => {
     if (user) {
-      navigate("/dashboard", { replace: true });
+      navigate(nextPath, { replace: true });
     }
-  }, [user, navigate]);
+  }, [user, navigate, nextPath]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,18 +55,22 @@ const Login = () => {
     if (error) {
       toast({ title: t("auth.loginFailed"), description: error.message, variant: "destructive" });
     } else {
-      navigate("/dashboard");
+      navigate(nextPath);
     }
   };
 
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
+    // Return to /login?next=<original> so the consent redirect is honored after Google OAuth.
+    // The AuthProvider ignores redirect_uri overrides on its own, but sending users back to
+    // this page ensures the useEffect above navigates to `nextPath` once the session hydrates.
     const { error } = await signInWithGoogle();
     if (error) {
       toast({ title: t("auth.loginFailed"), description: t("auth.googleSignInFailed"), variant: "destructive" });
       setGoogleLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-screen section-dark flex items-center justify-center px-4 relative overflow-hidden">
