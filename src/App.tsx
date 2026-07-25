@@ -41,6 +41,9 @@ import ContactPage from "./pages/Contact";
 import TermsPage from "./pages/Terms";
 import WhatsAppButton from "./components/WhatsAppButton";
 import TawkTo from "./components/TawkTo";
+import OAuthConsent from "./pages/OAuthConsent";
+
+
 
 const queryClient = new QueryClient();
 
@@ -61,6 +64,7 @@ const AnimatedRoutes = () => {
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
           <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
             <Route index element={<Overview />} />
             <Route path="plans" element={<Plans />} />
