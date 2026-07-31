@@ -17,6 +17,8 @@ interface LegalPageProps {
   highlight?: string;
   description: string;
   sections: LegalSection[];
+  effectiveDate?: string;
+  lastUpdated?: string;
 }
 
 const sectionVariants = {
@@ -24,7 +26,15 @@ const sectionVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const } },
 };
 
-const LegalPage = ({ label, title, highlight, description, sections }: LegalPageProps) => (
+const LegalPage = ({
+  label,
+  title,
+  highlight,
+  description,
+  sections,
+  effectiveDate,
+  lastUpdated,
+}: LegalPageProps) => (
   <div className="min-h-screen">
     <Header />
     <div className="pt-20" />
@@ -32,10 +42,15 @@ const LegalPage = ({ label, title, highlight, description, sections }: LegalPage
 
     <section className="py-16 md:py-24 bg-background">
       <div className="container max-w-4xl">
-        <p className="text-muted-foreground text-sm mb-10">
-          Last updated:{" "}
-          {new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
-        </p>
+        <div className="text-muted-foreground text-sm mb-10 space-y-1">
+          {effectiveDate && <p>Effective date: {effectiveDate}</p>}
+          <p>
+            Last updated:{" "}
+            {lastUpdated ??
+              new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+          </p>
+        </div>
+
 
         <div className="space-y-10">
           {sections.map((section, i) => (
