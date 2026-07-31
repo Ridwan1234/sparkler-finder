@@ -73,12 +73,22 @@ const LegalPage = ({
               </div>
               <Separator className="mb-4" />
               <div className="space-y-3">
-                {section.content.map((paragraph, j) => (
-                  <p key={j} className="text-muted-foreground text-sm leading-relaxed">
-                    {paragraph}
-                  </p>
-                ))}
+                {section.content.map((paragraph, j) =>
+                  paragraph.startsWith("• ") ? (
+                    <p
+                      key={j}
+                      className="text-muted-foreground text-sm leading-relaxed pl-5 -indent-4 before:content-['—'] before:text-primary before:mr-2"
+                    >
+                      {paragraph.slice(2)}
+                    </p>
+                  ) : (
+                    <p key={j} className="text-muted-foreground text-sm leading-relaxed">
+                      {paragraph}
+                    </p>
+                  )
+                )}
               </div>
+
             </motion.div>
           ))}
         </div>
