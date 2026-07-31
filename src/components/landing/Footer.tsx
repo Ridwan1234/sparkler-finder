@@ -25,7 +25,7 @@ const Footer = () => {
     { label: t("footer.investmentPlans"), href: "/plans" },
     { label: t("footer.faqs"), href: "/faq" },
     { label: t("footer.contactUs"), href: "/contact" },
-    { label: t("footer.termsAgreement"), href: "/terms" },
+    
   ];
 
   const legalLinks = [
@@ -70,6 +70,19 @@ const Footer = () => {
                     to={link.href}
                     className="hover:text-primary transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-primary after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left"
                   >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+
+          <motion.div variants={itemVariants}>
+            <h4 className="font-display font-semibold mb-4">Legal</h4>
+            <ul className="space-y-2 text-sm text-section-dark-foreground/50">
+              {legalLinks.map((link) => (
+                <li key={link.href}>
+                  <Link to={link.href} className={linkClass}>
                     {link.label}
                   </Link>
                 </li>
