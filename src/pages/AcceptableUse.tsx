@@ -224,9 +224,9 @@ const sections = [
     content: [
       "Questions regarding this Acceptable Use Policy may be directed to:",
       "HARBORFORGE Legal & Compliance Department",
-      "Website: [To Be Added]",
-      "Email: legal@[yourdomain].com",
-      "Registered Office: [To Be Added Following Incorporation]",
+      "Website: harborforge.org",
+      "Email: support@harborforge.org",
+      "Registered Office: Available upon request.",
     ],
   },
   {

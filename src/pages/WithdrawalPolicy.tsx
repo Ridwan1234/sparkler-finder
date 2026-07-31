@@ -215,9 +215,9 @@ const sections = [
     content: [
       "Questions regarding this Withdrawal & Payout Policy may be directed to:",
       "HARBORFORGE Finance & Compliance Department",
-      "Website: [To Be Added]",
-      "Email: withdrawals@[yourdomain].com",
-      "Registered Office: [To Be Added Following Incorporation]",
+      "Website: harborforge.org",
+      "Email: support@harborforge.org",
+      "Registered Office: Available upon request.",
     ],
   },
   {

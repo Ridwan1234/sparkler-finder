@@ -344,9 +344,9 @@ const sections = [
     content: [
       "Questions regarding these Terms may be directed to:",
       "HARBORFORGE Legal Department",
-      "Website: [To Be Added]",
-      "Email: [legal@yourdomain.com]",
-      "Registered Office: [To Be Added Following Incorporation]",
+      "Website: harborforge.org",
+      "Email: support@harborforge.org",
+      "Registered Office: Available upon request.",
       "By creating an account, accessing, or using the HARBORFORGE Platform, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.",
     ],
   },

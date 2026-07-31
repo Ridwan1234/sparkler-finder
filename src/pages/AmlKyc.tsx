@@ -221,9 +221,9 @@ const sections = [
     content: [
       "Questions regarding this AML & KYC Policy may be directed to:",
       "HARBORFORGE Compliance Department",
-      "Website: [To Be Added]",
-      "Email: compliance@[yourdomain].com",
-      "Registered Office: [To Be Added Following Incorporation]",
+      "Website: harborforge.org",
+      "Email: support@harborforge.org",
+      "Registered Office: Available upon request.",
     ],
   },
   {
