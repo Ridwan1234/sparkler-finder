@@ -39,6 +39,11 @@ import PlansPage from "./pages/PlansPage";
 import FAQPage from "./pages/FAQ";
 import ContactPage from "./pages/Contact";
 import TermsPage from "./pages/Terms";
+import PrivacyPage from "./pages/Privacy";
+import AmlKycPage from "./pages/AmlKyc";
+import CookiesPage from "./pages/Cookies";
+import WithdrawalPolicyPage from "./pages/WithdrawalPolicy";
+import AcceptableUsePage from "./pages/AcceptableUse";
 import WhatsAppButton from "./components/WhatsAppButton";
 import TawkTo from "./components/TawkTo";
 import OAuthConsent from "./pages/OAuthConsent";
@@ -60,6 +65,11 @@ const AnimatedRoutes = () => {
           <Route path="/faq" element={<FAQPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/terms" element={<TermsPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/aml-kyc" element={<AmlKycPage />} />
+          <Route path="/cookies" element={<CookiesPage />} />
+          <Route path="/withdrawal-policy" element={<WithdrawalPolicyPage />} />
+          <Route path="/acceptable-use" element={<AcceptableUsePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
