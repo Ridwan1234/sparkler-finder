@@ -28,6 +28,18 @@ const Footer = () => {
     { label: t("footer.termsAgreement"), href: "/terms" },
   ];
 
+  const legalLinks = [
+    { label: "Terms of Service", href: "/terms" },
+    { label: "Privacy Policy", href: "/privacy" },
+    { label: "AML & KYC Policy", href: "/aml-kyc" },
+    { label: "Cookie Policy", href: "/cookies" },
+    { label: "Withdrawal Policy", href: "/withdrawal-policy" },
+    { label: "Acceptable Use Policy", href: "/acceptable-use" },
+  ];
+
+  const linkClass =
+    "hover:text-primary transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-primary after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left";
+
   return (
     <footer id="contact" className="section-dark border-t border-section-dark-foreground/10">
       <motion.div
@@ -37,7 +49,8 @@ const Footer = () => {
         viewport={{ once: true, margin: "-50px" }}
         className="container py-16"
       >
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-10">
+
           <motion.div variants={itemVariants}>
             <div className="flex items-center gap-2 mb-4">
               <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
