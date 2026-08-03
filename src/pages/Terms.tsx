@@ -17,12 +17,12 @@ const sections = [
     title: "1. Definitions",
     content: [
       "For purposes of these Terms:",
-      "Accountmeans a registered HARBORFORGE user profile used to access investment services.",
-      "AI Investment Systemmeans HARBORFORGE's proprietary artificial intelligence technology utilized alongside professional investment managers for market analysis, portfolio allocation, and investment decision support.",
-      "Digital Assetsmeans cryptocurrencies and blockchain-based assets accepted by HARBORFORGE.",
-      "Investment Planmeans an investment program offered through the Platform with specified investment conditions, eligibility requirements, and distribution schedules.",
-      "Platformmeans the HARBORFORGE website, applications, software, dashboards, APIs, and related services.",
-      "KYCmeans Know Your Customer identity verification procedures.",
+      "Account means a registered HARBORFORGE user profile used to access investment services.",
+      "AI Investment System means HARBORFORGE's proprietary artificial intelligence technology utilized alongside professional investment managers for market analysis, portfolio allocation, and investment decision support.",
+      "Digital Assets means cryptocurrencies and blockchain-based assets accepted by HARBORFORGE.",
+      "Investment Plan means an investment program offered through the Platform with specified investment conditions, eligibility requirements, and distribution schedules.",
+      "Platform means the HARBORFORGE website, applications, software, dashboards, APIs, and related services.",
+      "KYC means Know Your Customer identity verification procedures.",
     ],
   },
   {
